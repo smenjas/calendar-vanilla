@@ -9,6 +9,9 @@ body {
   width: 45em;
   margin: auto;
 }
+.today {
+  background-color: #ccc;
+}
 
 table, th, td {
   border: 1px solid black;
@@ -29,5 +32,8 @@ td {
   }
   table, th, td {
     border: 1px solid white;
+  }
+  .today {
+    background-color: #333;
   }
 }
