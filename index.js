@@ -3,13 +3,19 @@ const thisYear = now.getFullYear();
 const thisMonth = now.getMonth(); // Month index, 0 is January
 const thisDate = now.getDate();
 
+function getMonthName(date, language) {
+    return Intl.DateTimeFormat(language, { month: 'long' }).format(date);
+}
+
 const language = 'en-us';
 const daysInMonth = [];
 const monthNames = [];
 for (let month = 0; month < 12; month++) {
-    const monthEnd = new Date(thisYear, month + 1, 0); // Zero is last month's max date.
+    // Date zero is last month's max date.
+    const monthEnd = new Date(thisYear, month + 1, 0);
+
     daysInMonth[month] = monthEnd.getDate();
-    monthNames[month] = Intl.DateTimeFormat(language, { month: 'long' }).format(monthEnd);
+    monthNames[month] = getMonthName(monthEnd, language);
 }
 
 const weekdayNames = [];
