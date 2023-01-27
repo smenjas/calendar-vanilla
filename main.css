@@ -1,0 +1,11 @@
+body {
+  font-family: sans-serif;
+  background-color: white;
+  color: black;
+}
+@media screen and (prefers-color-scheme: dark) {
+  body {
+    background-color: black;
+    color: white;
+  }
+}
