@@ -1,11 +1,15 @@
+function getMonthName(date, language) {
+    return Intl.DateTimeFormat(language, { month: 'long' }).format(date);
+}
+
+function getWeekdayName(date, language, format = 'long') {
+    return Intl.DateTimeFormat(language, { weekday: format }).format(date);
+}
+
 const now = new Date();
 const thisYear = now.getFullYear();
 const thisMonth = now.getMonth(); // Month index, 0 is January
 const thisDate = now.getDate();
-
-function getMonthName(date, language) {
-    return Intl.DateTimeFormat(language, { month: 'long' }).format(date);
-}
 
 const language = 'en-us';
 const daysInMonth = [];
@@ -23,9 +27,9 @@ for (let offset = 0; offset < 7; offset++) {
     let weekday = new Date(thisYear, thisMonth, thisDate + offset);
     weekdayNames[weekday.getDay()] = {
         // See https://devhints.io/wip/intl-datetime for options.
-        long: Intl.DateTimeFormat(language, { weekday: 'long' }).format(weekday),
-        short: Intl.DateTimeFormat(language, { weekday: 'short' }).format(weekday),
-        //narrow: Intl.DateTimeFormat(language, { weekday: 'narrow' }).format(weekday)
+        long: getWeekdayName(weekday, language, 'long'),
+        short: getWeekdayName(weekday, language, 'short'),
+        //narrow: getWeekdayName(weekday, language, 'narrow')
     }
 }
 
