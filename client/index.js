@@ -26,14 +26,14 @@ for (let offset = 0; offset < 7; offset++) {
 // Which day of the week does this month start on?
 const monthStart = new Date(thisYear, thisMonth, 1).getDay();
 
-let content = '<div class="calendar">\n';
-content += `<h2>${monthNames[thisMonth]} ${thisYear}</h2>\n`;
-content += '<table><thead><tr>\n';
+let content = '<div class="calendar">';
+content += `<h2>${monthNames[thisMonth]} ${thisYear}</h2>`;
+content += '<table><thead><tr>';
 
 for (const weekday in weekdayNames) {
     let longName = weekdayNames[weekday]['long'];
     let shortName = weekdayNames[weekday]['short'];
-    content += `\t<th><abbr title="${longName}">${shortName}</abbr></th>\n`;
+    content += `<th><abbr title="${longName}">${shortName}</abbr></th>`;
 }
 content += '</tr></thead><tbody>';
 
@@ -41,9 +41,9 @@ let dateShown = 0;
 let monthHasBegun = false;
 let monthHasEnded = false;
 while (monthHasEnded === false) {
-    content += '<tr>\n';
+    content += '<tr>';
     for (let weekday = 0; weekday < 7; weekday++) {
-        content += '\t<td>';
+        content += '<td>';
         if (monthHasBegun === false && monthStart === weekday) {
             monthHasBegun = true;
         }
@@ -51,14 +51,14 @@ while (monthHasEnded === false) {
             dateShown += 1;
             content += `<span class="date">${dateShown}</span>`;
         }
-        content += '</td>\n';
+        content += '</td>';
         if (dateShown >= daysInMonth[thisMonth]) {
             monthHasEnded = true;
         }
     }
     content += '</tr>';
 }
-content += '</tbody></table>\n';
-content += '</div>\n';
+content += '</tbody></table>';
+content += '</div>';
 
 document.body.insertAdjacentHTML('beforeend', content);
