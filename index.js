@@ -43,15 +43,19 @@ let monthHasEnded = false;
 while (monthHasEnded === false) {
     content += '<tr>';
     for (let weekday = 0; weekday < 7; weekday++) {
-        content += '<td>';
+        let dateSpan = '';
+        let todayClass = '';
         if (monthHasBegun === false && monthStart === weekday) {
             monthHasBegun = true;
         }
         if (monthHasBegun === true && monthHasEnded === false) {
             dateShown += 1;
-            content += `<span class="date">${dateShown}</span>`;
+            dateSpan = `<span class="date">${dateShown}</span>`;
         }
-        content += '</td>';
+        if (dateShown === thisDate) {
+            todayClass = ' class="today" title="Today"';
+        }
+        content += `<td${todayClass}>${dateSpan}</td>`;
         if (dateShown >= daysInMonth[thisMonth]) {
             monthHasEnded = true;
         }
