@@ -15,18 +15,16 @@ for (let month = 0; month < 12; month++) {
 const weekdayNames = [];
 for (let offset = 0; offset < 7; offset++) {
     let weekday = new Date(thisYear, thisMonth, thisDate + offset);
-    let day = weekday.getDay();
-    weekdayNames[day] = {
+    weekdayNames[weekday.getDay()] = {
+        // See https://devhints.io/wip/intl-datetime for options.
         long: Intl.DateTimeFormat(language, { weekday: 'long' }).format(weekday),
         short: Intl.DateTimeFormat(language, { weekday: 'short' }).format(weekday),
-        narrow: Intl.DateTimeFormat(language, { weekday: 'narrow' }).format(weekday)
+        //narrow: Intl.DateTimeFormat(language, { weekday: 'narrow' }).format(weekday)
     }
 }
 
 // Which day of the week does this month start on?
 const monthStart = new Date(thisYear, thisMonth, 1).getDay();
-
-const daysInFirstWeek = 7 - monthStart;
 
 let content = '<div class="calendar">\n';
 content += `<h2>${monthNames[thisMonth]} ${thisYear}</h2>\n`;
@@ -39,15 +37,14 @@ for (const weekday in weekdayNames) {
 }
 content += '</tr></thead><tbody>';
 
-let thisWeekNumber = 0;
 let dateShown = 0;
 let monthHasBegun = false;
 let monthHasEnded = false;
 while (monthHasEnded === false) {
     content += '<tr>\n';
-    for (let day = 0; day < 7; day++) {
+    for (let weekday = 0; weekday < 7; weekday++) {
         content += '\t<td>';
-        if (thisWeekNumber === 0 && monthStart === day) {
+        if (monthHasBegun === false && monthStart === weekday) {
             monthHasBegun = true;
         }
         if (monthHasBegun === true && monthHasEnded === false) {
