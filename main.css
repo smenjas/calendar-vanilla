@@ -3,9 +3,31 @@ body {
   background-color: white;
   color: black;
 }
+
+.calendar {
+  text-align: center;
+  width: 45em;
+  margin: auto;
+}
+
+table, th, td {
+  border: 1px solid black;
+  border-spacing: 0;
+}
+th, td {
+  padding: 0.5em;
+}
+td {
+  height: 5em;
+  width: 5em;
+}
+
 @media screen and (prefers-color-scheme: dark) {
   body {
     background-color: black;
     color: white;
+  }
+  table, th, td {
+    border: 1px solid white;
   }
 }
