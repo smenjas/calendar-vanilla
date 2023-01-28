@@ -3,7 +3,7 @@
 - [x] Show a calendar for the current month.
 - [x] Generate month and day names by locale.
 - [x] Identify the current day.
-- [ ] Show dates for adjacent months.
+- [x] Show dates for adjacent months.
 - [ ] Navigate by month, forward or backward.
 - [ ] Navigate by year, forward or backward.
 - [ ] Show a yearly view.
