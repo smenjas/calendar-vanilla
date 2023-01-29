@@ -32,13 +32,13 @@ nav a {
 }
 nav a.last-month, nav a.last-year {
   margin-right: 1em;
-  padding-left: 1em;
-  padding-right: 1em;
+  padding-left: 1.3em;
+  padding-right: 1.3em;
 }
 nav a.next-month, nav a.next-year {
   margin-left: 1em;
-  padding-left: 1em;
-  padding-right: 1em;
+  padding-left: 1.3em;
+  padding-right: 1.3em;
 }
 
 table {
