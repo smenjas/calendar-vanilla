@@ -80,7 +80,7 @@ content += '<fieldset id="nav-calendar">';
 content += `<a href="${lastYearURL}" class="last-year" title="Previous year">&lArr;</a>`;
 content += `<a href="${lastMonthURL}" class="last-month" title="Previous month">&larr;</a>`;
 
-content += '<select name="month" id="nav-month">';
+content += '<select name="month" id="nav-month" onchange="this.form.submit()">';
 
 for (const m in monthNames) {
     const month = monthNames[m];
@@ -93,7 +93,7 @@ for (const m in monthNames) {
 
 content += '</select>';
 
-content += '<select name="year" id="nav-year">';
+content += '<select name="year" id="nav-year" onchange="this.form.submit()">';
 
 for (let y = minYear; y < maxYear; y++) {
     let selected = '';
@@ -104,7 +104,6 @@ for (let y = minYear; y < maxYear; y++) {
 }
 
 content += '</select>';
-content += '<button type="submit">Go</button>';
 
 content += `<a href="${nextMonthURL}" class="next-month" title="Next month">&rarr;</a>`;
 content += `<a href="${nextYearURL}" class="next-year" title="Next year">&rArr;</a>`;
