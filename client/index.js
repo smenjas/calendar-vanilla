@@ -75,9 +75,10 @@ let nextYearURL = `?month=${thisMonth}&amp;year=${thisYear + 1}`;
 let content = '<div class="calendar">';
 content += '<nav>';
 
+content += '<form action="" method="get">';
 content += '<fieldset id="nav-calendar">';
-content += `<a href="${lastYearURL}" class="last-year">&lArr;</a>`;
-content += `<a href="${lastMonthURL}" class="last-month">&larr;</a>`;
+content += `<a href="${lastYearURL}" class="last-year" title="Previous year">&lArr;</a>`;
+content += `<a href="${lastMonthURL}" class="last-month" title="Previous month">&larr;</a>`;
 
 content += '<select name="month" id="nav-month">';
 
@@ -103,10 +104,12 @@ for (let y = minYear; y < maxYear; y++) {
 }
 
 content += '</select>';
+content += '<button type="submit">Go</button>';
 
-content += `<a href="${nextMonthURL}" class="next-month">&rarr;</a>`;
-content += `<a href="${nextYearURL}" class="next-year">&rArr;</a>`;
+content += `<a href="${nextMonthURL}" class="next-month" title="Next month">&rarr;</a>`;
+content += `<a href="${nextYearURL}" class="next-year" title="Next year">&rArr;</a>`;
 content += '</fieldset>';
+content += '</form>';
 
 content += '</nav>';
 content += '<table><thead><tr>';
