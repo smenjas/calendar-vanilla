@@ -8,7 +8,15 @@ function getWeekdayName(date, language, format = 'long') {
     return Intl.DateTimeFormat(language, { weekday: format }).format(date);
 }
 
-const now = new Date();
+const minYear = 1970;
+const maxYear = 2100;
+
+const query = window.location.search;
+const params = new URLSearchParams(query);
+queryYear = params.get('year');
+queryMonth = params.get('month');
+
+const now = new Date(queryYear, queryMonth);
 const thisYear = now.getFullYear();
 const thisMonth = now.getMonth(); // Month index, 0 is January
 const thisDate = now.getDate();
@@ -59,8 +67,48 @@ if (monthStart !== 0) {
 // Which day of the week does this month end on?
 const monthEnd = new Date(thisYear, thisMonth, daysInMonth[thisYear][thisMonth]).getDay();
 
+let lastMonthURL = `?month=${thisMonth - 1}&amp;year=${thisYear}`;
+let nextMonthURL = `?month=${thisMonth + 1}&amp;year=${thisYear}`;
+let lastYearURL = `?month=${thisMonth}&amp;year=${thisYear - 1}`;
+let nextYearURL = `?month=${thisMonth}&amp;year=${thisYear + 1}`;
+
 let content = '<div class="calendar">';
-content += `<h2>${monthNames[thisMonth]} ${thisYear}</h2>`;
+content += '<nav>';
+
+content += '<fieldset id="nav-calendar">';
+content += `<a href="${lastYearURL}" class="last-year">&lArr;</a>`;
+content += `<a href="${lastMonthURL}" class="last-month">&larr;</a>`;
+
+content += '<select name="month" id="nav-month">';
+
+for (const m in monthNames) {
+    const month = monthNames[m];
+    let selected = '';
+    if (parseInt(m) === thisMonth) {
+        selected = ' selected';
+    }
+    content += `<option value="${m}"${selected}>${month}</option>`;
+}
+
+content += '</select>';
+
+content += '<select name="year" id="nav-year">';
+
+for (let y = minYear; y < maxYear; y++) {
+    let selected = '';
+    if (y === thisYear) {
+        selected = ' selected';
+    }
+    content += `<option value="${y}"${selected}>${y}</option>`;
+}
+
+content += '</select>';
+
+content += `<a href="${nextMonthURL}" class="next-month">&rarr;</a>`;
+content += `<a href="${nextYearURL}" class="next-year">&rArr;</a>`;
+content += '</fieldset>';
+
+content += '</nav>';
 content += '<table><thead><tr>';
 
 for (const weekday in weekdayNames) {
@@ -75,6 +123,7 @@ let dateShown = 0;
 let nextMonthsDate = 0;
 let monthHasBegun = false;
 let monthHasEnded = false;
+const today = new Date();
 
 while (monthHasEnded === false) {
     let tr = '';
@@ -105,7 +154,9 @@ while (monthHasEnded === false) {
             tdClass = 'this-month';
             tdTitle = `${monthNames[thisMonth]} ${dateShown}, ${thisYear}`
 
-            if (dateShown === thisDate) {
+            if (dateShown === today.getDate() &&
+                thisMonth === today.getMonth() &&
+                thisYear === today.getFullYear()) {
                 tdClass += ' today';
                 tdTitle += ' (Today)';
             }
