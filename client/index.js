@@ -24,10 +24,22 @@ function getSelectOptions(options, selected) {
 const minYear = 1900;
 const maxYear = 2100;
 
+// When is today?
+const today = new Date();
+const currentYear = today.getFullYear();
+const currentMonth = today.getMonth();
+const currentDate = today.getDate();
+
 const query = window.location.search;
 const params = new URLSearchParams(query);
 queryYear = params.get('year');
 queryMonth = params.get('month');
+if (!queryYear) {
+    queryYear = currentYear;
+}
+if (!queryMonth) {
+    queryMonth = currentMonth;
+}
 
 // Which month are we showing?
 const present = new Date(queryYear, queryMonth);
@@ -44,12 +56,6 @@ const lastMonth = past.getMonth();
 const future = new Date(thisYear, thisMonth + 1);
 const nextMonthsYear = future.getFullYear();
 const nextMonth = future.getMonth();
-
-// When is today?
-const today = new Date();
-const currentYear = today.getFullYear();
-const currentMonth = today.getMonth();
-const currentDate = today.getDate();
 
 const language = 'en-us';
 const monthNames = [];
