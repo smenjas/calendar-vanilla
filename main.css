@@ -4,6 +4,10 @@ body {
   color: black;
 }
 
+fieldset {
+  border: none;
+}
+
 table {
   border: 1px solid black;
   border-spacing: 0;
@@ -23,18 +27,24 @@ td {
   width: 45em;
   margin: auto;
 }
+.last-month, .next-month {
+  background-color: #eee;
+}
 .today {
   border: 1px solid black;
   background-color: #ccc;
-}
-.last-month, .next-month {
-  background-color: #eee;
 }
 
 @media screen and (prefers-color-scheme: dark) {
   body {
     background-color: black;
     color: white;
+  }
+  a {
+    color: #aaf;
+  }
+  a:visited {
+    color: #faf;
   }
 
   table {
@@ -44,11 +54,11 @@ td {
     border: 1px solid #444;
   }
 
+  .last-month, .next-month {
+    background-color: #111;
+  }
   .today {
     border: 1px solid white;
     background-color: #333;
-  }
-  .last-month, .next-month {
-    background-color: #111;
   }
 }
