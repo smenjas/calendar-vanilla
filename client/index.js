@@ -89,11 +89,11 @@ if (monthStart !== 0) {
 // Which day of the week does this month end on?
 const monthEnd = new Date(thisYear, thisMonth, daysInMonth[thisYear][thisMonth]).getDay();
 
-let todayURL = `?month=${currentMonth}&amp;year=${currentYear}`;
-let lastMonthURL = `?month=${thisMonth - 1}&amp;year=${thisYear}`;
-let nextMonthURL = `?month=${thisMonth + 1}&amp;year=${thisYear}`;
-let lastYearURL = `?month=${thisMonth}&amp;year=${thisYear - 1}`;
-let nextYearURL = `?month=${thisMonth}&amp;year=${thisYear + 1}`;
+const todayURL = `?month=${currentMonth}&amp;year=${currentYear}`;
+const lastMonthURL = `?month=${thisMonth - 1}&amp;year=${thisYear}`;
+const nextMonthURL = `?month=${thisMonth + 1}&amp;year=${thisYear}`;
+const lastYearURL = `?month=${thisMonth}&amp;year=${thisYear - 1}`;
+const nextYearURL = `?month=${thisMonth}&amp;year=${thisYear + 1}`;
 
 const years = {};
 for (let y = minYear; y <= maxYear; y++) {
@@ -128,8 +128,8 @@ content += '</nav>';
 content += '<table><thead><tr>';
 
 for (const weekday in weekdayNames) {
-    let longName = weekdayNames[weekday]['long'];
-    let shortName = weekdayNames[weekday]['short'];
+    const longName = weekdayNames[weekday]['long'];
+    const shortName = weekdayNames[weekday]['short'];
     content += `<th><abbr title="${longName}">${shortName}</abbr></th>`;
 }
 
@@ -156,8 +156,8 @@ while (monthHasEnded === false) {
         // Which month are we in?
         if (monthHasBegun === false) {
             // Show last month's dates.
-            let lastMonthOffset = monthStart - (weekday + 1);
-            let lastMonthsDate = daysInMonth[lastMonthsYear][lastMonth] - lastMonthOffset;
+            const lastMonthOffset = monthStart - (weekday + 1);
+            const lastMonthsDate = daysInMonth[lastMonthsYear][lastMonth] - lastMonthOffset;
             td = lastMonthsDate;
             tdClass = 'last-month';
             tdTitle = `${monthNames[lastMonth]} ${lastMonthsDate}, ${lastMonthsYear}`
