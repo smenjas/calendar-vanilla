@@ -8,6 +8,19 @@ function getWeekdayName(date, language, format = 'long') {
     return Intl.DateTimeFormat(language, { weekday: format }).format(date);
 }
 
+function getSelectOptions(options, selected) {
+    let html = '';
+    for (const option in options) {
+        const optionText = options[option];
+        let selectedAttr = '';
+        if (selected.toString() === option.toString()) {
+            selectedAttr = ' selected';
+        }
+        html += `<option value="${option}"${selectedAttr}>${optionText}</option>`;
+    }
+    return html;
+}
+
 const minYear = 1970;
 const maxYear = 2100;
 
@@ -72,6 +85,11 @@ let nextMonthURL = `?month=${thisMonth + 1}&amp;year=${thisYear}`;
 let lastYearURL = `?month=${thisMonth}&amp;year=${thisYear - 1}`;
 let nextYearURL = `?month=${thisMonth}&amp;year=${thisYear + 1}`;
 
+const years = {};
+for (let y = minYear; y < maxYear; y++) {
+    years[y] = y;
+}
+
 let content = '<div class="calendar">';
 content += '<nav>';
 
@@ -81,28 +99,11 @@ content += `<a href="${lastYearURL}" class="last-year" title="Previous year">&lA
 content += `<a href="${lastMonthURL}" class="last-month" title="Previous month">&larr;</a>`;
 
 content += '<select name="month" id="nav-month" onchange="this.form.submit()">';
-
-for (const m in monthNames) {
-    const month = monthNames[m];
-    let selected = '';
-    if (parseInt(m) === thisMonth) {
-        selected = ' selected';
-    }
-    content += `<option value="${m}"${selected}>${month}</option>`;
-}
-
+content += getSelectOptions(monthNames, thisMonth);
 content += '</select>';
 
 content += '<select name="year" id="nav-year" onchange="this.form.submit()">';
-
-for (let y = minYear; y < maxYear; y++) {
-    let selected = '';
-    if (y === thisYear) {
-        selected = ' selected';
-    }
-    content += `<option value="${y}"${selected}>${y}</option>`;
-}
-
+content += getSelectOptions(years, thisYear);
 content += '</select>';
 
 content += `<a href="${nextMonthURL}" class="next-month" title="Next month">&rarr;</a>`;
