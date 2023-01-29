@@ -29,18 +29,27 @@ const params = new URLSearchParams(query);
 queryYear = params.get('year');
 queryMonth = params.get('month');
 
-const now = new Date(queryYear, queryMonth);
-const thisYear = now.getFullYear();
-const thisMonth = now.getMonth(); // Month index, 0 is January
-const thisDate = now.getDate();
+// Which month are we showing?
+const present = new Date(queryYear, queryMonth);
+const thisYear = present.getFullYear();
+const thisMonth = present.getMonth(); // Month index, 0 is January
+const thisDate = present.getDate();
 
+// Which month came before the month shown?
 const past = new Date(thisYear, thisMonth - 1);
 const lastMonthsYear = past.getFullYear();
 const lastMonth = past.getMonth();
 
+// Which month came after the month shown?
 const future = new Date(thisYear, thisMonth + 1);
 const nextMonthsYear = future.getFullYear();
 const nextMonth = future.getMonth();
+
+// When is today?
+const today = new Date();
+const currentYear = today.getFullYear();
+const currentMonth = today.getMonth();
+const currentDate = today.getDate();
 
 const language = 'en-us';
 const monthNames = [];
@@ -80,6 +89,7 @@ if (monthStart !== 0) {
 // Which day of the week does this month end on?
 const monthEnd = new Date(thisYear, thisMonth, daysInMonth[thisYear][thisMonth]).getDay();
 
+let todayURL = `?month=${currentMonth}&amp;year=${currentYear}`;
 let lastMonthURL = `?month=${thisMonth - 1}&amp;year=${thisYear}`;
 let nextMonthURL = `?month=${thisMonth + 1}&amp;year=${thisYear}`;
 let lastYearURL = `?month=${thisMonth}&amp;year=${thisYear - 1}`;
@@ -111,6 +121,9 @@ content += `<a href="${nextYearURL}" class="next-year" title="Next year">&rArr;<
 content += '</fieldset>';
 content += '</form>';
 
+const todayTitle = `${monthNames[currentMonth]} ${currentDate}, ${currentYear}`;
+content += `<a href="${todayURL}" class="today" title="${todayTitle}">Today</a>`;
+
 content += '</nav>';
 content += '<table><thead><tr>';
 
@@ -126,7 +139,6 @@ let dateShown = 0;
 let nextMonthsDate = 0;
 let monthHasBegun = false;
 let monthHasEnded = false;
-const today = new Date();
 
 while (monthHasEnded === false) {
     let tr = '';
@@ -157,9 +169,9 @@ while (monthHasEnded === false) {
             tdClass = 'this-month';
             tdTitle = `${monthNames[thisMonth]} ${dateShown}, ${thisYear}`
 
-            if (dateShown === today.getDate() &&
-                thisMonth === today.getMonth() &&
-                thisYear === today.getFullYear()) {
+            if (dateShown === currentDate &&
+                thisMonth === currentMonth &&
+                thisYear === currentYear) {
                 tdClass += ' today';
                 tdTitle += ' (Today)';
             }
