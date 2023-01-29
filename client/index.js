@@ -21,7 +21,7 @@ function getSelectOptions(options, selected) {
     return html;
 }
 
-const minYear = 1970;
+const minYear = 1900;
 const maxYear = 2100;
 
 const query = window.location.search;
@@ -86,7 +86,7 @@ let lastYearURL = `?month=${thisMonth}&amp;year=${thisYear - 1}`;
 let nextYearURL = `?month=${thisMonth}&amp;year=${thisYear + 1}`;
 
 const years = {};
-for (let y = minYear; y < maxYear; y++) {
+for (let y = minYear; y <= maxYear; y++) {
     years[y] = y;
 }
 
