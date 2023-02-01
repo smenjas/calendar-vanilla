@@ -59,15 +59,15 @@ const nextMonth = future.getMonth();
 
 const language = 'en-us';
 const monthNames = [];
-const daysInMonth = {};
-daysInMonth[thisYear] = {};
+const daysInEachMonth = {};
+daysInEachMonth[thisYear] = {};
 
 for (let month = 0; month < 12; month++) {
     // Date zero is last month's max date.
     const monthEnd = new Date(thisYear, month + 1, 0);
 
     monthNames[month] = getMonthName(monthEnd, language);
-    daysInMonth[thisYear][month] = monthEnd.getDate();
+    daysInEachMonth[thisYear][month] = monthEnd.getDate();
 }
 
 const weekdayNames = [];
@@ -86,14 +86,14 @@ const monthStart = new Date(thisYear, thisMonth, 1).getDay();
 if (monthStart !== 0) {
     // Get last month's max date.
     const lastMonthsLastDate = new Date(thisYear, thisMonth, 0);
-    if (daysInMonth.hasOwnProperty(lastMonthsYear) === false) {
-        daysInMonth[lastMonthsYear] = {};
+    if (daysInEachMonth.hasOwnProperty(lastMonthsYear) === false) {
+        daysInEachMonth[lastMonthsYear] = {};
     }
-    daysInMonth[lastMonthsYear][lastMonth] = lastMonthsLastDate.getDate();
+    daysInEachMonth[lastMonthsYear][lastMonth] = lastMonthsLastDate.getDate();
 }
 
 // Which day of the week does this month end on?
-const monthEnd = new Date(thisYear, thisMonth, daysInMonth[thisYear][thisMonth]).getDay();
+const monthEnd = new Date(thisYear, thisMonth, daysInEachMonth[thisYear][thisMonth]).getDay();
 
 const todayURL = `?month=${currentMonth}&amp;year=${currentYear}`;
 const lastMonthURL = `?month=${thisMonth - 1}&amp;year=${thisYear}`;
@@ -163,7 +163,7 @@ while (monthHasEnded === false) {
         if (monthHasBegun === false) {
             // Show last month's dates.
             const lastMonthOffset = monthStart - (weekday + 1);
-            const lastMonthsDate = daysInMonth[lastMonthsYear][lastMonth] - lastMonthOffset;
+            const lastMonthsDate = daysInEachMonth[lastMonthsYear][lastMonth] - lastMonthOffset;
             td = lastMonthsDate;
             tdClass = 'last-month';
             tdTitle = `${monthNames[lastMonth]} ${lastMonthsDate}, ${lastMonthsYear}`
@@ -191,7 +191,7 @@ while (monthHasEnded === false) {
         }
 
         // Has the current month ended yet?
-        if (dateShown >= daysInMonth[thisYear][thisMonth]) {
+        if (dateShown >= daysInEachMonth[thisYear][thisMonth]) {
             monthHasEnded = true;
         }
 
