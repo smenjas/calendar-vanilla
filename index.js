@@ -25,10 +25,10 @@ const minYear = 1900;
 const maxYear = 2100;
 
 // When is today?
-const today = new Date();
-const currentYear = today.getFullYear();
-const currentMonth = today.getMonth();
-const currentDate = today.getDate();
+const now = new Date();
+const currentYear = now.getFullYear();
+const currentMonth = now.getMonth();
+const currentDate = now.getDate();
 
 const query = window.location.search;
 const params = new URLSearchParams(query);
@@ -42,20 +42,20 @@ if (!queryMonth) {
 }
 
 // Which month are we showing?
-const present = new Date(queryYear, queryMonth);
-const thisYear = present.getFullYear();
-const thisMonth = present.getMonth(); // Month index, 0 is January
-const thisDate = present.getDate();
+const thisMonth = new Date(queryYear, queryMonth);
+const thisYear = thisMonth.getFullYear();
+const thisMonthIndex = thisMonth.getMonth(); // Month index, 0 is January
+const thisDate = thisMonth.getDate();
 
 // Which month came before the month shown?
-const past = new Date(thisYear, thisMonth - 1);
-const lastMonthsYear = past.getFullYear();
-const lastMonth = past.getMonth();
+const lastMonth = new Date(thisYear, thisMonthIndex - 1);
+const lastMonthsYear = lastMonth.getFullYear();
+const lastMonthIndex = lastMonth.getMonth();
 
 // Which month came after the month shown?
-const future = new Date(thisYear, thisMonth + 1);
-const nextMonthsYear = future.getFullYear();
-const nextMonth = future.getMonth();
+const nextMonth = new Date(thisYear, thisMonthIndex + 1);
+const nextMonthsYear = nextMonth.getFullYear();
+const nextMonthIndex = nextMonth.getMonth();
 
 const language = 'en-us';
 const monthNames = [];
@@ -72,7 +72,7 @@ for (let month = 0; month < 12; month++) {
 
 const weekdayNames = [];
 for (let offset = 0; offset < 7; offset++) {
-    const weekday = new Date(thisYear, thisMonth, thisDate + offset);
+    const weekday = new Date(thisYear, thisMonthIndex, thisDate + offset);
     weekdayNames[weekday.getDay()] = {
         long: getWeekdayName(weekday, language, 'long'),
         short: getWeekdayName(weekday, language, 'short'),
@@ -81,25 +81,25 @@ for (let offset = 0; offset < 7; offset++) {
 }
 
 // Which day of the week does this month start on?
-const monthStart = new Date(thisYear, thisMonth, 1).getDay();
+const monthStart = new Date(thisYear, thisMonthIndex, 1).getDay();
 
 if (monthStart !== 0) {
     // Get last month's max date.
-    const lastMonthsLastDate = new Date(thisYear, thisMonth, 0);
+    const lastMonthsLastDate = new Date(thisYear, thisMonthIndex, 0);
     if (daysInEachMonth.hasOwnProperty(lastMonthsYear) === false) {
         daysInEachMonth[lastMonthsYear] = {};
     }
-    daysInEachMonth[lastMonthsYear][lastMonth] = lastMonthsLastDate.getDate();
+    daysInEachMonth[lastMonthsYear][lastMonthIndex] = lastMonthsLastDate.getDate();
 }
 
 // Which day of the week does this month end on?
-const monthEnd = new Date(thisYear, thisMonth, daysInEachMonth[thisYear][thisMonth]).getDay();
+const monthEnd = new Date(thisYear, thisMonthIndex, daysInEachMonth[thisYear][thisMonthIndex]).getDay();
 
 const todayURL = `?month=${currentMonth}&amp;year=${currentYear}`;
-const lastMonthURL = `?month=${thisMonth - 1}&amp;year=${thisYear}`;
-const nextMonthURL = `?month=${thisMonth + 1}&amp;year=${thisYear}`;
-const lastYearURL = `?month=${thisMonth}&amp;year=${thisYear - 1}`;
-const nextYearURL = `?month=${thisMonth}&amp;year=${thisYear + 1}`;
+const lastMonthURL = `?month=${thisMonthIndex - 1}&amp;year=${thisYear}`;
+const nextMonthURL = `?month=${thisMonthIndex + 1}&amp;year=${thisYear}`;
+const lastYearURL = `?month=${thisMonthIndex}&amp;year=${thisYear - 1}`;
+const nextYearURL = `?month=${thisMonthIndex}&amp;year=${thisYear + 1}`;
 
 const years = {};
 for (let y = minYear; y <= maxYear; y++) {
@@ -115,7 +115,7 @@ content += `<a href="${lastYearURL}" class="last-year" title="Previous year">&lA
 content += `<a href="${lastMonthURL}" class="last-month" title="Previous month">&larr;</a>`;
 
 content += '<select name="month" id="nav-month" onchange="this.form.submit()">';
-content += getSelectOptions(monthNames, thisMonth);
+content += getSelectOptions(monthNames, thisMonthIndex);
 content += '</select>';
 
 content += '<select name="year" id="nav-year" onchange="this.form.submit()">';
@@ -163,20 +163,20 @@ while (monthHasEnded === false) {
         if (monthHasBegun === false) {
             // Show last month's dates.
             const lastMonthOffset = monthStart - (weekday + 1);
-            const lastMonthsDate = daysInEachMonth[lastMonthsYear][lastMonth] - lastMonthOffset;
+            const lastMonthsDate = daysInEachMonth[lastMonthsYear][lastMonthIndex] - lastMonthOffset;
             td = lastMonthsDate;
             tdClass = 'last-month';
-            tdTitle = `${monthNames[lastMonth]} ${lastMonthsDate}, ${lastMonthsYear}`
+            tdTitle = `${monthNames[lastMonthIndex]} ${lastMonthsDate}, ${lastMonthsYear}`
         }
         else if (monthHasEnded === false) {
             // Show this month's dates.
             dateShown += 1;
             td = dateShown;
             tdClass = 'this-month';
-            tdTitle = `${monthNames[thisMonth]} ${dateShown}, ${thisYear}`
+            tdTitle = `${monthNames[thisMonthIndex]} ${dateShown}, ${thisYear}`
 
             if (dateShown === currentDate &&
-                thisMonth === currentMonth &&
+                thisMonthIndex === currentMonth &&
                 thisYear === currentYear) {
                 tdClass += ' today';
                 tdTitle += ' (Today)';
@@ -187,11 +187,11 @@ while (monthHasEnded === false) {
             nextMonthsDate += 1;
             td = nextMonthsDate;
             tdClass = 'next-month';
-            tdTitle = `${monthNames[nextMonth]} ${nextMonthsDate}, ${nextMonthsYear}"`
+            tdTitle = `${monthNames[nextMonthIndex]} ${nextMonthsDate}, ${nextMonthsYear}"`
         }
 
         // Has the current month ended yet?
-        if (dateShown >= daysInEachMonth[thisYear][thisMonth]) {
+        if (dateShown >= daysInEachMonth[thisYear][thisMonthIndex]) {
             monthHasEnded = true;
         }
 
