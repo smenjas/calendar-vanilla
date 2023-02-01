@@ -32,8 +32,8 @@ const currentDate = today.getDate();
 
 const query = window.location.search;
 const params = new URLSearchParams(query);
-queryYear = params.get('year');
-queryMonth = params.get('month');
+let queryYear = params.get('year');
+let queryMonth = params.get('month');
 if (!queryYear) {
     queryYear = currentYear;
 }
