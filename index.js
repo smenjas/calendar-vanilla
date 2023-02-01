@@ -1,14 +1,4 @@
-class Calendar {
-    static getMonthName(date, language, format = 'long') {
-        // See https://devhints.io/wip/intl-datetime for format options.
-        return Intl.DateTimeFormat(language, { month: format }).format(date);
-    }
-
-    static getWeekdayName(date, language, format = 'long') {
-        // See https://devhints.io/wip/intl-datetime for format options.
-        return Intl.DateTimeFormat(language, { weekday: format }).format(date);
-    }
-
+class HTML {
     static getSelectOptions(options, selected) {
         let html = '';
         for (const option in options) {
@@ -20,6 +10,18 @@ class Calendar {
             html += `<option value="${option}"${selectedAttr}>${optionText}</option>`;
         }
         return html;
+    }
+}
+
+class Calendar {
+    static getMonthName(date, language, format = 'long') {
+        // See https://devhints.io/wip/intl-datetime for format options.
+        return Intl.DateTimeFormat(language, { month: format }).format(date);
+    }
+
+    static getWeekdayName(date, language, format = 'long') {
+        // See https://devhints.io/wip/intl-datetime for format options.
+        return Intl.DateTimeFormat(language, { weekday: format }).format(date);
     }
 
     displayMonth() {
@@ -117,11 +119,11 @@ class Calendar {
         content += `<a href="${lastMonthURL}" class="last-month" title="Previous month">&larr;</a>`;
 
         content += '<select name="month" id="nav-month" onchange="this.form.submit()">';
-        content += Calendar.getSelectOptions(monthNames, thisMonthIndex);
+        content += HTML.getSelectOptions(monthNames, thisMonthIndex);
         content += '</select>';
 
         content += '<select name="year" id="nav-year" onchange="this.form.submit()">';
-        content += Calendar.getSelectOptions(years, thisYear);
+        content += HTML.getSelectOptions(years, thisYear);
         content += '</select>';
 
         content += `<a href="${nextMonthURL}" class="next-month" title="Next month">&rarr;</a>`;
