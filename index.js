@@ -65,7 +65,7 @@ class Calendar {
         document.body.insertAdjacentHTML('beforeend', html);
     }
 
-    static getDaysInMonth(year, month) {
+    static getMonthLength(year, month) {
         // Date zero is last month's max date.
         const monthEnd = new Date(year, month + 1, 0);
         return monthEnd.getDate();
@@ -188,12 +188,12 @@ class Calendar {
     }
 
     static renderMonth(thisYear, thisMonthIndex) {
-        const thisMonthsMaxDate = Calendar.getDaysInMonth(thisYear, thisMonthIndex);
+        const thisMonthsLength = Calendar.getMonthLength(thisYear, thisMonthIndex);
 
         const lastMonth = new Date(thisYear, thisMonthIndex - 1);
         const lastMonthsYear = lastMonth.getFullYear();
         const lastMonthIndex = lastMonth.getMonth();
-        const lastMonthsMaxDate = Calendar.getDaysInMonth(lastMonthsYear, lastMonthIndex);
+        const lastMonthsLength = Calendar.getMonthLength(lastMonthsYear, lastMonthIndex);
 
         const nextMonth = new Date(thisYear, thisMonthIndex + 1);
         const nextMonthsYear = nextMonth.getFullYear();
@@ -204,7 +204,7 @@ class Calendar {
         const currentDate = Calendar.now.getDate();
 
         // Which day of the week does this month start on?
-        const monthStart = new Date(thisYear, thisMonthIndex, 1).getDay();
+        const monthStartDay = new Date(thisYear, thisMonthIndex, 1).getDay();
 
         let html = `<table class="month" id="month-${thisMonthIndex}"><thead><tr>`;
 
@@ -230,15 +230,15 @@ class Calendar {
                 let tdTitle = '';
 
                 // Has the current month started yet?
-                if (monthHasBegun === false && monthStart === weekday) {
+                if (monthHasBegun === false && monthStartDay === weekday) {
                     monthHasBegun = true;
                 }
 
                 // Which month are we in?
                 if (monthHasBegun === false) {
                     // Show last month's dates.
-                    const lastMonthOffset = monthStart - (weekday + 1);
-                    const lastMonthsDate = lastMonthsMaxDate - lastMonthOffset;
+                    const lastMonthOffset = monthStartDay - (weekday + 1);
+                    const lastMonthsDate = lastMonthsLength - lastMonthOffset;
                     td = lastMonthsDate;
                     tdClass = 'last-month';
                     tdTitle = `${Calendar.monthNames[lastMonthIndex]} ${lastMonthsDate}, ${lastMonthsYear}`
@@ -266,7 +266,7 @@ class Calendar {
                 }
 
                 // Has the current month ended yet?
-                if (dateShown >= thisMonthsMaxDate) {
+                if (dateShown >= thisMonthsLength) {
                     monthHasEnded = true;
                 }
 
