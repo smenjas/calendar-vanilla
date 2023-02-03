@@ -42,6 +42,15 @@ class Calendar {
         this.weekdayNames = Calendar.getWeekdayNames(this.language);
     }
 
+    render() {
+        let html = '<div class="calendar">';
+        html += this.renderMonthNav();
+        html += this.renderMonth();
+        html += '</div>';
+
+        document.body.insertAdjacentHTML('beforeend', html);
+    }
+
     static getDaysInMonth(year, month) {
         // Date zero is last month's max date.
         const monthEnd = new Date(year, month + 1, 0);
@@ -154,9 +163,7 @@ class Calendar {
         // Which day of the week does this month start on?
         const monthStart = new Date(thisYear, thisMonthIndex, 1).getDay();
 
-        let html = '<div class="calendar">';
-        html += this.renderMonthNav();
-        html += '<table><thead><tr>';
+        let html = '<table><thead><tr>';
 
         for (const weekday in this.weekdayNames) {
             const longName = this.weekdayNames[weekday]['long'];
@@ -227,11 +234,10 @@ class Calendar {
         }
 
         html += '</tbody></table>';
-        html += '</div>';
 
-        document.body.insertAdjacentHTML('beforeend', html);
+        return html;
     }
 }
 
 const myCalendar = new Calendar();
-myCalendar.renderMonth();
+myCalendar.render();
