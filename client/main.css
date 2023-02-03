@@ -14,11 +14,13 @@ fieldset {
   border: none;
 }
 nav a, nav a:visited {
-  background-color: white;
-  color: black;
   font-size: 1.6rem;
 }
-nav a:hover {
+nav a, nav a:visited, .month h3 a, .month h3 a:visited {
+  background-color: white;
+  color: black;
+}
+nav a:hover, .month h3 a:hover {
   background: black;
   color: white;
 }
@@ -26,7 +28,7 @@ nav select, nav button {
   border: 1px solid black;
   font-size: 1.5rem;
 }
-nav a {
+nav a, .month h3 a {
   text-decoration: none;
   font-style: bold;
 }
@@ -84,11 +86,11 @@ td.today {
     color: #faf;
   }
 
-  nav a, nav a:visited {
+  nav a, nav a:visited, .month h3 a, .month h3 a:visited {
     background: black;
     color: white;
   }
-  nav a:hover {
+  nav a:hover, .month h3 a:hover {
     background: white;
     color: black;
   }
