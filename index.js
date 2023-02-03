@@ -40,40 +40,14 @@ class Calendar {
         const thisYear = this.thisMonth.getFullYear();
         const thisMonthIndex = this.thisMonth.getMonth();
 
-        // Which month came before the month shown?
-        this.lastMonth = new Date(thisYear, thisMonthIndex - 1);
-
-        // Which month came after the month shown?
-        this.nextMonth = new Date(thisYear, thisMonthIndex + 1);
-
-        this.daysInEachMonth = this.getDaysInEachMonth();
         this.monthNames = Calendar.getMonthNames(this.language);
         this.weekdayNames = Calendar.getWeekdayNames(this.language);
     }
 
-    getDaysInEachMonth() {
-        const daysInEachMonth = {};
-        const thisYear = this.thisMonth.getFullYear();
-        const thisMonthIndex = this.thisMonth.getMonth();
-        const lastMonthsYear = this.lastMonth.getFullYear();
-        const lastMonthIndex = this.lastMonth.getMonth();
-
-        daysInEachMonth[thisYear] = {};
-
-        for (let month = 0; month < 12; month++) {
-            // Date zero is last month's max date.
-            const monthEnd = new Date(thisYear, month + 1, 0);
-            daysInEachMonth[thisYear][month] = monthEnd.getDate();
-        }
-
-        // Get last month's max date.
-        const lastMonthsLastDate = new Date(thisYear, thisMonthIndex, 0);
-        if (daysInEachMonth.hasOwnProperty(lastMonthsYear) === false) {
-            daysInEachMonth[lastMonthsYear] = {};
-        }
-        daysInEachMonth[lastMonthsYear][lastMonthIndex] = lastMonthsLastDate.getDate();
-
-        return daysInEachMonth;
+    static getDaysInMonth(year, month) {
+        // Date zero is last month's max date.
+        const monthEnd = new Date(year, month + 1, 0);
+        return monthEnd.getDate();
     }
 
     static getMonthName(date, language, format = 'long') {
@@ -121,18 +95,22 @@ class Calendar {
         const currentDate = Calendar.now.getDate();
         const currentMonth = Calendar.now.getMonth();
         const currentYear = Calendar.now.getFullYear();
-        const lastMonthsYear = this.lastMonth.getFullYear();
-        const lastMonthIndex = this.lastMonth.getMonth();
-        const nextMonthIndex = this.nextMonth.getMonth();
-        const nextMonthsYear = this.nextMonth.getFullYear();
+
         const thisMonthIndex = this.thisMonth.getMonth();
         const thisYear = this.thisMonth.getFullYear();
+        const thisMonthsMaxDate = Calendar.getDaysInMonth(thisYear, thisMonthIndex);
+
+        const lastMonth = new Date(thisYear, thisMonthIndex - 1);
+        const lastMonthIndex = lastMonth.getMonth();
+        const lastMonthsYear = lastMonth.getFullYear();
+        const lastMonthsMaxDate = Calendar.getDaysInMonth(lastMonthsYear, lastMonthIndex);
+
+        const nextMonth = new Date(thisYear, thisMonthIndex + 1);
+        const nextMonthIndex = nextMonth.getMonth();
+        const nextMonthsYear = nextMonth.getFullYear();
 
         // Which day of the week does this month start on?
         const monthStart = new Date(thisYear, thisMonthIndex, 1).getDay();
-
-        // Which day of the week does this month end on?
-        const monthEnd = new Date(thisYear, thisMonthIndex, this.daysInEachMonth[thisYear][thisMonthIndex]).getDay();
 
         const todayTitle = `${this.monthNames[currentMonth]} ${currentDate}, ${currentYear}`;
         const todayURL = `?month=${currentMonth}&amp;year=${currentYear}`;
@@ -201,7 +179,7 @@ class Calendar {
                 if (monthHasBegun === false) {
                     // Show last month's dates.
                     const lastMonthOffset = monthStart - (weekday + 1);
-                    const lastMonthsDate = this.daysInEachMonth[lastMonthsYear][lastMonthIndex] - lastMonthOffset;
+                    const lastMonthsDate = lastMonthsMaxDate - lastMonthOffset;
                     td = lastMonthsDate;
                     tdClass = 'last-month';
                     tdTitle = `${this.monthNames[lastMonthIndex]} ${lastMonthsDate}, ${lastMonthsYear}`
@@ -229,7 +207,7 @@ class Calendar {
                 }
 
                 // Has the current month ended yet?
-                if (dateShown >= this.daysInEachMonth[thisYear][thisMonthIndex]) {
+                if (dateShown >= thisMonthsMaxDate) {
                     monthHasEnded = true;
                 }
 
