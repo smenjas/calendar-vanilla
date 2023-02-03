@@ -37,8 +37,6 @@ class Calendar {
 
         // Which month are we showing?
         this.thisMonth = new Date(queryYear, queryMonth);
-        const thisYear = this.thisMonth.getFullYear();
-        const thisMonthIndex = this.thisMonth.getMonth();
 
         this.monthNames = Calendar.getMonthNames(this.language);
         this.weekdayNames = Calendar.getWeekdayNames(this.language);
@@ -91,27 +89,12 @@ class Calendar {
         return weekdayNames;
     }
 
-    renderMonth() {
-        const currentDate = Calendar.now.getDate();
-        const currentMonth = Calendar.now.getMonth();
-        const currentYear = Calendar.now.getFullYear();
-
-        const thisMonthIndex = this.thisMonth.getMonth();
+    renderMonthNav() {
         const thisYear = this.thisMonth.getFullYear();
-        const thisMonthsMaxDate = Calendar.getDaysInMonth(thisYear, thisMonthIndex);
-
-        const lastMonth = new Date(thisYear, thisMonthIndex - 1);
-        const lastMonthIndex = lastMonth.getMonth();
-        const lastMonthsYear = lastMonth.getFullYear();
-        const lastMonthsMaxDate = Calendar.getDaysInMonth(lastMonthsYear, lastMonthIndex);
-
-        const nextMonth = new Date(thisYear, thisMonthIndex + 1);
-        const nextMonthIndex = nextMonth.getMonth();
-        const nextMonthsYear = nextMonth.getFullYear();
-
-        // Which day of the week does this month start on?
-        const monthStart = new Date(thisYear, thisMonthIndex, 1).getDay();
-
+        const thisMonthIndex = this.thisMonth.getMonth();
+        const currentYear = Calendar.now.getFullYear();
+        const currentMonth = Calendar.now.getMonth();
+        const currentDate = Calendar.now.getDate();
         const todayTitle = `${this.monthNames[currentMonth]} ${currentDate}, ${currentYear}`;
         const todayURL = `?month=${currentMonth}&amp;year=${currentYear}`;
         const lastMonthURL = `?month=${thisMonthIndex - 1}&amp;year=${thisYear}`;
@@ -124,8 +107,7 @@ class Calendar {
             years[y] = y;
         }
 
-        let html = '<div class="calendar">';
-        html += '<nav>';
+        let html = '<nav>';
         html += `<a href="${todayURL}" class="today" title="${todayTitle}">Today</a>`;
 
         html += '<form action="" method="get">';
@@ -147,6 +129,33 @@ class Calendar {
         html += '</form>';
 
         html += '</nav>';
+
+        return html;
+    }
+
+    renderMonth() {
+        const thisYear = this.thisMonth.getFullYear();
+        const thisMonthIndex = this.thisMonth.getMonth();
+        const thisMonthsMaxDate = Calendar.getDaysInMonth(thisYear, thisMonthIndex);
+
+        const lastMonth = new Date(thisYear, thisMonthIndex - 1);
+        const lastMonthsYear = lastMonth.getFullYear();
+        const lastMonthIndex = lastMonth.getMonth();
+        const lastMonthsMaxDate = Calendar.getDaysInMonth(lastMonthsYear, lastMonthIndex);
+
+        const nextMonth = new Date(thisYear, thisMonthIndex + 1);
+        const nextMonthsYear = nextMonth.getFullYear();
+        const nextMonthIndex = nextMonth.getMonth();
+
+        const currentYear = Calendar.now.getFullYear();
+        const currentMonth = Calendar.now.getMonth();
+        const currentDate = Calendar.now.getDate();
+
+        // Which day of the week does this month start on?
+        const monthStart = new Date(thisYear, thisMonthIndex, 1).getDay();
+
+        let html = '<div class="calendar">';
+        html += this.renderMonthNav();
         html += '<table><thead><tr>';
 
         for (const weekday in this.weekdayNames) {
