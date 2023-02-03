@@ -6,7 +6,7 @@
 - [x] Show dates for adjacent months.
 - [x] Navigate by month, forward or backward.
 - [x] Navigate by year, forward or backward.
-- [ ] Show a yearly view.
+- [x] Show a yearly view.
 - [ ] Show a weekly view.
 - [ ] Show a daily view.
 - [ ] Allow adding, editing, and deleting events.
