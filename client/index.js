@@ -21,22 +21,21 @@ class Calendar {
     constructor() {
         this.language = 'en-us';
 
-        const currentYear = Calendar.now.getFullYear();
-        const currentMonth = Calendar.now.getMonth();
+        const search = window.location.search;
+        const params = new URLSearchParams(search);
 
-        const query = window.location.search;
-        const params = new URLSearchParams(query);
-        let queryYear = params.get('year');
-        let queryMonth = params.get('month');
-        if (!queryYear) {
-            queryYear = currentYear;
+        this.query = {};
+        this.query['year'] = params.get('year');
+        this.query['month'] = params.get('month');
+        if (!this.query['year']) {
+            this.query['year'] = Calendar.now.getFullYear();
         }
-        if (!queryMonth) {
-            queryMonth = currentMonth;
+        if (!this.query['month']) {
+            this.query['month'] = Calendar.now.getMonth();
         }
 
         // Which month are we showing?
-        this.thisMonth = new Date(queryYear, queryMonth);
+        this.thisMonth = new Date(this.query['year'], this.query['month']);
 
         this.monthNames = Calendar.getMonthNames(this.language);
         this.weekdayNames = Calendar.getWeekdayNames(this.language);
