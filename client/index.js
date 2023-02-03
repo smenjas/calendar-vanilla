@@ -17,34 +17,35 @@ class Calendar {
     static now = new Date();
     static minYear = 1900;
     static maxYear = 2100;
+    static language = 'en-us';
+    static monthNames = Calendar.getMonthNames(Calendar.language);
+    static weekdayNames = Calendar.getWeekdayNames(Calendar.language);
 
     constructor() {
-        this.language = 'en-us';
-
         const search = window.location.search;
         const params = new URLSearchParams(search);
 
         this.query = {};
         this.query['year'] = params.get('year');
         this.query['month'] = params.get('month');
+
+        // Standardize the date inputs, just in case the month index is negative.
+        const date = new Date(this.query['year'], this.query['month']);
+        this.query['year'] = date.getFullYear();
+        this.query['month'] = date.getMonth();
+
         if (!this.query['year']) {
             this.query['year'] = Calendar.now.getFullYear();
         }
         if (!this.query['month']) {
             this.query['month'] = Calendar.now.getMonth();
         }
-
-        // Which month are we showing?
-        this.thisMonth = new Date(this.query['year'], this.query['month']);
-
-        this.monthNames = Calendar.getMonthNames(this.language);
-        this.weekdayNames = Calendar.getWeekdayNames(this.language);
     }
 
     render() {
         let html = '<div class="calendar">';
-        html += this.renderMonthNav();
-        html += this.renderMonth();
+        html += Calendar.renderMonthNav(this.query['year'], this.query['month']);
+        html += Calendar.renderMonth(this.query['year'], this.query['month']);
         html += '</div>';
 
         document.body.insertAdjacentHTML('beforeend', html);
@@ -97,9 +98,7 @@ class Calendar {
         return weekdayNames;
     }
 
-    renderMonthNav() {
-        const thisYear = this.thisMonth.getFullYear();
-        const thisMonthIndex = this.thisMonth.getMonth();
+    static renderMonthNav(thisYear, thisMonthIndex) {
         const currentYear = Calendar.now.getFullYear();
         const currentMonth = Calendar.now.getMonth();
         const currentDate = Calendar.now.getDate();
@@ -124,7 +123,7 @@ class Calendar {
         html += `<a href="${lastMonthURL}" class="last-month" title="Previous month">&larr;</a>`;
 
         html += '<select name="month" id="nav-month" onchange="this.form.submit()">';
-        html += HTML.getSelectOptions(this.monthNames, thisMonthIndex);
+        html += HTML.getSelectOptions(Calendar.monthNames, thisMonthIndex);
         html += '</select>';
 
         html += '<select name="year" id="nav-year" onchange="this.form.submit()">';
@@ -141,9 +140,7 @@ class Calendar {
         return html;
     }
 
-    renderMonth() {
-        const thisYear = this.thisMonth.getFullYear();
-        const thisMonthIndex = this.thisMonth.getMonth();
+    static renderMonth(thisYear, thisMonthIndex) {
         const thisMonthsMaxDate = Calendar.getDaysInMonth(thisYear, thisMonthIndex);
 
         const lastMonth = new Date(thisYear, thisMonthIndex - 1);
@@ -197,14 +194,14 @@ class Calendar {
                     const lastMonthsDate = lastMonthsMaxDate - lastMonthOffset;
                     td = lastMonthsDate;
                     tdClass = 'last-month';
-                    tdTitle = `${this.monthNames[lastMonthIndex]} ${lastMonthsDate}, ${lastMonthsYear}`
+                    tdTitle = `${Calendar.monthNames[lastMonthIndex]} ${lastMonthsDate}, ${lastMonthsYear}`
                 }
                 else if (monthHasEnded === false) {
                     // Show this month's dates.
                     dateShown += 1;
                     td = dateShown;
                     tdClass = 'this-month';
-                    tdTitle = `${this.monthNames[thisMonthIndex]} ${dateShown}, ${thisYear}`
+                    tdTitle = `${Calendar.monthNames[thisMonthIndex]} ${dateShown}, ${thisYear}`
 
                     if (dateShown === currentDate &&
                         thisMonthIndex === currentMonth &&
@@ -218,7 +215,7 @@ class Calendar {
                     nextMonthsDate += 1;
                     td = nextMonthsDate;
                     tdClass = 'next-month';
-                    tdTitle = `${this.monthNames[nextMonthIndex]} ${nextMonthsDate}, ${nextMonthsYear}"`
+                    tdTitle = `${Calendar.monthNames[nextMonthIndex]} ${nextMonthsDate}, ${nextMonthsYear}"`
                 }
 
                 // Has the current month ended yet?
