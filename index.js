@@ -31,11 +31,6 @@ class Calendar {
         this.query['year'] = params.get('year');
         this.query['month'] = params.get('month');
 
-        // Standardize the date inputs, just in case the month index is negative.
-        const date = new Date(this.query['year'], this.query['month']);
-        this.query['year'] = date.getFullYear();
-        this.query['month'] = date.getMonth();
-
         if (!this.query['view']) {
             this.query['view'] = 'month';
         }
@@ -45,6 +40,11 @@ class Calendar {
         if (!this.query['month'] && (this.query['view'] === 'month' || !this.query['view'])) {
             this.query['month'] = Calendar.now.getMonth();
         }
+
+        // Standardize the date inputs, just in case the month index is negative.
+        const date = new Date(this.query['year'], this.query['month']);
+        this.query['year'] = date.getFullYear();
+        this.query['month'] = date.getMonth();
     }
 
     render() {
