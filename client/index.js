@@ -18,6 +18,7 @@ class Calendar {
     static minYear = 1900;
     static maxYear = 2100;
     static language = 'en-us';
+    static monthLengths = {};
     static monthNames = Calendar.getMonthNames(Calendar.language);
     static weekdayNames = Calendar.getWeekdayNames(Calendar.language);
 
@@ -66,9 +67,17 @@ class Calendar {
     }
 
     static getMonthLength(year, month) {
-        // Date zero is last month's max date.
-        const monthEnd = new Date(year, month + 1, 0);
-        return monthEnd.getDate();
+        if (Calendar.monthLengths.hasOwnProperty(year) === false) {
+            Calendar.monthLengths[year] = {};
+        }
+
+        if (Calendar.monthLengths[year][month] === undefined) {
+            // Date zero is last month's max date.
+            const monthEnd = new Date(year, month + 1, 0);
+            Calendar.monthLengths[year][month] = monthEnd.getDate();
+        }
+
+        return Calendar.monthLengths[year][month];
     }
 
     static getMonthName(date, language, format = 'long') {
