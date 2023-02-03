@@ -17,63 +17,58 @@ class Calendar {
     static now = new Date();
     static minYear = 1900;
     static maxYear = 2100;
+    static language = 'en-us';
+    static monthNames = Calendar.getMonthNames(Calendar.language);
+    static weekdayNames = Calendar.getWeekdayNames(Calendar.language);
 
     constructor() {
-        this.language = 'en-us';
+        const search = window.location.search;
+        const params = new URLSearchParams(search);
 
-        const currentYear = Calendar.now.getFullYear();
-        const currentMonth = Calendar.now.getMonth();
+        this.query = {};
+        this.query['view'] = params.get('view');
+        this.query['year'] = params.get('year');
+        this.query['month'] = params.get('month');
 
-        const query = window.location.search;
-        const params = new URLSearchParams(query);
-        let queryYear = params.get('year');
-        let queryMonth = params.get('month');
-        if (!queryYear) {
-            queryYear = currentYear;
+        // Standardize the date inputs, just in case the month index is negative.
+        const date = new Date(this.query['year'], this.query['month']);
+        this.query['year'] = date.getFullYear();
+        this.query['month'] = date.getMonth();
+
+        if (!this.query['view']) {
+            this.query['view'] = 'month';
         }
-        if (!queryMonth) {
-            queryMonth = currentMonth;
+        if (!this.query['year']) {
+            this.query['year'] = Calendar.now.getFullYear();
         }
-
-        // Which month are we showing?
-        this.thisMonth = new Date(queryYear, queryMonth);
-        const thisYear = this.thisMonth.getFullYear();
-        const thisMonthIndex = this.thisMonth.getMonth();
-
-        // Which month came before the month shown?
-        this.lastMonth = new Date(thisYear, thisMonthIndex - 1);
-
-        // Which month came after the month shown?
-        this.nextMonth = new Date(thisYear, thisMonthIndex + 1);
-
-        this.daysInEachMonth = this.getDaysInEachMonth();
-        this.monthNames = Calendar.getMonthNames(this.language);
-        this.weekdayNames = Calendar.getWeekdayNames(this.language);
+        if (!this.query['month'] && (this.query['view'] === 'month' || !this.query['view'])) {
+            this.query['month'] = Calendar.now.getMonth();
+        }
     }
 
-    getDaysInEachMonth() {
-        const daysInEachMonth = {};
-        const thisYear = this.thisMonth.getFullYear();
-        const thisMonthIndex = this.thisMonth.getMonth();
-        const lastMonthsYear = this.lastMonth.getFullYear();
-        const lastMonthIndex = this.lastMonth.getMonth();
+    render() {
+        let html = '<div class="calendar">';
 
-        daysInEachMonth[thisYear] = {};
-
-        for (let month = 0; month < 12; month++) {
-            // Date zero is last month's max date.
-            const monthEnd = new Date(thisYear, month + 1, 0);
-            daysInEachMonth[thisYear][month] = monthEnd.getDate();
+        switch (this.query['view']) {
+            case 'year':
+                html += Calendar.renderYearNav(this.query['year']);
+                html += Calendar.renderYear(this.query['year']);
+                break;
+            default:
+                html += Calendar.renderMonthNav(this.query['year'], this.query['month']);
+                html += Calendar.renderMonth(this.query['year'], this.query['month']);
+                break;
         }
 
-        // Get last month's max date.
-        const lastMonthsLastDate = new Date(thisYear, thisMonthIndex, 0);
-        if (daysInEachMonth.hasOwnProperty(lastMonthsYear) === false) {
-            daysInEachMonth[lastMonthsYear] = {};
-        }
-        daysInEachMonth[lastMonthsYear][lastMonthIndex] = lastMonthsLastDate.getDate();
+        html += '</div>';
 
-        return daysInEachMonth;
+        document.body.insertAdjacentHTML('beforeend', html);
+    }
+
+    static getDaysInMonth(year, month) {
+        // Date zero is last month's max date.
+        const monthEnd = new Date(year, month + 1, 0);
+        return monthEnd.getDate();
     }
 
     static getMonthName(date, language, format = 'long') {
@@ -100,9 +95,9 @@ class Calendar {
     }
 
     static getWeekdayNames(language) {
-        const currentDate = Calendar.now.getDate();
-        const currentMonth = Calendar.now.getMonth();
         const currentYear = Calendar.now.getFullYear();
+        const currentMonth = Calendar.now.getMonth();
+        const currentDate = Calendar.now.getDate();
         const weekdayNames = [];
 
         for (let offset = 0; offset < 7; offset++) {
@@ -117,68 +112,109 @@ class Calendar {
         return weekdayNames;
     }
 
-    displayMonth() {
-        const currentDate = Calendar.now.getDate();
-        const currentMonth = Calendar.now.getMonth();
+    static renderMonthNav(thisYear, thisMonthIndex) {
         const currentYear = Calendar.now.getFullYear();
-        const lastMonthsYear = this.lastMonth.getFullYear();
-        const lastMonthIndex = this.lastMonth.getMonth();
-        const nextMonthIndex = this.nextMonth.getMonth();
-        const nextMonthsYear = this.nextMonth.getFullYear();
-        const thisMonthIndex = this.thisMonth.getMonth();
-        const thisYear = this.thisMonth.getFullYear();
-
-        // Which day of the week does this month start on?
-        const monthStart = new Date(thisYear, thisMonthIndex, 1).getDay();
-
-        // Which day of the week does this month end on?
-        const monthEnd = new Date(thisYear, thisMonthIndex, this.daysInEachMonth[thisYear][thisMonthIndex]).getDay();
-
-        const todayURL = `?month=${currentMonth}&amp;year=${currentYear}`;
-        const lastMonthURL = `?month=${thisMonthIndex - 1}&amp;year=${thisYear}`;
-        const nextMonthURL = `?month=${thisMonthIndex + 1}&amp;year=${thisYear}`;
-        const lastYearURL = `?month=${thisMonthIndex}&amp;year=${thisYear - 1}`;
-        const nextYearURL = `?month=${thisMonthIndex}&amp;year=${thisYear + 1}`;
+        const currentMonth = Calendar.now.getMonth();
+        const currentDate = Calendar.now.getDate();
+        const todayTitle = `${Calendar.monthNames[currentMonth]} ${currentDate}, ${currentYear}`;
+        const todayURL = '?view=month';
+        const lastMonthURL = `?view=month&amp;year=${thisYear}&amp;month=${thisMonthIndex - 1}`;
+        const nextMonthURL = `?view=month&amp;year=${thisYear}&amp;month=${thisMonthIndex + 1}`;
+        const lastYearURL = `?view=month&amp;year=${thisYear - 1}&amp;month=${thisMonthIndex}`;
+        const nextYearURL = `?view=month&amp;year=${thisYear + 1}&amp;month=${thisMonthIndex}`;
+        const thisYearURL = `?view=year&amp;year=${thisYear}`;
 
         const years = {};
         for (let y = Calendar.minYear; y <= Calendar.maxYear; y++) {
             years[y] = y;
         }
 
-        let content = '<div class="calendar">';
-        content += '<nav>';
+        let html = '<nav>';
+        html += `<a href="${todayURL}" class="today" title="${todayTitle}">Today</a>`;
+        html += `<a href="${thisYearURL}" class="this-year">${thisYear}</a>`;
 
-        content += '<form action="" method="get">';
-        content += '<fieldset id="nav-calendar">';
-        content += `<a href="${lastYearURL}" class="last-year" title="Previous year">&lArr;</a>`;
-        content += `<a href="${lastMonthURL}" class="last-month" title="Previous month">&larr;</a>`;
+        html += '<form action="" method="get">';
+        html += '<fieldset id="nav-calendar">';
+        html += `<a href="${lastYearURL}" class="last-year" title="Previous year">&lArr;</a>`;
+        html += `<a href="${lastMonthURL}" class="last-month" title="Previous month">&larr;</a>`;
 
-        content += '<select name="month" id="nav-month" onchange="this.form.submit()">';
-        content += HTML.getSelectOptions(this.monthNames, thisMonthIndex);
-        content += '</select>';
+        html += '<select name="month" id="nav-month" onchange="this.form.submit()">';
+        html += HTML.getSelectOptions(Calendar.monthNames, thisMonthIndex);
+        html += '</select>';
 
-        content += '<select name="year" id="nav-year" onchange="this.form.submit()">';
-        content += HTML.getSelectOptions(years, thisYear);
-        content += '</select>';
+        html += '<select name="year" id="nav-year" onchange="this.form.submit()">';
+        html += HTML.getSelectOptions(years, thisYear);
+        html += '</select>';
 
-        content += `<a href="${nextMonthURL}" class="next-month" title="Next month">&rarr;</a>`;
-        content += `<a href="${nextYearURL}" class="next-year" title="Next year">&rArr;</a>`;
-        content += '</fieldset>';
-        content += '</form>';
+        html += `<a href="${nextMonthURL}" class="next-month" title="Next month">&rarr;</a>`;
+        html += `<a href="${nextYearURL}" class="next-year" title="Next year">&rArr;</a>`;
+        html += '</fieldset>';
+        html += '</form>';
+        html += '</nav>';
 
-        const todayTitle = `${this.monthNames[currentMonth]} ${currentDate}, ${currentYear}`;
-        content += `<a href="${todayURL}" class="today" title="${todayTitle}">Today</a>`;
+        return html;
+    }
 
-        content += '</nav>';
-        content += '<table><thead><tr>';
+    static renderYearNav(year) {
+        const currentYear = Calendar.now.getFullYear();
+
+        const currentYearURL = `?view=year&amp;year=${currentYear}`;
+        const lastYearURL = `?view=year&amp;year=${year - 1}`;
+        const nextYearURL = `?view=year&amp;year=${year + 1}`;
+
+        const years = {};
+        for (let y = Calendar.minYear; y <= Calendar.maxYear; y++) {
+            years[y] = y;
+        }
+
+        let html = '<nav>';
+        html += `<a href="${currentYearURL}" class="this-year">${currentYear}</a>`;
+
+        html += '<form action="" method="get">';
+        html += '<input type="hidden" name="view" value="year">';
+        html += '<fieldset id="nav-calendar">';
+        html += `<a href="${lastYearURL}" class="last-year" title="Previous year">&lArr;</a>`;
+
+        html += '<select name="year" id="nav-year" onchange="this.form.submit()">';
+        html += HTML.getSelectOptions(years, year);
+        html += '</select>';
+
+        html += `<a href="${nextYearURL}" class="next-year" title="Next year">&rArr;</a>`;
+        html += '</fieldset>';
+        html += '</form>';
+        html += '</nav>';
+
+        return html;
+    }
+
+    static renderMonth(thisYear, thisMonthIndex) {
+        const thisMonthsMaxDate = Calendar.getDaysInMonth(thisYear, thisMonthIndex);
+
+        const lastMonth = new Date(thisYear, thisMonthIndex - 1);
+        const lastMonthsYear = lastMonth.getFullYear();
+        const lastMonthIndex = lastMonth.getMonth();
+        const lastMonthsMaxDate = Calendar.getDaysInMonth(lastMonthsYear, lastMonthIndex);
+
+        const nextMonth = new Date(thisYear, thisMonthIndex + 1);
+        const nextMonthsYear = nextMonth.getFullYear();
+        const nextMonthIndex = nextMonth.getMonth();
+
+        const currentYear = Calendar.now.getFullYear();
+        const currentMonth = Calendar.now.getMonth();
+        const currentDate = Calendar.now.getDate();
+
+        // Which day of the week does this month start on?
+        const monthStart = new Date(thisYear, thisMonthIndex, 1).getDay();
+
+        let html = `<table class="month" id="month-${thisMonthIndex}"><thead><tr>`;
 
         for (const weekday in this.weekdayNames) {
             const longName = this.weekdayNames[weekday]['long'];
             const shortName = this.weekdayNames[weekday]['short'];
-            content += `<th><abbr title="${longName}">${shortName}</abbr></th>`;
+            html += `<th><abbr title="${longName}">${shortName}</abbr></th>`;
         }
 
-        content += '</tr></thead><tbody>';
+        html += '</tr></thead><tbody>';
 
         let dateShown = 0;
         let nextMonthsDate = 0;
@@ -202,17 +238,17 @@ class Calendar {
                 if (monthHasBegun === false) {
                     // Show last month's dates.
                     const lastMonthOffset = monthStart - (weekday + 1);
-                    const lastMonthsDate = this.daysInEachMonth[lastMonthsYear][lastMonthIndex] - lastMonthOffset;
+                    const lastMonthsDate = lastMonthsMaxDate - lastMonthOffset;
                     td = lastMonthsDate;
                     tdClass = 'last-month';
-                    tdTitle = `${this.monthNames[lastMonthIndex]} ${lastMonthsDate}, ${lastMonthsYear}`
+                    tdTitle = `${Calendar.monthNames[lastMonthIndex]} ${lastMonthsDate}, ${lastMonthsYear}`
                 }
                 else if (monthHasEnded === false) {
                     // Show this month's dates.
                     dateShown += 1;
                     td = dateShown;
                     tdClass = 'this-month';
-                    tdTitle = `${this.monthNames[thisMonthIndex]} ${dateShown}, ${thisYear}`
+                    tdTitle = `${Calendar.monthNames[thisMonthIndex]} ${dateShown}, ${thisYear}`
 
                     if (dateShown === currentDate &&
                         thisMonthIndex === currentMonth &&
@@ -226,26 +262,42 @@ class Calendar {
                     nextMonthsDate += 1;
                     td = nextMonthsDate;
                     tdClass = 'next-month';
-                    tdTitle = `${this.monthNames[nextMonthIndex]} ${nextMonthsDate}, ${nextMonthsYear}"`
+                    tdTitle = `${Calendar.monthNames[nextMonthIndex]} ${nextMonthsDate}, ${nextMonthsYear}"`
                 }
 
                 // Has the current month ended yet?
-                if (dateShown >= this.daysInEachMonth[thisYear][thisMonthIndex]) {
+                if (dateShown >= thisMonthsMaxDate) {
                     monthHasEnded = true;
                 }
 
                 tr += `<td class="${tdClass}" title="${tdTitle}">${td}</td>`;
             }
 
-            content += `<tr>${tr}</tr>`;
+            html += `<tr>${tr}</tr>`;
         }
 
-        content += '</tbody></table>';
-        content += '</div>';
+        html += '</tbody></table>';
 
-        document.body.insertAdjacentHTML('beforeend', content);
+        return html;
+    }
+
+    static renderYear(year) {
+        let html = '<div class="year">';
+
+        for (let monthIndex = 0; monthIndex < 12; monthIndex++) {
+            const thisMonth = new Date(year, monthIndex);
+            const monthURL = `?view=month&amp;year=${year}&amp;month=${monthIndex}`;
+            html += `<div class="month" id="month-${monthIndex}">`;
+            html += `<h3><a href="${monthURL}">${Calendar.monthNames[monthIndex]}</a></h3>`;
+            html += Calendar.renderMonth(year, thisMonth.getMonth());
+            html += '</div>';
+        }
+
+        html += '</div>';
+
+        return html;
     }
 }
 
 const myCalendar = new Calendar();
-myCalendar.displayMonth();
+myCalendar.render();
