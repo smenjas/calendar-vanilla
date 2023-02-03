@@ -134,6 +134,7 @@ class Calendar {
         // Which day of the week does this month end on?
         const monthEnd = new Date(thisYear, thisMonthIndex, this.daysInEachMonth[thisYear][thisMonthIndex]).getDay();
 
+        const todayTitle = `${this.monthNames[currentMonth]} ${currentDate}, ${currentYear}`;
         const todayURL = `?month=${currentMonth}&amp;year=${currentYear}`;
         const lastMonthURL = `?month=${thisMonthIndex - 1}&amp;year=${thisYear}`;
         const nextMonthURL = `?month=${thisMonthIndex + 1}&amp;year=${thisYear}`;
@@ -147,6 +148,7 @@ class Calendar {
 
         let content = '<div class="calendar">';
         content += '<nav>';
+        content += `<a href="${todayURL}" class="today" title="${todayTitle}">Today</a>`;
 
         content += '<form action="" method="get">';
         content += '<fieldset id="nav-calendar">';
@@ -165,9 +167,6 @@ class Calendar {
         content += `<a href="${nextYearURL}" class="next-year" title="Next year">&rArr;</a>`;
         content += '</fieldset>';
         content += '</form>';
-
-        const todayTitle = `${this.monthNames[currentMonth]} ${currentDate}, ${currentYear}`;
-        content += `<a href="${todayURL}" class="today" title="${todayTitle}">Today</a>`;
 
         content += '</nav>';
         content += '<table><thead><tr>';
