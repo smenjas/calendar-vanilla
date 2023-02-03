@@ -117,7 +117,7 @@ class Calendar {
         return weekdayNames;
     }
 
-    displayMonth() {
+    renderMonth() {
         const currentDate = Calendar.now.getDate();
         const currentMonth = Calendar.now.getMonth();
         const currentYear = Calendar.now.getFullYear();
@@ -146,38 +146,38 @@ class Calendar {
             years[y] = y;
         }
 
-        let content = '<div class="calendar">';
-        content += '<nav>';
-        content += `<a href="${todayURL}" class="today" title="${todayTitle}">Today</a>`;
+        let html = '<div class="calendar">';
+        html += '<nav>';
+        html += `<a href="${todayURL}" class="today" title="${todayTitle}">Today</a>`;
 
-        content += '<form action="" method="get">';
-        content += '<fieldset id="nav-calendar">';
-        content += `<a href="${lastYearURL}" class="last-year" title="Previous year">&lArr;</a>`;
-        content += `<a href="${lastMonthURL}" class="last-month" title="Previous month">&larr;</a>`;
+        html += '<form action="" method="get">';
+        html += '<fieldset id="nav-calendar">';
+        html += `<a href="${lastYearURL}" class="last-year" title="Previous year">&lArr;</a>`;
+        html += `<a href="${lastMonthURL}" class="last-month" title="Previous month">&larr;</a>`;
 
-        content += '<select name="month" id="nav-month" onchange="this.form.submit()">';
-        content += HTML.getSelectOptions(this.monthNames, thisMonthIndex);
-        content += '</select>';
+        html += '<select name="month" id="nav-month" onchange="this.form.submit()">';
+        html += HTML.getSelectOptions(this.monthNames, thisMonthIndex);
+        html += '</select>';
 
-        content += '<select name="year" id="nav-year" onchange="this.form.submit()">';
-        content += HTML.getSelectOptions(years, thisYear);
-        content += '</select>';
+        html += '<select name="year" id="nav-year" onchange="this.form.submit()">';
+        html += HTML.getSelectOptions(years, thisYear);
+        html += '</select>';
 
-        content += `<a href="${nextMonthURL}" class="next-month" title="Next month">&rarr;</a>`;
-        content += `<a href="${nextYearURL}" class="next-year" title="Next year">&rArr;</a>`;
-        content += '</fieldset>';
-        content += '</form>';
+        html += `<a href="${nextMonthURL}" class="next-month" title="Next month">&rarr;</a>`;
+        html += `<a href="${nextYearURL}" class="next-year" title="Next year">&rArr;</a>`;
+        html += '</fieldset>';
+        html += '</form>';
 
-        content += '</nav>';
-        content += '<table><thead><tr>';
+        html += '</nav>';
+        html += '<table><thead><tr>';
 
         for (const weekday in this.weekdayNames) {
             const longName = this.weekdayNames[weekday]['long'];
             const shortName = this.weekdayNames[weekday]['short'];
-            content += `<th><abbr title="${longName}">${shortName}</abbr></th>`;
+            html += `<th><abbr title="${longName}">${shortName}</abbr></th>`;
         }
 
-        content += '</tr></thead><tbody>';
+        html += '</tr></thead><tbody>';
 
         let dateShown = 0;
         let nextMonthsDate = 0;
@@ -236,15 +236,15 @@ class Calendar {
                 tr += `<td class="${tdClass}" title="${tdTitle}">${td}</td>`;
             }
 
-            content += `<tr>${tr}</tr>`;
+            html += `<tr>${tr}</tr>`;
         }
 
-        content += '</tbody></table>';
-        content += '</div>';
+        html += '</tbody></table>';
+        html += '</div>';
 
-        document.body.insertAdjacentHTML('beforeend', content);
+        document.body.insertAdjacentHTML('beforeend', html);
     }
 }
 
 const myCalendar = new Calendar();
-myCalendar.displayMonth();
+myCalendar.renderMonth();
