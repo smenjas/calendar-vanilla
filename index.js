@@ -113,7 +113,7 @@ class Calendar {
             weekdayNames[weekday.getDay()] = {
                 long: Calendar.getWeekdayName(weekday, language, 'long'),
                 short: Calendar.getWeekdayName(weekday, language, 'short'),
-                //narrow: Calendar.getWeekdayName(weekday, language, 'narrow')
+                narrow: Calendar.getWeekdayName(weekday, language, 'narrow')
             }
         }
 
@@ -195,7 +195,7 @@ class Calendar {
         return html;
     }
 
-    static renderMonth(thisYear, thisMonthIndex) {
+    static renderMonth(thisYear, thisMonthIndex, small = false) {
         const thisMonthsLength = Calendar.getMonthLength(thisYear, thisMonthIndex);
 
         const lastMonth = new Date(thisYear, thisMonthIndex - 1);
@@ -214,11 +214,13 @@ class Calendar {
         // Which day of the week does this month start on?
         const monthStartDay = new Date(thisYear, thisMonthIndex, 1).getDay();
 
+        const shortNameFormat = (small === true) ?  'narrow' : 'short';
+
         let html = `<table class="month" id="month-${thisMonthIndex}"><thead><tr>`;
 
         for (const weekday in this.weekdayNames) {
             const longName = this.weekdayNames[weekday]['long'];
-            const shortName = this.weekdayNames[weekday]['short'];
+            const shortName = this.weekdayNames[weekday][shortNameFormat];
             html += `<th><abbr title="${longName}">${shortName}</abbr></th>`;
         }
 
@@ -297,7 +299,7 @@ class Calendar {
             const monthURL = `?view=month&amp;year=${year}&amp;month=${monthIndex}`;
             html += `<div class="month" id="month-${monthIndex}">`;
             html += `<h3><a href="${monthURL}">${Calendar.monthNames[monthIndex]}</a></h3>`;
-            html += Calendar.renderMonth(year, thisMonth.getMonth());
+            html += Calendar.renderMonth(year, thisMonth.getMonth(), true);
             html += '</div>';
         }
 

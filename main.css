@@ -47,16 +47,16 @@ nav a.today {
   padding-right: 1.3rem;
 }
 
-table {
+.calendar table {
   border: 1px solid black;
   border-spacing: 0;
   margin: auto;
 }
-th, td {
+.calendar th, .calendar td {
   border: 1px solid #bbb;
   padding: 0.5rem;
 }
-td {
+.calendar>.month td {
   height: 5rem;
   width: 5rem;
 }
@@ -100,10 +100,10 @@ td.today {
     border: 1px solid white;
   }
 
-  table {
+  .calendar table {
     border: 1px solid white;
   }
-  th, td {
+  .calendar th, .calendar td {
     border: 1px solid #444;
   }
 
