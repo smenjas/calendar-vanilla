@@ -23,8 +23,7 @@ class Calendar {
     static weekdayNames = Calendar.getWeekdayNames(Calendar.language);
 
     constructor() {
-        const search = window.location.search;
-        const params = new URLSearchParams(search);
+        const params = new URLSearchParams(window.location.search);
 
         this.query = {};
         this.query['view'] = params.get('view');
@@ -34,11 +33,11 @@ class Calendar {
         if (!this.query['view']) {
             this.query['view'] = 'month';
         }
+        if (this.query['view'] === 'month' && !this.query['month']) {
+            this.query['month'] = Calendar.now.getMonth();
+        }
         if (!this.query['year']) {
             this.query['year'] = Calendar.now.getFullYear();
-        }
-        if (!this.query['month'] && (this.query['view'] === 'month' || !this.query['view'])) {
-            this.query['month'] = Calendar.now.getMonth();
         }
 
         // Standardize the date inputs, just in case the month index is negative.
