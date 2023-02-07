@@ -60,10 +60,14 @@ nav a.today {
   height: 5rem;
   width: 5rem;
 }
+.calendar .year {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  grid-template-gap: 1rem;
+}
 
 .calendar {
   text-align: center;
-  width: 45rem;
   margin: auto;
 }
 td.last-month, td.next-month {
