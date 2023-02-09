@@ -49,8 +49,24 @@ nav a.today {
 
 .calendar table {
   border: 1px solid black;
+  border-radius: 1rem;
   border-spacing: 0;
   margin: auto;
+}
+.calendar th.weekday-0 {
+  border-top-left-radius: 1rem;
+}
+.calendar th.weekday-6 {
+  border-top-right-radius: 1rem;
+}
+.calendar .last-row td.weekday-0 {
+  border-bottom-left-radius: 1rem;
+}
+.calendar .last-row td.weekday-6 {
+  border-bottom-right-radius: 1rem;
+}
+.calendar th {
+  background: #ccc;
 }
 .calendar th, .calendar td {
   border: 1px solid #bbb;
@@ -63,7 +79,7 @@ nav a.today {
 .calendar .year {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
-  grid-template-gap: 1rem;
+  gap: 0.5rem;
 }
 
 .calendar {
@@ -71,11 +87,11 @@ nav a.today {
   margin: auto;
 }
 td.last-month, td.next-month {
-  background-color: #eee;
+  background-color: #ddd;
 }
 td.today {
   border: 1px solid black;
-  background-color: #ccc;
+  background-color: #bbb;
 }
 
 @media screen and (prefers-color-scheme: dark) {
@@ -107,15 +123,18 @@ td.today {
   .calendar table {
     border: 1px solid white;
   }
+  .calendar th {
+    background: #333;
+  }
   .calendar th, .calendar td {
     border: 1px solid #444;
   }
 
   td.last-month, td.next-month {
-    background-color: #111;
+    background-color: #222;
   }
   td.today {
     border: 1px solid white;
-    background-color: #333;
+    background-color: #444;
   }
 }

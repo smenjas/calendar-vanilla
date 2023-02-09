@@ -214,6 +214,8 @@ class Calendar {
         // Which day of the week does this month start on?
         const monthStartDay = new Date(thisYear, thisMonthIndex, 1).getDay();
 
+        const weeksInMonth = Math.ceil((thisMonthsLength + monthStartDay) / 7);
+
         const shortNameFormat = (small === true) ?  'narrow' : 'short';
 
         let html = `<table class="month" id="month-${thisMonthIndex}"><thead><tr>`;
@@ -221,7 +223,7 @@ class Calendar {
         for (const weekday in this.weekdayNames) {
             const longName = this.weekdayNames[weekday]['long'];
             const shortName = this.weekdayNames[weekday][shortNameFormat];
-            html += `<th><abbr title="${longName}">${shortName}</abbr></th>`;
+            html += `<th class="weekday-${weekday}"><abbr title="${longName}">${shortName}</abbr></th>`;
         }
 
         html += '</tr></thead><tbody>';
@@ -230,13 +232,15 @@ class Calendar {
         let nextMonthsDate = 0;
         let monthHasBegun = false;
         let monthHasEnded = false;
+        let rowCount = 1;
+        let trClass = '';
 
         while (monthHasEnded === false) {
             let tr = '';
 
             for (let weekday = 0; weekday < 7; weekday++) {
                 let td = '';
-                let tdClass = '';
+                let tdClass = `weekday-${weekday}`
                 let tdTitle = '';
 
                 // Has the current month started yet?
@@ -250,14 +254,14 @@ class Calendar {
                     const lastMonthOffset = monthStartDay - (weekday + 1);
                     const lastMonthsDate = lastMonthsLength - lastMonthOffset;
                     td = lastMonthsDate;
-                    tdClass = 'last-month';
+                    tdClass += ' last-month';
                     tdTitle = `${Calendar.monthNames[lastMonthIndex]} ${lastMonthsDate}, ${lastMonthsYear}`
                 }
                 else if (monthHasEnded === false) {
                     // Show this month's dates.
                     dateShown += 1;
                     td = dateShown;
-                    tdClass = 'this-month';
+                    tdClass += ' this-month';
                     tdTitle = `${Calendar.monthNames[thisMonthIndex]} ${dateShown}, ${thisYear}`
 
                     if (dateShown === currentDate &&
@@ -271,7 +275,7 @@ class Calendar {
                     // Show next month's dates.
                     nextMonthsDate += 1;
                     td = nextMonthsDate;
-                    tdClass = 'next-month';
+                    tdClass += ' next-month';
                     tdTitle = `${Calendar.monthNames[nextMonthIndex]} ${nextMonthsDate}, ${nextMonthsYear}"`
                 }
 
@@ -283,7 +287,11 @@ class Calendar {
                 tr += `<td class="${tdClass}" title="${tdTitle}">${td}</td>`;
             }
 
-            html += `<tr>${tr}</tr>`;
+            if (rowCount++ === weeksInMonth) {
+                trClass = ' class="last-row"';
+            }
+
+            html += `<tr${trClass}>${tr}</tr>`;
         }
 
         html += '</tbody></table>';
