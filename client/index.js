@@ -303,8 +303,10 @@ class Calendar {
 
         for (let m = 0; m < 12; m++) {
             const monthURL = `?view=month&amp;year=${year}&amp;month=${m}`;
+            const monthName = Calendar.monthNames[m];
+
             html += `<div class="month" id="month-${m}">`;
-            html += `<h3><a href="${monthURL}">${Calendar.monthNames[m]}</a></h3>`;
+            html += `<h3><a href="${monthURL}">${monthName}<span></span></a></h3>`;
             html += Calendar.renderMonth(year, m, true);
             html += '</div>';
         }

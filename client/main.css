@@ -82,6 +82,26 @@ nav a.today {
   gap: 0.5rem;
 }
 
+/*
+Make the whole month clickable, in year view.
+https://stackoverflow.com/a/3494108/12841859
+*/
+.calendar .year .month {
+  position: relative;
+}
+.calendar .year a span {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+.calendar .year a span:hover {
+  border: 2px solid black;
+  border-radius: 1rem;
+}
+
 .calendar {
   text-align: center;
   margin: auto;
@@ -136,5 +156,9 @@ td.today {
   td.today {
     border: 1px solid white;
     background-color: #444;
+  }
+
+  .calendar .year a span:hover {
+    border: 2px solid white;
   }
 }
