@@ -302,11 +302,10 @@ class Calendar {
         let html = '<div class="year">';
 
         for (let monthIndex = 0; monthIndex < 12; monthIndex++) {
-            const thisMonth = new Date(year, monthIndex);
             const monthURL = `?view=month&amp;year=${year}&amp;month=${monthIndex}`;
             html += `<div class="month" id="month-${monthIndex}">`;
             html += `<h3><a href="${monthURL}">${Calendar.monthNames[monthIndex]}</a></h3>`;
-            html += Calendar.renderMonth(year, thisMonth.getMonth(), true);
+            html += Calendar.renderMonth(year, monthIndex, true);
             html += '</div>';
         }
 
