@@ -49,7 +49,7 @@ class Calendar {
 
         switch (this.query['view']) {
             case 'year':
-                html += Calendar.renderYearNav(this.query['year']);
+                html += Calendar.renderYearNav(this.query['year'], this.query['month']);
                 html += Calendar.renderYear(this.query['year']);
                 break;
             default:
@@ -133,21 +133,32 @@ class Calendar {
         return HTML.getSelectOptions(years, year);
     }
 
-    static renderMonthNav(year, month) {
+    static renderCommonNav(year, month, view) {
+        const dateQuery = `year=${year}&amp;month=${month}`;
+        const yearURL = `?view=year&amp;${dateQuery}`;
+        const monthURL = `?view=month&amp;${dateQuery}`;
+
         const nowYear = Calendar.now.getFullYear();
         const nowMonth = Calendar.now.getMonth();
-        const nowDate = Calendar.now.getDate();
-        const nowTitle = `${Calendar.monthNames[nowMonth]} ${nowDate}, ${nowYear}`;
-        const nowURL = '?view=month';
+        const nowDay = Calendar.now.getDate();
+        const nowTitle = `${Calendar.monthNames[nowMonth]} ${nowDay}, ${nowYear}`;
+        const nowURL = `?view=${view}&amp;year=${nowYear}&amp;month=${nowMonth}&amp;day=${nowDay}`;
+
+        let html = `<a href="${yearURL}" class="this-year">Year</a>`;
+        html += `<a href="${monthURL}" class="this-month">Month</a>`;
+        html += `<a href="${nowURL}" class="now" title="${nowTitle}">Now</a>`;
+
+        return html;
+    }
+
+    static renderMonthNav(year, month) {
         const lastMonthURL = `?view=month&amp;year=${year}&amp;month=${month - 1}`;
         const nextMonthURL = `?view=month&amp;year=${year}&amp;month=${month + 1}`;
         const lastYearURL = `?view=month&amp;year=${year - 1}&amp;month=${month}`;
         const nextYearURL = `?view=month&amp;year=${year + 1}&amp;month=${month}`;
-        const thisYearURL = `?view=year&amp;year=${year}`;
 
         let html = '<nav>';
-        html += `<a href="${nowURL}" class="today" title="${nowTitle}">Today</a>`;
-        html += `<a href="${thisYearURL}" class="this-year">${year}</a>`;
+        html += Calendar.renderCommonNav(year, month, 'month');
 
         html += '<form action="" method="get">';
         html += '<fieldset id="nav-calendar">';
@@ -171,15 +182,12 @@ class Calendar {
         return html;
     }
 
-    static renderYearNav(year) {
-        const nowYear = Calendar.now.getFullYear();
-
-        const nowYearURL = `?view=year&amp;year=${nowYear}`;
+    static renderYearNav(year, month) {
         const lastYearURL = `?view=year&amp;year=${year - 1}`;
         const nextYearURL = `?view=year&amp;year=${year + 1}`;
 
         let html = '<nav>';
-        html += `<a href="${nowYearURL}" class="this-year">${nowYear}</a>`;
+        html += Calendar.renderCommonNav(year, month, 'year');
 
         html += '<form action="" method="get">';
         html += '<input type="hidden" name="view" value="year">';
@@ -267,10 +275,8 @@ class Calendar {
                     tdClass += ' this-month';
                     tdTitle = `${Calendar.monthNames[month]} ${day}, ${year}`
 
-                    if (day === nowDay &&
-                        month === nowMonth &&
-                        year === nowYear) {
-                        tdClass += ' today';
+                    if (day === nowDay && month === nowMonth && year === nowYear) {
+                        tdClass += ' now';
                         tdTitle += ' (Today)';
                     }
                 }
