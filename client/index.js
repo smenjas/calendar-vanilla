@@ -15,8 +15,6 @@ class HTML {
 
 class Calendar {
     static now = new Date();
-    static minYear = 1900;
-    static maxYear = 2100;
     static language = 'en-us';
     static monthLengths = {};
     static monthNames = Calendar.getMonthNames(Calendar.language);
@@ -119,22 +117,33 @@ class Calendar {
         return weekdayNames;
     }
 
+    static getMonthOptions(month) {
+        return HTML.getSelectOptions(Calendar.monthNames, month);
+    }
+
+    static getYearOptions(year) {
+        const minYear = 1900;
+        const maxYear = 2100;
+        const years = {};
+
+        for (let y = minYear; y <= maxYear; y++) {
+            years[y] = y;
+        }
+
+        return HTML.getSelectOptions(years, year);
+    }
+
     static renderMonthNav(year, month) {
         const nowYear = Calendar.now.getFullYear();
         const nowMonth = Calendar.now.getMonth();
-        const nowDay = Calendar.now.getDate();
-        const nowTitle = `${Calendar.monthNames[nowMonth]} ${nowDay}, ${nowYear}`;
+        const nowDate = Calendar.now.getDate();
+        const nowTitle = `${Calendar.monthNames[nowMonth]} ${nowDate}, ${nowYear}`;
         const nowURL = '?view=month';
         const lastMonthURL = `?view=month&amp;year=${year}&amp;month=${month - 1}`;
         const nextMonthURL = `?view=month&amp;year=${year}&amp;month=${month + 1}`;
         const lastYearURL = `?view=month&amp;year=${year - 1}&amp;month=${month}`;
         const nextYearURL = `?view=month&amp;year=${year + 1}&amp;month=${month}`;
         const thisYearURL = `?view=year&amp;year=${year}`;
-
-        const years = {};
-        for (let y = Calendar.minYear; y <= Calendar.maxYear; y++) {
-            years[y] = y;
-        }
 
         let html = '<nav>';
         html += `<a href="${nowURL}" class="today" title="${nowTitle}">Today</a>`;
@@ -146,11 +155,11 @@ class Calendar {
         html += `<a href="${lastMonthURL}" class="last-month" title="Previous month">&larr;</a>`;
 
         html += '<select name="month" id="nav-month" onchange="this.form.submit()">';
-        html += HTML.getSelectOptions(Calendar.monthNames, month);
+        html += Calendar.getMonthOptions(month);
         html += '</select>';
 
         html += '<select name="year" id="nav-year" onchange="this.form.submit()">';
-        html += HTML.getSelectOptions(years, year);
+        html += Calendar.getYearOptions(year);
         html += '</select>';
 
         html += `<a href="${nextMonthURL}" class="next-month" title="Next month">&rarr;</a>`;
@@ -169,11 +178,6 @@ class Calendar {
         const lastYearURL = `?view=year&amp;year=${year - 1}`;
         const nextYearURL = `?view=year&amp;year=${year + 1}`;
 
-        const years = {};
-        for (let y = Calendar.minYear; y <= Calendar.maxYear; y++) {
-            years[y] = y;
-        }
-
         let html = '<nav>';
         html += `<a href="${nowYearURL}" class="this-year">${nowYear}</a>`;
 
@@ -183,7 +187,7 @@ class Calendar {
         html += `<a href="${lastYearURL}" class="last-year" title="Previous year">&lArr;</a>`;
 
         html += '<select name="year" id="nav-year" onchange="this.form.submit()">';
-        html += HTML.getSelectOptions(years, year);
+        html += Calendar.getYearOptions(year);
         html += '</select>';
 
         html += `<a href="${nextYearURL}" class="next-year" title="Next year">&rArr;</a>`;
