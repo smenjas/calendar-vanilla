@@ -250,9 +250,10 @@ class Calendar {
             let tr = '';
 
             for (let weekday = 0; weekday < 7; weekday++) {
-                let td = '';
+                let showYear = '';
+                let showMonth = '';
+                let showDay = '';
                 let tdClass = `weekday-${weekday}`
-                let tdTitle = '';
 
                 // Has the month being shown started yet?
                 if (monthHasBegun === false && monthStartsOn === weekday) {
@@ -264,33 +265,38 @@ class Calendar {
                     // Show last month's dates.
                     const offset = monthStartsOn - (weekday + 1);
                     const lastMonthsDay = lastMonthsLength - offset;
-                    td = lastMonthsDay;
+                    showYear = lastMonthsYear;
+                    showMonth = lastMonth;
+                    showDay = lastMonthsDay;
                     tdClass += ' last-month';
-                    tdTitle = `${Calendar.monthNames[lastMonth]} ${lastMonthsDay}, ${lastMonthsYear}`
                 }
                 else if (monthHasEnded === false) {
                     // Show this month's dates.
                     day += 1;
-                    td = day;
+                    showYear = year;
+                    showMonth = month;
+                    showDay = day;
                     tdClass += ' this-month';
-                    tdTitle = `${Calendar.monthNames[month]} ${day}, ${year}`
-
-                    if (day === nowDay && month === nowMonth && year === nowYear) {
-                        tdClass += ' now';
-                        tdTitle += ' (Today)';
-                    }
                 }
                 else {
                     // Show next month's dates.
                     nextMonthsDay += 1;
-                    td = nextMonthsDay;
+                    showYear = nextMonthsYear;
+                    showMonth = nextMonth;
+                    showDay = nextMonthsDay;
                     tdClass += ' next-month';
-                    tdTitle = `${Calendar.monthNames[nextMonth]} ${nextMonthsDay}, ${nextMonthsYear}"`
                 }
 
                 // Has the month being shown ended yet?
                 if (day >= monthLength) {
                     monthHasEnded = true;
+                }
+
+                let td = showDay;
+                let tdTitle = `${Calendar.monthNames[showMonth]} ${showDay}, ${showYear}`
+                if (showDay === nowDay && showMonth === nowMonth && showYear === nowYear) {
+                    tdClass += ' now';
+                    tdTitle += ' (Today)';
                 }
 
                 tr += `<td class="${tdClass}" title="${tdTitle}">${td}</td>`;
