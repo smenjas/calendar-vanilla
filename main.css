@@ -20,6 +20,10 @@ nav a, nav a:visited, .month h3 a, .month h3 a:visited {
   background: white;
   color: black;
 }
+.month td a, .month td a:visited {
+  color: black;
+  text-decoration: none;
+}
 nav a:hover, .month h3 a:hover {
   background: black;
   color: white;
@@ -32,17 +36,17 @@ nav a, .month h3 a {
   text-decoration: none;
   font-style: bold;
 }
-nav a.last-month, nav a.last-year {
+nav a.last-month, nav a.last-year, nav a.yesterday {
   margin-right: 1rem;
   padding-left: 1.3rem;
   padding-right: 1.3rem;
 }
-nav a.next-month, nav a.next-year {
+nav a.next-month, nav a.next-year, nav a.tomorrow {
   margin-left: 1rem;
   padding-left: 1.3rem;
   padding-right: 1.3rem;
 }
-nav a.now, nav a.this-year, nav a.this-month {
+nav a.now, nav a.this-year, nav a.this-month, nav a.this-day {
   padding-left: 1.3rem;
   padding-right: 1.3rem;
 }
@@ -53,16 +57,16 @@ nav a.now, nav a.this-year, nav a.this-month {
   border-spacing: 0;
   margin: auto;
 }
-.calendar th.weekday-0 {
+.calendar th.weekday-0, .calendar th.time {
   border-top-left-radius: 1rem;
 }
-.calendar th.weekday-6 {
+.calendar th.weekday-6, .calendar th.event {
   border-top-right-radius: 1rem;
 }
-.calendar .last-row td.weekday-0 {
+.calendar .last-row td.weekday-0, .calendar .time-23 td.time {
   border-bottom-left-radius: 1rem;
 }
-.calendar .last-row td.weekday-6 {
+.calendar .last-row td.weekday-6, .calendar .time-23 td.event {
   border-bottom-right-radius: 1rem;
 }
 .calendar th {
@@ -80,6 +84,13 @@ nav a.now, nav a.this-year, nav a.this-month {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
   gap: 0.5rem;
+}
+.calendar .day {
+  width: 43rem;
+}
+.calendar .day .time {
+  text-align: right;
+  width: 3rem;
 }
 
 /*
@@ -102,14 +113,38 @@ https://stackoverflow.com/a/3494108/12841859
   border-radius: 1rem;
 }
 
+/*
+Make the whole day clickable, in month view.
+https://stackoverflow.com/a/3494108/12841859
+*/
+.calendar>.month td {
+  position: relative;
+}
+.calendar>.month td a span {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+.calendar>.month td a span:hover {
+  border: 1px solid black;
+}
+.calendar>.month .last-row td.weekday-0 a span:hover {
+  border-bottom-left-radius: 1rem;
+}
+.calendar>.month .last-row td.weekday-6 a span:hover {
+  border-bottom-right-radius: 1rem;
+}
+
 .calendar {
   text-align: center;
-  margin: auto;
 }
 td.last-month, td.next-month {
   background: #ddd;
 }
-td.now {
+.month td.now, .day tr.now {
   border: 1px solid black;
   background: #bbb;
 }
@@ -134,6 +169,10 @@ td.now {
     background: white;
     color: black;
   }
+  .month td a, .month td a:visited {
+    color: white;
+    text-decoration: none;
+  }
   nav select, nav button {
     background: black;
     color: white;
@@ -153,12 +192,15 @@ td.now {
   td.last-month, td.next-month {
     background: #222;
   }
-  td.now {
+  .month td.now, .day tr.now {
     border: 1px solid white;
     background: #444;
   }
 
   .calendar .year a span:hover {
     border: 2px solid white;
+  }
+  .calendar>.month td a span:hover {
+    border: 1px solid white;
   }
 }
