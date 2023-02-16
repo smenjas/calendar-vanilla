@@ -89,9 +89,8 @@ class Calendar {
         const currentYear = Calendar.now.getFullYear();
 
         for (let month = 0; month < 12; month++) {
-            // Date zero is last month's max date.
-            const monthEnd = new Date(currentYear, month + 1, 0);
-            monthNames[month] = Calendar.getMonthName(monthEnd, language, 'long');
+            const date = new Date(currentYear, month, 1);
+            monthNames[month] = Calendar.getMonthName(date, language, 'long');
         }
 
         return monthNames;
