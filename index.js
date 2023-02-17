@@ -23,38 +23,40 @@ class Calendar {
     constructor() {
         const params = new URLSearchParams(window.location.search);
 
-        this.query = {};
-        this.query['view'] = params.get('view');
-        this.query['year'] = params.get('year');
-        this.query['month'] = params.get('month');
-        this.query['day'] = params.get('day');
+        let view = params.get('view');
+        let year = params.get('year');
+        let month = params.get('month');
+        let day = params.get('day');
 
-        if (!this.query['view']) {
-            this.query['view'] = 'month';
+        if (!view) {
+            view = 'month';
         }
-        if (!this.query['day']) {
-            if (this.query['view'] === 'day') {
-                this.query['day'] = Calendar.now.getDate();
-                if (!this.query['month']) {
-                    this.query['month'] = Calendar.now.getMonth();
+        if (!day) {
+            if (view === 'day') {
+                day = Calendar.now.getDate();
+                if (!month) {
+                    month = Calendar.now.getMonth();
                 }
             }
             else {
-                this.query['day'] = 1;
+                day = 1;
             }
         }
-        if (this.query['view'] === 'month' && !this.query['month']) {
-            this.query['month'] = Calendar.now.getMonth();
+        if (view === 'month' && !month) {
+            month = Calendar.now.getMonth();
         }
-        if (!this.query['year']) {
-            this.query['year'] = Calendar.now.getFullYear();
+        if (!year) {
+            year = Calendar.now.getFullYear();
         }
 
         // Standardize the date inputs, in case the month or day is out of range.
-        const date = new Date(this.query['year'], this.query['month'], this.query['day']);
+        const date = new Date(year, month, day);
+
+        this.query = {};
         this.query['year'] = date.getFullYear();
         this.query['month'] = date.getMonth();
         this.query['day'] = date.getDate();
+        this.query['view'] = view;
     }
 
     render() {
