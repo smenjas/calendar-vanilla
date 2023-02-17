@@ -80,6 +80,18 @@ class Calendar {
         document.body.insertAdjacentHTML('beforeend', html);
     }
 
+    static formatDate(date) {
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const day = date.getDate();
+
+        return Calendar.formatDateParts(year, month, day);
+    }
+
+    static formatDateParts(year, month, day) {
+        return `${Calendar.monthNames[month]} ${day}, ${year}`;
+    }
+
     static handleDayNav() {
         const year = parseInt(document.getElementById('nav-year').value);
         const month = parseInt(document.getElementById('nav-month').value);
@@ -183,7 +195,7 @@ class Calendar {
         const nowYear = Calendar.now.getFullYear();
         const nowMonth = Calendar.now.getMonth();
         const nowDay = Calendar.now.getDate();
-        const nowTitle = `${Calendar.monthNames[nowMonth]} ${nowDay}, ${nowYear}`;
+        const nowTitle = Calendar.formatDate(Calendar.now);
         const nowURL = `?view=${view}&amp;year=${nowYear}&amp;month=${nowMonth}&amp;day=${nowDay}`;
 
         let html = `<a href="${yearURL}" class="this-year">Year</a>`;
@@ -199,14 +211,14 @@ class Calendar {
         const yesterdaysYear = yesterday.getFullYear();
         const yesterdaysMonth = yesterday.getMonth();
         const yesterdaysDay = yesterday.getDate();
-        const yesterdayTitle = `${Calendar.monthNames[yesterdaysMonth]} ${yesterdaysDay}, ${yesterdaysYear}`;
+        const yesterdayTitle = Calendar.formatDate(yesterday);
         const yesterdayURL = `?view=day&amp;year=${yesterdaysYear}&amp;month=${yesterdaysMonth}&amp;day=${yesterdaysDay}`;
 
         const tomorrow = new Date(year, month, day + 1);
         const tomorrowsYear = tomorrow.getFullYear();
         const tomorrowsMonth = tomorrow.getMonth();
         const tomorrowsDay = tomorrow.getDate();
-        const tomorrowTitle = `${Calendar.monthNames[tomorrowsMonth]} ${tomorrowsDay}, ${tomorrowsYear}`;
+        const tomorrowTitle = Calendar.formatDate(tomorrow);
         const tomorrowURL = `?view=day&amp;year=${tomorrowsYear}&amp;month=${tomorrowsMonth}&amp;day=${tomorrowsDay}`;
 
         let html = '<nav>';
@@ -405,7 +417,7 @@ class Calendar {
                     td = `<a href="${dateURL}">${day}<span></span></a>`;
                 }
 
-                let tdTitle = `${Calendar.monthNames[showMonth]} ${day}, ${showYear}`
+                let tdTitle = Calendar.formatDateParts(showYear, showMonth, day);
                 if (day === nowDay && showMonth === nowMonth && showYear === nowYear) {
                     tdClass += ' now';
                     tdTitle += ' (Today)';
