@@ -114,10 +114,10 @@ class Calendar {
 
     static getMonthNames(language) {
         const monthNames = [];
-        const nowYear = Calendar.now.getFullYear();
+        const year = Calendar.now.getFullYear();
 
         for (let month = 0; month < 12; month++) {
-            const date = new Date(nowYear, month, 1);
+            const date = new Date(year, month, 1);
             monthNames[month] = Calendar.getMonthName(date, language, 'long');
         }
 
