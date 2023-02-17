@@ -60,20 +60,22 @@ class Calendar {
     }
 
     render() {
+        const { year, month, day, view } = this.query;
+
         let html = '<div class="calendar">';
 
-        switch (this.query['view']) {
+        switch (view) {
             case 'year':
-                html += Calendar.renderYearNav(this.query['year'], this.query['month'], this.query['day']);
-                html += Calendar.renderYear(this.query['year'], this.query['month'], this.query['day']);
+                html += Calendar.renderYearNav(year, month, day);
+                html += Calendar.renderYear(year, month, day);
                 break;
             case 'day':
-                html += Calendar.renderDayNav(this.query['year'], this.query['month'], this.query['day']);
-                html += Calendar.renderDay(this.query['year'], this.query['month'], this.query['day']);
+                html += Calendar.renderDayNav(year, month, day);
+                html += Calendar.renderDay(year, month, day);
                 break;
             default:
-                html += Calendar.renderMonthNav(this.query['year'], this.query['month'], this.query['day']);
-                html += Calendar.renderMonth(this.query['year'], this.query['month']);
+                html += Calendar.renderMonthNav(year, month, day);
+                html += Calendar.renderMonth(year, month);
                 break;
         }
 
