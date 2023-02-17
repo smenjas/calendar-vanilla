@@ -80,6 +80,19 @@ class Calendar {
         document.body.insertAdjacentHTML('beforeend', html);
     }
 
+    static handleDayNav() {
+        const year = parseInt(document.getElementById('nav-year').value);
+        const month = parseInt(document.getElementById('nav-month').value);
+        const day = parseInt(document.getElementById('nav-day').value);
+        const monthLength = Calendar.getMonthLength(year, month);
+
+        if (day > monthLength) {
+            document.getElementById('nav-day').value = monthLength;
+        }
+
+        document.querySelector('nav form').submit();
+    }
+
     static getMonthLength(year, month) {
         if (Calendar.monthLengths.hasOwnProperty(year) === false) {
             Calendar.monthLengths[year] = {};
@@ -204,7 +217,7 @@ class Calendar {
         html += '<fieldset id="nav-calendar">';
         html += `<a href="${yesterdayURL}" title="${yesterdayTitle}" class="yesterday">&larr;</a>`;
 
-        html += '<select name="month" id="nav-month" onchange="this.form.submit()">';
+        html += '<select name="month" id="nav-month" onchange="Calendar.handleDayNav()">';
         html += Calendar.getMonthOptions(month);
         html += '</select>';
 
@@ -212,7 +225,7 @@ class Calendar {
         html += Calendar.getDayOptions(year, month, day);
         html += '</select>';
 
-        html += '<select name="year" id="nav-year" onchange="this.form.submit()">';
+        html += '<select name="year" id="nav-year" onchange="Calendar.handleDayNav()">';
         html += Calendar.getYearOptions(year);
         html += '</select>';
 
