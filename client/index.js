@@ -130,17 +130,17 @@ class Calendar {
     }
 
     static getWeekdayNames(language) {
-        const nowYear = Calendar.now.getFullYear();
-        const nowMonth = Calendar.now.getMonth();
-        const nowDay = Calendar.now.getDate();
+        const year = Calendar.now.getFullYear();
+        const month = Calendar.now.getMonth();
+        const day = Calendar.now.getDate();
         const weekdayNames = [];
 
         for (let offset = 0; offset < 7; offset++) {
-            const weekday = new Date(nowYear, nowMonth, nowDay + offset);
-            weekdayNames[weekday.getDay()] = {
-                long: Calendar.getWeekdayName(weekday, language, 'long'),
-                short: Calendar.getWeekdayName(weekday, language, 'short'),
-                narrow: Calendar.getWeekdayName(weekday, language, 'narrow')
+            const date = new Date(year, month, day + offset);
+            weekdayNames[date.getDay()] = {
+                long: Calendar.getWeekdayName(date, language, 'long'),
+                short: Calendar.getWeekdayName(date, language, 'short'),
+                narrow: Calendar.getWeekdayName(date, language, 'narrow')
             }
         }
 
