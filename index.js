@@ -343,7 +343,6 @@ class Calendar {
         html += '</tr></thead><tbody>';
 
         let day = 0;
-        let nextMonthsDay = 0;
         let monthHasBegun = false;
         let monthHasEnded = false;
         let rowCount = 1;
@@ -355,22 +354,21 @@ class Calendar {
             for (let weekday = 0; weekday < 7; weekday++) {
                 let showYear = '';
                 let showMonth = '';
-                let showDay = '';
                 let tdClass = `weekday-${weekday}`
 
                 // Has the month being shown started yet?
                 if (monthHasBegun === false && monthStartsOn === weekday) {
                     monthHasBegun = true;
+                    day = 0;
                 }
 
                 // Which month are we in?
                 if (monthHasBegun === false) {
                     // Show last month's dates.
                     const offset = monthStartsOn - (weekday + 1);
-                    const lastMonthsDay = lastMonthsLength - offset;
+                    day = lastMonthsLength - offset;
                     showYear = lastMonthsYear;
                     showMonth = lastMonth;
-                    showDay = lastMonthsDay;
                     tdClass += ' last-month';
                 }
                 else if (monthHasEnded === false) {
@@ -378,33 +376,32 @@ class Calendar {
                     day += 1;
                     showYear = year;
                     showMonth = month;
-                    showDay = day;
                     tdClass += ' this-month';
                 }
                 else {
                     // Show next month's dates.
-                    nextMonthsDay += 1;
+                    day += 1;
                     showYear = nextMonthsYear;
                     showMonth = nextMonth;
-                    showDay = nextMonthsDay;
                     tdClass += ' next-month';
                 }
 
-                // Has the month being shown ended yet?
-                if (day >= monthLength) {
-                    monthHasEnded = true;
-                }
-
-                let td = showDay;
+                let td = `${day}`;
                 if (small === false) {
-                    const dateURL = `?view=day&amp;year=${showYear}&amp;month=${showMonth}&amp;day=${showDay}`;
-                    td = `<a href="${dateURL}">${showDay}<span></span></a>`;
+                    const dateURL = `?view=day&amp;year=${showYear}&amp;month=${showMonth}&amp;day=${day}`;
+                    td = `<a href="${dateURL}">${day}<span></span></a>`;
                 }
 
-                let tdTitle = `${Calendar.monthNames[showMonth]} ${showDay}, ${showYear}`
-                if (showDay === nowDay && showMonth === nowMonth && showYear === nowYear) {
+                let tdTitle = `${Calendar.monthNames[showMonth]} ${day}, ${showYear}`
+                if (day === nowDay && showMonth === nowMonth && showYear === nowYear) {
                     tdClass += ' now';
                     tdTitle += ' (Today)';
+                }
+
+                // Has the month being shown ended yet?
+                if (monthHasBegun === true && day >= monthLength) {
+                    monthHasEnded = true;
+                    day = 0;
                 }
 
                 tr += `<td class="${tdClass}" title="${tdTitle}">${td}</td>`;
