@@ -56,7 +56,7 @@ class Calendar {
         this.query['year'] = date.getFullYear();
         this.query['month'] = date.getMonth();
         this.query['day'] = date.getDate();
-        this.query['view'] = view;
+        this.query['view'] = view.toLowerCase();
     }
 
     render() {
