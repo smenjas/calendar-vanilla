@@ -16,6 +16,7 @@ class HTML {
 class Calendar {
     static now = new Date();
     static language = 'en-us';
+    static maxLength = 255;
     static monthLengths = {};
     static monthNames = Calendar.getMonthNames(Calendar.language);
     static weekdayNames = Calendar.getWeekdayNames(Calendar.language);
@@ -65,6 +66,13 @@ class Calendar {
         let html = '<div class="calendar">';
 
         switch (view) {
+            case 'event':
+                html += '<nav>';
+                html += Calendar.renderCommonNav(view, year, month, day);
+                html += '</nav>';
+                html += this.renderEventForm(year, month, day);
+                html += Calendar.renderEvents();
+                break;
             case 'year':
                 html += Calendar.renderYearNav(year, month, day);
                 html += Calendar.renderYear(year, month, day);
@@ -107,6 +115,49 @@ class Calendar {
         }
 
         document.querySelector('nav form').submit();
+    }
+
+    static processEvent(event) {
+        const startDate = new Date(event.startYear, event.startMonth, event.startDay);
+        const endDate = new Date(event.endYear, event.endMonth, event.endDay);
+
+        if (endDate < startDate) {
+            [event.startYear, event.startMonth, event.startDay] = Calendar.splitDate(endDate);
+            [event.endYear, event.endMonth, event.endDay] = Calendar.splitDate(startDate);
+        }
+
+        if (event.name.length > Calendar.maxLength) {
+            event.name = event.name.substring(0, Calendar.maxLength);
+        }
+        if (event.location.length > Calendar.maxLength) {
+            event.location = event.location.substring(0, Calendar.maxLength);
+        }
+        if (event.url.length > Calendar.maxLength) {
+            event.url = event.url.substring(0, Calendar.maxLength);
+        }
+        if (event.notes.length > Calendar.maxLength) {
+            event.notes = event.notes.substring(0, Calendar.maxLength);
+        }
+
+        return event;
+    }
+
+    static getEventDates(eventDates, event, eventID) {
+        let offset = 0;
+        let date = new Date(event.startYear, event.startMonth, event.startDay);
+        const endDate = new Date(event.endYear, event.endMonth, event.endDay, 23, 59, 59);
+
+        while (date < endDate) {
+            const iso10 = date.toISOString().substring(0, 10);
+            if (eventDates.hasOwnProperty(iso10) === false) {
+                eventDates[iso10] = [];
+            }
+            eventDates[iso10].push(eventID);
+            offset += 1;
+            date = new Date(event.startYear, event.startMonth, event.startDay + offset);
+        }
+
+        return eventDates;
     }
 
     static getURL(view, year, month = null, day = null) {
@@ -214,6 +265,121 @@ class Calendar {
         return parts;
     }
 
+    renderEventForm(year = null, month = null, day = null) {
+        const inputSize = 50;
+
+        if (year === null) {
+            [year, month, day] = Calendar.splitDate(Calendar.now);
+        }
+        else if (month === null) {
+            [year, month, day] = Calendar.splitDate(new Date(year));
+        }
+        else if (day === null) {
+            [year, month, day] = Calendar.splitDate(new Date(year, month));
+        }
+
+        const event = {
+            name: '',
+            startYear: year,
+            startMonth: month,
+            startDay: day,
+            endYear: year,
+            endMonth: month,
+            endDay: day,
+            location: '',
+            url: '',
+            notes: '',
+        };
+
+        let html = '<h2>Add New Event</h2>';
+        html += '<form id="event">';
+        html += '<input type="hidden" name="view" value="event">';
+        html += `<input type="hidden" name="year" value="${year}">`;
+        html += `<input type="hidden" name="month" value="${month}">`;
+        html += `<input type="hidden" name="day" value="${day}">`;
+
+        html += '<fieldset>';
+        html += '<label>Event Name</label>';
+        html += `<input name="event-name" value="${event.name}" size="${inputSize}" maxlength="${Calendar.maxLength}}">`;
+        html += '<br>';
+
+        html += '<label>Starts</label>';
+        html += '<select name="event-startMonth">';
+        html += Calendar.getMonthOptions(event.startMonth);
+        html += '</select>';
+
+        html += '<select name="event-startDay">';
+        html += Calendar.getDayOptions(event.startYear, event.startMonth, event.startDay);
+        html += '</select>';
+
+        html += '<select name="event-startYear">';
+        html += Calendar.getYearOptions(event.startYear);
+        html += '</select>';
+        html += '<br>';
+
+        html += '<label>Ends</label>';
+        html += '<select name="event-endMonth">';
+        html += Calendar.getMonthOptions(event.endMonth);
+        html += '</select>';
+
+        html += '<select name="event-endDay">';
+        html += Calendar.getDayOptions(event.endYear, event.endMonth, event.endDay);
+        html += '</select>';
+
+        html += '<select name="event-endYear">';
+        html += Calendar.getYearOptions(event.endYear);
+        html += '</select>';
+        html += '<br>';
+
+        html += '<label>Location</label>';
+        html += `<input name="event-location" value="${event.location}" size="${inputSize}" maxlength="${Calendar.maxLength}}">`;
+        html += '<br>';
+        html += '<label>URL</label>';
+        html += `<input name="event-url" value="${event.url}" size="${inputSize}" maxlength="${Calendar.maxLength}}">`;
+        html += '<br>';
+        html += '<label>Notes</label>';
+        html += `<textarea name="event-notes" rows="5" cols="39" maxlength="${Calendar.maxLength}}">${event.notes}</textarea>`;
+        html += '<br>';
+
+        html += '<button type="submit">Add Event</button>';
+        html += '</fieldset>';
+        html += '</form>';
+
+        return html;
+    }
+
+    static renderEvents() {
+        let events = JSON.parse(localStorage.getItem('events')) || [];
+
+        if (events.length < 1) {
+            return '';
+        }
+
+        let count = 1;
+        let html = '<table id="events"><thead><tr>';
+        html += '<th class="event-name">Event Name</th>';
+        html += '<th class="event-start">Starts</th>';
+        html += '<th class="event-end">Ends</th>';
+        html += '</tr></thead><tbody>';
+
+        for (let eventID = events.length - 1; eventID >= 0; eventID--) {
+            const event = events[eventID];
+            let trClass= '';
+            if (count++ === events.length) {
+                trClass= ' class="last-row"';
+            }
+            html += `<tr${trClass}>`;
+            html += `<td class="event-name">${event.name}</td>`;
+            html += `<td class="event-start">${Calendar.formatDateParts(event.startYear, event.startMonth, event.startDay)}</td>`;
+            html += `<td class="event-end">${Calendar.formatDateParts(event.endYear, event.endMonth, event.endDay)}</td>`;
+            html += '</tr>';
+        }
+
+        html += '</tbody></table>';
+
+        return html;
+    }
+
     static renderCommonNav(view, year, month, day) {
         const yearURL = Calendar.getURL('year', year, month, day);
         const monthURL = Calendar.getURL('month', year, month, day);
@@ -223,10 +389,13 @@ class Calendar {
         const [nowYear, nowMonth, nowDay] = Calendar.splitDate(Calendar.now);
         const nowURL = Calendar.getURL(view, nowYear, nowMonth, nowDay);
 
+        let addURL = Calendar.getURL('event', year, month, day);
+
         let html = `<a href="${yearURL}" class="this-year">Year</a>`;
         html += `<a href="${monthURL}" class="this-month">Month</a>`;
         html += `<a href="${dayURL}" class="this-day">Day</a>`;
         html += `<a href="${nowURL}" class="now" title="${nowTitle}">Now</a>`;
+        html += `<a href="${addURL}" class="add" title="Add New Event">Add</a>`;
 
         return html;
     }
@@ -483,3 +652,32 @@ class Calendar {
 
 const myCalendar = new Calendar();
 myCalendar.render();
+
+/*
+localStorage.setItem('events', '[]'); // Clear all events.
+localStorage.setItem('eventDates', '{}'); // Clear all events.
+*/
+
+const form = document.querySelector('form#event');
+if (form !== null) {
+    form.onsubmit = (submitEvent) => {
+        submitEvent.preventDefault();
+        let event = {};
+        form.querySelectorAll('[name]').forEach(input => {
+            if (input.name.substring(0, 6) === 'event-') {
+                const key = input.name.substring(6);
+                event[key] = input.value;
+            }
+        });
+        let events = JSON.parse(localStorage.getItem('events')) || [];
+        let eventDates = JSON.parse(localStorage.getItem('eventDates')) || {};
+        event = Calendar.processEvent(event);
+        eventID = events.length;
+        events.push(event);
+        eventDates = Calendar.getEventDates(eventDates, event, eventID);
+        console.log(eventDates);
+        localStorage.setItem('events', JSON.stringify(events));
+        localStorage.setItem('eventDates', JSON.stringify(eventDates));
+        location.reload();
+    }
+}

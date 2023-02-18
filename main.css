@@ -13,6 +13,54 @@ a:visited {
 fieldset {
   border: none;
 }
+button {
+  height: 2.5rem;
+}
+input {
+  padding: 0.3rem;
+}
+
+form#event {
+  overflow: hidden;
+  width: 50rem;
+  margin: auto;
+  text-align: left;
+}
+#event button, #event input, #event select, #event textarea {
+  border: 1px solid black;
+  background: #eee;
+  color: black;
+  font-size: 1.5rem;
+}
+#event label {
+  font-size: 1.5rem;
+  float: left;
+  width: 10rem;
+  padding-right: 1rem;
+  text-align: right;
+}
+#event input {
+  width: calc(100% - 12rem);
+  float: left;
+}
+#event button {
+  width: calc(100% - 11rem);
+  float: right;
+}
+
+#events th.event-name {
+  border-top-left-radius: 1rem;
+}
+#events th.event-end {
+  border-top-right-radius: 1rem;
+}
+#events tr.last-row td.event-name {
+  border-bottom-left-radius: 1rem;
+}
+#events tr.last-row td.event-end {
+  border-bottom-right-radius: 1rem;
+}
+
 nav a, nav a:visited {
   font-size: 1.6rem;
   padding-left: 1.3rem;
@@ -153,6 +201,12 @@ td.last-month, td.next-month {
   }
   a:visited {
     color: #faf;
+  }
+
+  #event button, #event input, #event select, #event textarea {
+    border: 1px solid white;
+    background: #111;
+    color: white;
   }
 
   nav a, nav a:visited, .month h3 a, .month h3 a:visited {
