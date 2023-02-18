@@ -15,6 +15,8 @@ fieldset {
 }
 nav a, nav a:visited {
   font-size: 1.6rem;
+  padding-left: 1.3rem;
+  padding-right: 1.3rem;
 }
 nav a, nav a:visited, .month h3 a, .month h3 a:visited {
   background: white;
@@ -38,17 +40,9 @@ nav a, .month h3 a {
 }
 nav a.last-month, nav a.last-year, nav a.yesterday {
   margin-right: 1rem;
-  padding-left: 1.3rem;
-  padding-right: 1.3rem;
 }
 nav a.next-month, nav a.next-year, nav a.tomorrow {
   margin-left: 1rem;
-  padding-left: 1.3rem;
-  padding-right: 1.3rem;
-}
-nav a.now, nav a.this-year, nav a.this-month, nav a.this-day {
-  padding-left: 1.3rem;
-  padding-right: 1.3rem;
 }
 
 .calendar table {
