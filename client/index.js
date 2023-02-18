@@ -146,9 +146,7 @@ class Calendar {
     }
 
     static getWeekdayNames(language) {
-        const year = Calendar.now.getFullYear();
-        const month = Calendar.now.getMonth();
-        const day = Calendar.now.getDate();
+        const [year, month, day] = Calendar.splitDate(Calendar.now);
         const weekdayNames = [];
 
         for (let offset = 0; offset < 7; offset++) {
@@ -190,16 +188,33 @@ class Calendar {
         return HTML.getSelectOptions(years, year);
     }
 
+    static splitDate(date) {
+        // Accepts a Date object.
+        //
+        // Returns an array with the year, month, day, hours, minutes, seconds,
+        // milliseconds, and timezone offset in minutes from UTC.
+
+        const parts = [];
+        parts.push(date.getFullYear());
+        parts.push(date.getMonth());
+        parts.push(date.getDate());
+        parts.push(date.getHours());
+        parts.push(date.getMinutes());
+        parts.push(date.getSeconds());
+        parts.push(date.getMilliseconds());
+        parts.push(date.getTimezoneOffset());
+
+        return parts;
+    }
+
     static renderCommonNav(year, month, day, view) {
         const dateQuery = `year=${year}&amp;month=${month}&amp;day=${day}`;
         const yearURL = `?view=year&amp;${dateQuery}`;
         const monthURL = `?view=month&amp;${dateQuery}`;
         const dayURL = `?view=day&amp;${dateQuery}`;
 
-        const nowYear = Calendar.now.getFullYear();
-        const nowMonth = Calendar.now.getMonth();
-        const nowDay = Calendar.now.getDate();
         const nowTitle = Calendar.formatDate(Calendar.now);
+        const [nowYear, nowMonth, nowDay] = Calendar.splitDate(Calendar.now);
         const nowURL = `?view=${view}&amp;year=${nowYear}&amp;month=${nowMonth}&amp;day=${nowDay}`;
 
         let html = `<a href="${yearURL}" class="this-year">Year</a>`;
@@ -212,17 +227,13 @@ class Calendar {
 
     static renderDayNav(year, month, day) {
         const yesterday = new Date(year, month, day - 1);
-        const yesterdaysYear = yesterday.getFullYear();
-        const yesterdaysMonth = yesterday.getMonth();
-        const yesterdaysDay = yesterday.getDate();
         const yesterdayTitle = Calendar.formatDate(yesterday);
+        const [yesterdaysYear, yesterdaysMonth, yesterdaysDay] = Calendar.splitDate(yesterday);
         const yesterdayURL = `?view=day&amp;year=${yesterdaysYear}&amp;month=${yesterdaysMonth}&amp;day=${yesterdaysDay}`;
 
         const tomorrow = new Date(year, month, day + 1);
-        const tomorrowsYear = tomorrow.getFullYear();
-        const tomorrowsMonth = tomorrow.getMonth();
-        const tomorrowsDay = tomorrow.getDate();
         const tomorrowTitle = Calendar.formatDate(tomorrow);
+        const [tomorrowsYear, tomorrowsMonth, tomorrowsDay] = Calendar.splitDate(tomorrow);
         const tomorrowURL = `?view=day&amp;year=${tomorrowsYear}&amp;month=${tomorrowsMonth}&amp;day=${tomorrowsDay}`;
 
         let html = '<nav>';
@@ -310,10 +321,7 @@ class Calendar {
     }
 
     static renderDay(year, month, day) {
-        const nowYear = Calendar.now.getFullYear();
-        const nowMonth = Calendar.now.getMonth();
-        const nowDay = Calendar.now.getDate();
-        const nowHour = Calendar.now.getHours();
+        const [nowYear, nowMonth, nowDay, nowHour] = Calendar.splitDate(Calendar.now);
 
         let html = '<table class="day"><thead><tr>';
         html += '<th class="time">Time</th>';
@@ -350,9 +358,7 @@ class Calendar {
         const nextMonthsYear = after.getFullYear();
         const nextMonth = after.getMonth();
 
-        const nowYear = Calendar.now.getFullYear();
-        const nowMonth = Calendar.now.getMonth();
-        const nowDay = Calendar.now.getDate();
+        const [nowYear, nowMonth, nowDay] = Calendar.splitDate(Calendar.now);
 
         // Which day of the week does this month start on?
         const monthStartsOn = new Date(year, month, 1).getDay();
