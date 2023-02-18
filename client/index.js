@@ -109,6 +109,13 @@ class Calendar {
         document.querySelector('nav form').submit();
     }
 
+    static getURL(view, year, month = null, day = null) {
+        let url = `?view=${view}&year=${year}`;
+        url += (month !== null) ? `&month=${month}` : '';
+        url += (day !== null) ? `&day=${day}` : '';
+        return url;
+    }
+
     static getMonthLength(year, month) {
         if (Calendar.monthLengths.hasOwnProperty(year) === false) {
             Calendar.monthLengths[year] = {};
@@ -207,15 +214,14 @@ class Calendar {
         return parts;
     }
 
-    static renderCommonNav(year, month, day, view) {
-        const dateQuery = `year=${year}&amp;month=${month}&amp;day=${day}`;
-        const yearURL = `?view=year&amp;${dateQuery}`;
-        const monthURL = `?view=month&amp;${dateQuery}`;
-        const dayURL = `?view=day&amp;${dateQuery}`;
+    static renderCommonNav(view, year, month, day) {
+        const yearURL = Calendar.getURL('year', year, month, day);
+        const monthURL = Calendar.getURL('month', year, month, day);
+        const dayURL = Calendar.getURL('day', year, month, day);
 
         const nowTitle = Calendar.formatDate(Calendar.now);
         const [nowYear, nowMonth, nowDay] = Calendar.splitDate(Calendar.now);
-        const nowURL = `?view=${view}&amp;year=${nowYear}&amp;month=${nowMonth}&amp;day=${nowDay}`;
+        const nowURL = Calendar.getURL(view, nowYear, nowMonth, nowDay);
 
         let html = `<a href="${yearURL}" class="this-year">Year</a>`;
         html += `<a href="${monthURL}" class="this-month">Month</a>`;
@@ -229,15 +235,15 @@ class Calendar {
         const yesterday = new Date(year, month, day - 1);
         const yesterdayTitle = Calendar.formatDate(yesterday);
         const [yesterdaysYear, yesterdaysMonth, yesterdaysDay] = Calendar.splitDate(yesterday);
-        const yesterdayURL = `?view=day&amp;year=${yesterdaysYear}&amp;month=${yesterdaysMonth}&amp;day=${yesterdaysDay}`;
+        const yesterdayURL = Calendar.getURL('day', yesterdaysYear, yesterdaysMonth, yesterdaysDay);
 
         const tomorrow = new Date(year, month, day + 1);
         const tomorrowTitle = Calendar.formatDate(tomorrow);
         const [tomorrowsYear, tomorrowsMonth, tomorrowsDay] = Calendar.splitDate(tomorrow);
-        const tomorrowURL = `?view=day&amp;year=${tomorrowsYear}&amp;month=${tomorrowsMonth}&amp;day=${tomorrowsDay}`;
+        const tomorrowURL = Calendar.getURL('day', tomorrowsYear, tomorrowsMonth, tomorrowsDay);
 
         let html = '<nav>';
-        html += Calendar.renderCommonNav(year, month, day, 'day');
+        html += Calendar.renderCommonNav('day', year, month, day);
 
         html += '<form action="" method="get">';
         html += '<input type="hidden" name="view" value="day">';
@@ -265,13 +271,13 @@ class Calendar {
     }
 
     static renderMonthNav(year, month, day) {
-        const lastMonthURL = `?view=month&amp;year=${year}&amp;month=${month - 1}`;
-        const nextMonthURL = `?view=month&amp;year=${year}&amp;month=${month + 1}`;
-        const lastYearURL = `?view=month&amp;year=${year - 1}&amp;month=${month}`;
-        const nextYearURL = `?view=month&amp;year=${year + 1}&amp;month=${month}`;
+        const lastMonthURL = Calendar.getURL('month', year, month - 1);
+        const nextMonthURL = Calendar.getURL('month', year, month + 1);
+        const lastYearURL = Calendar.getURL('month', year - 1, month);
+        const nextYearURL = Calendar.getURL('month', year + 1, month);
 
         let html = '<nav>';
-        html += Calendar.renderCommonNav(year, month, day, 'month');
+        html += Calendar.renderCommonNav('month', year, month, day);
 
         html += '<form action="" method="get">';
         html += '<input type="hidden" name="view" value="month">';
@@ -297,11 +303,11 @@ class Calendar {
     }
 
     static renderYearNav(year, month, day) {
-        const lastYearURL = `?view=year&amp;year=${year - 1}`;
-        const nextYearURL = `?view=year&amp;year=${year + 1}`;
+        const lastYearURL = Calendar.getURL('year', year - 1);
+        const nextYearURL = Calendar.getURL('year', year + 1);
 
         let html = '<nav>';
-        html += Calendar.renderCommonNav(year, month, day, 'year');
+        html += Calendar.renderCommonNav('year', year, month, day);
 
         html += '<form action="" method="get">';
         html += '<input type="hidden" name="view" value="year">';
@@ -423,7 +429,7 @@ class Calendar {
 
                 let td = `${day}`;
                 if (small === false) {
-                    const dateURL = `?view=day&amp;year=${showYear}&amp;month=${showMonth}&amp;day=${day}`;
+                    const dateURL = Calendar.getURL('day', showYear, showMonth, day);
                     td = `<a href="${dateURL}">${day}<span></span></a>`;
                 }
 
@@ -460,7 +466,7 @@ class Calendar {
 
         for (let m = 0; m < 12; m++) {
             const d = (m === month) ? day : 1;
-            const monthURL = `?view=month&amp;year=${year}&amp;month=${m}&amp;day=${d}`;
+            const monthURL = Calendar.getURL('month', year, m, d);
             const monthName = Calendar.monthNames[m];
 
             html += `<div class="month" id="month-${m}">`;
