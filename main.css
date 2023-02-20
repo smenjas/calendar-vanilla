@@ -48,16 +48,16 @@ form#event {
   float: right;
 }
 
-#events th.event-name {
+#events th.event-id {
   border-top-left-radius: 1rem;
 }
-#events th.event-end {
+#events th.event-days {
   border-top-right-radius: 1rem;
 }
-#events tr.last-row td.event-name {
+#events tr.last-row td.event-id {
   border-bottom-left-radius: 1rem;
 }
-#events tr.last-row td.event-end {
+#events tr.last-row td.event-days {
   border-bottom-right-radius: 1rem;
 }
 
