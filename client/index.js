@@ -28,6 +28,7 @@ class Calendar {
         let year = params.get('year');
         let month = params.get('month');
         let day = params.get('day');
+        let eventID = params.get('eventID');
 
         if (!view) {
             view = 'month';
@@ -58,10 +59,11 @@ class Calendar {
         this.query['month'] = date.getMonth();
         this.query['day'] = date.getDate();
         this.query['view'] = view.toLowerCase();
+        this.query['eventID'] = eventID;
     }
 
     render() {
-        const { year, month, day, view } = this.query;
+        const { year, month, day, view, eventID } = this.query;
 
         let html = '<div class="calendar">';
 
@@ -70,7 +72,7 @@ class Calendar {
                 html += '<nav>';
                 html += Calendar.renderCommonNav(view, year, month, day);
                 html += '</nav>';
-                html += this.renderEventForm(year, month, day);
+                html += this.renderEventForm(eventID, year, month, day);
                 html += Calendar.renderEvents();
                 break;
             case 'year':
@@ -117,7 +119,7 @@ class Calendar {
         document.querySelector('nav form').submit();
     }
 
-    static processEvent(event) {
+    static processEvent(event, eventID) {
         const startDate = new Date(event.startYear, event.startMonth, event.startDay);
         const endDate = new Date(event.endYear, event.endMonth, event.endDay);
 
@@ -139,25 +141,67 @@ class Calendar {
             event.notes = event.notes.substring(0, Calendar.maxLength);
         }
 
-        return event;
+        let events = JSON.parse(localStorage.getItem('events')) || [];
+        let oldDateList = [];
+
+        if (eventID === null) {
+            eventID = events.length;
+            events.push(event);
+        }
+        else {
+            const oldEvent = events[eventID];
+            oldDateList = Calendar.listEventDates(oldEvent);
+            events[eventID] = event;
+        }
+
+        const dateList = Calendar.listEventDates(event);
+        Calendar.updateEventDates(eventID, dateList, oldDateList);
+        localStorage.setItem('events', JSON.stringify(events));
     }
 
-    static getEventDates(eventDates, event, eventID) {
+    static listEventDates(event) {
         let offset = 0;
         let date = new Date(event.startYear, event.startMonth, event.startDay);
         const endDate = new Date(event.endYear, event.endMonth, event.endDay, 23, 59, 59);
+        const dateList = [];
 
         while (date < endDate) {
             const iso10 = date.toISOString().substring(0, 10);
-            if (eventDates.hasOwnProperty(iso10) === false) {
-                eventDates[iso10] = [];
-            }
-            eventDates[iso10].push(eventID);
+            dateList.push(iso10);
             offset += 1;
-            date = new Date(event.startYear, event.startMonth, event.startDay + offset);
+            date = new Date(event.startYear, event.startMonth, parseInt(event.startDay) + offset);
         }
 
-        return eventDates;
+        return dateList;
+    }
+
+    static updateEventDates(eventID, dateList, oldDateList = []) {
+        let eventDates = JSON.parse(localStorage.getItem('eventDates')) || {};
+        const removeDates = oldDateList.filter(date => !dateList.includes(date));
+        const addDates = dateList.filter(date => !oldDateList.includes(date));
+        console.log(eventDates);
+
+        for (const date of removeDates) {
+            if (eventDates.hasOwnProperty(date) === false) {
+                console.log(`Tried to remove ${date}, not found.`);
+                continue;
+            }
+            const index = eventDates[date].indexOf(eventID);
+            if (index === -1) {
+                console.log(`eventID ${eventID} not found for ${date}`);
+                continue;
+            }
+            eventDates[date].splice(index, 1);
+        }
+
+        for (const date of addDates) {
+            if (eventDates.hasOwnProperty(date) === false) {
+                eventDates[date] = [];
+            }
+            eventDates[date].push(eventID);
+        }
+
+        localStorage.setItem('eventDates', JSON.stringify(eventDates));
     }
 
     static getURL(view, year, month = null, day = null) {
@@ -265,7 +309,7 @@ class Calendar {
         return parts;
     }
 
-    renderEventForm(year = null, month = null, day = null) {
+    renderEventForm(eventID = null, year = null, month = null, day = null) {
         const inputSize = 50;
 
         if (year === null) {
@@ -278,25 +322,45 @@ class Calendar {
             [year, month, day] = Calendar.splitDate(new Date(year, month));
         }
 
-        const event = {
-            name: '',
-            startYear: year,
-            startMonth: month,
-            startDay: day,
-            endYear: year,
-            endMonth: month,
-            endDay: day,
-            location: '',
-            url: '',
-            notes: '',
-        };
+        const event = (eventID !== null && eventID !== '') ?
+            JSON.parse(localStorage.getItem('events'))[eventID] :
+            {
+                name: '',
+                startYear: year,
+                startMonth: month,
+                startDay: day,
+                endYear: year,
+                endMonth: month,
+                endDay: day,
+                location: '',
+                url: '',
+                notes: '',
+            };
 
-        let html = '<h2>Add New Event</h2>';
+        if (event === undefined) {
+            return `<p class="error">eventID ${eventID} not found.</p>`;
+        }
+
+        let html = '';
+
+        if (eventID === null || eventID === '') {
+            html += '<h2>Add New Event</h2>';
+        }
+        else {
+            html += '<h2>Edit Event</h2>';
+        }
+
         html += '<form id="event">';
         html += '<input type="hidden" name="view" value="event">';
         html += `<input type="hidden" name="year" value="${year}">`;
         html += `<input type="hidden" name="month" value="${month}">`;
         html += `<input type="hidden" name="day" value="${day}">`;
+
+        let submitButtonText = "Add Event";
+        if (eventID !== null && eventID !== '') {
+            html += `<input type="hidden" name="eventID" value="${eventID}">`;
+            submitButtonText = "Edit Event";
+        }
 
         html += '<fieldset>';
         html += '<label>Event Name</label>';
@@ -341,7 +405,7 @@ class Calendar {
         html += `<textarea name="event-notes" rows="5" cols="39" maxlength="${Calendar.maxLength}}">${event.notes}</textarea>`;
         html += '<br>';
 
-        html += '<button type="submit">Add Event</button>';
+        html += `<button type="submit">${submitButtonText}</button>`;
         html += '</fieldset>';
         html += '</form>';
 
@@ -349,7 +413,7 @@ class Calendar {
     }
 
     static renderEvents() {
-        let events = JSON.parse(localStorage.getItem('events')) || [];
+        const events = JSON.parse(localStorage.getItem('events')) || [];
 
         if (events.length < 1) {
             return '';
@@ -357,21 +421,31 @@ class Calendar {
 
         let count = 1;
         let html = '<table id="events"><thead><tr>';
+        html += '<th class="event-id">Event ID</th>';
         html += '<th class="event-name">Event Name</th>';
         html += '<th class="event-start">Starts</th>';
         html += '<th class="event-end">Ends</th>';
+        html += '<th class="event-days">Days</th>';
         html += '</tr></thead><tbody>';
 
         for (let eventID = events.length - 1; eventID >= 0; eventID--) {
             const event = events[eventID];
+            const dateList = Calendar.listEventDates(event);
+            const eventURL = `<a href="?view=event&eventID=${eventID}">${eventID}</a>`;
+            const prettyStartDate = Calendar.formatDateParts(event.startYear, event.startMonth, event.startDay);
+            const prettyEndDate = Calendar.formatDateParts(event.endYear, event.endMonth, event.endDay);
             let trClass= '';
+
             if (count++ === events.length) {
                 trClass= ' class="last-row"';
             }
+
             html += `<tr${trClass}>`;
+            html += `<td class="event-id">${eventURL}</td>`;
             html += `<td class="event-name">${event.name}</td>`;
-            html += `<td class="event-start">${Calendar.formatDateParts(event.startYear, event.startMonth, event.startDay)}</td>`;
-            html += `<td class="event-end">${Calendar.formatDateParts(event.endYear, event.endMonth, event.endDay)}</td>`;
+            html += `<td class="event-start">${prettyStartDate}</td>`;
+            html += `<td class="event-end">${prettyEndDate}</td>`;
+            html += `<td class="event-days">${dateList.length}</td>`;
             html += '</tr>';
         }
 
@@ -663,21 +737,15 @@ if (form !== null) {
     form.onsubmit = (submitEvent) => {
         submitEvent.preventDefault();
         let event = {};
+        const eventIDInput = form.querySelector('[name="eventID"]');
+        const eventID = (eventIDInput === null) ? null : eventIDInput.value;
         form.querySelectorAll('[name]').forEach(input => {
             if (input.name.substring(0, 6) === 'event-') {
                 const key = input.name.substring(6);
                 event[key] = input.value;
             }
         });
-        let events = JSON.parse(localStorage.getItem('events')) || [];
-        let eventDates = JSON.parse(localStorage.getItem('eventDates')) || {};
-        event = Calendar.processEvent(event);
-        eventID = events.length;
-        events.push(event);
-        eventDates = Calendar.getEventDates(eventDates, event, eventID);
-        console.log(eventDates);
-        localStorage.setItem('events', JSON.stringify(events));
-        localStorage.setItem('eventDates', JSON.stringify(eventDates));
+        Calendar.processEvent(event, eventID);
         location.reload();
     }
 }
