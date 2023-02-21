@@ -179,7 +179,6 @@ class Calendar {
         let eventDates = JSON.parse(localStorage.getItem('eventDates')) || {};
         const removeDates = oldDateList.filter(date => !dateList.includes(date));
         const addDates = dateList.filter(date => !oldDateList.includes(date));
-        console.log(eventDates);
 
         for (const date of removeDates) {
             if (eventDates.hasOwnProperty(date) === false) {
@@ -596,8 +595,6 @@ class Calendar {
     }
 
     static renderMonth(year, month, small = false) {
-        const monthLength = Calendar.getMonthLength(year, month);
-
         const before = new Date(year, month - 1);
         const lastMonthsYear = before.getFullYear();
         const lastMonth = before.getMonth();
@@ -608,10 +605,12 @@ class Calendar {
         const nextMonth = after.getMonth();
 
         const [nowYear, nowMonth, nowDay] = Calendar.splitDate(Calendar.now);
+        const events = JSON.parse(localStorage.getItem('events')) || [];
+        const eventDates = JSON.parse(localStorage.getItem('eventDates')) || {};
 
         // Which day of the week does this month start on?
         const monthStartsOn = new Date(year, month, 1).getDay();
-
+        const monthLength = Calendar.getMonthLength(year, month);
         const weeksInMonth = Math.ceil((monthLength + monthStartsOn) / 7);
 
         const shortNameFormat = (small === true) ?  'narrow' : 'short';
@@ -670,10 +669,20 @@ class Calendar {
                     tdClass += ' next-month';
                 }
 
-                let td = `${day}`;
+                let date = new Date(showYear, showMonth, day);
+                const iso10 = date.toISOString().substring(0, 10);
+                const eventIDs = eventDates[iso10];
+                console.log(iso10, eventIDs);
+
+                let td = day;
+                if (small === false && eventIDs !== undefined && eventIDs.length > 0) {
+                    let eventsText = eventIDs.length;
+                    eventsText += (eventIDs.length === 1) ? " event" : " events";
+                    td += `<p class="events">${eventsText}</p>`;
+                }
                 if (small === false) {
                     const dateURL = Calendar.getURL('day', showYear, showMonth, day);
-                    td = `<a href="${dateURL}">${day}<span></span></a>`;
+                    td = `<a href="${dateURL}">${td}<span></span></a>`;
                 }
 
                 let tdTitle = Calendar.formatDateParts(showYear, showMonth, day);
