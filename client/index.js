@@ -569,6 +569,11 @@ class Calendar {
     }
 
     static renderDay(year, month, day) {
+        const date = new Date(year, month, day);
+        const iso10 = date.toISOString().substring(0, 10);
+        const events = JSON.parse(localStorage.getItem('events')) || [];
+        const eventDates = JSON.parse(localStorage.getItem('eventDates')) || {};
+        const eventIDs = eventDates[iso10];
         const [nowYear, nowMonth, nowDay, nowHour] = Calendar.splitDate(Calendar.now);
 
         let html = '<table class="day"><thead><tr>';
@@ -577,6 +582,7 @@ class Calendar {
         html += '</thead></tr>';
         html += '<tbody>';
 
+        let eventStarted = false;
         for (let hour = 0; hour < 24; hour++) {
             let trClass = '';
             if (hour === nowHour && day === nowDay
@@ -585,7 +591,23 @@ class Calendar {
             }
             html += `<tr class="time-${hour}${trClass}">`;
             html += `<td class="time">${hour}:00</td>`;
-            html += `<td class="event"></td>`;
+
+            if (eventIDs === undefined || eventIDs.length < 1) {
+                html += `<td class="event"></td>`;
+            }
+            else if (eventStarted === false) {
+                eventStarted = true;
+                let eventsList = '<ul>';
+                eventIDs.forEach(eventID => {
+                    const eventURL = `?view=event&eventID=${eventID}`
+                    const event = events[eventID];
+                    console.log(event);
+                    eventsList += `<li><a href="${eventURL}">${event.name}</a></li>`;
+                });
+                eventsList += '</ul>';
+                html += `<td class="event" rowspan="24">${eventsList}</td>`;
+            }
+
             html += '</tr>';
         }
 
