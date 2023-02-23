@@ -117,6 +117,26 @@ class Calendar {
         document.querySelector('nav form').submit();
     }
 
+    static deleteEvent(eventID) {
+        let events = JSON.parse(localStorage.getItem('events')) || [];
+        const event = events[eventID];
+        const dateList = Calendar.listEventDates(event);
+        Calendar.updateEventDates(eventID, [], dateList);
+        events.splice(eventID, 1);
+        localStorage.setItem('events', JSON.stringify(events));
+
+        let eventDates = JSON.parse(localStorage.getItem('eventDates')) || {};
+        for (const date in eventDates) {
+            for (const index in eventDates[date]) {
+                if (eventDates[date][index] > eventID) {
+                    console.log('Decrementing eventID:', eventDates[date][index]);
+                    eventDates[date][index] -= 1;
+                }
+            }
+        }
+        localStorage.setItem('eventDates', JSON.stringify(eventDates));
+    }
+
     static processEvent(event, eventID) {
         event.name = event.name.trim();
         if (event.name === '') {
@@ -182,13 +202,14 @@ class Calendar {
     }
 
     static updateEventDates(eventID, dateList, oldDateList = []) {
+        eventID = parseInt(eventID);
         let eventDates = JSON.parse(localStorage.getItem('eventDates')) || {};
         const removeDates = oldDateList.filter(date => !dateList.includes(date));
         const addDates = dateList.filter(date => !oldDateList.includes(date));
 
         for (const date of removeDates) {
             if (eventDates.hasOwnProperty(date) === false) {
-                console.log(`Tried to remove ${date}, not found.`);
+                console.log(`Date ${date} not found for eventID ${eventID}`);
                 continue;
             }
             const index = eventDates[date].indexOf(eventID);
@@ -196,6 +217,7 @@ class Calendar {
                 console.log(`eventID ${eventID} not found for ${date}`);
                 continue;
             }
+            console.log(`Deleting eventID ${eventID} from ${date}`);
             eventDates[date].splice(index, 1);
         }
 
@@ -203,7 +225,15 @@ class Calendar {
             if (eventDates.hasOwnProperty(date) === false) {
                 eventDates[date] = [];
             }
+            else {
+                const index = eventDates[date].indexOf(eventID);
+                if (index !== -1) {
+                    console.log(`eventID ${eventID} already exists for ${date}`);
+                    continue;
+                }
+            }
             eventDates[date].push(eventID);
+            console.log(`Adding eventID ${eventID} for ${date}`);
         }
 
         localStorage.setItem('eventDates', JSON.stringify(eventDates));
@@ -327,8 +357,9 @@ class Calendar {
             [year, month, day] = Calendar.splitDate(new Date(year, month));
         }
 
-        const event = (eventID !== null && eventID !== '') ?
-            JSON.parse(localStorage.getItem('events'))[eventID] :
+        const events = JSON.parse(localStorage.getItem('events'));
+        const event = (eventID !== null && eventID !== '' && events !== null) ?
+            events[eventID] :
             {
                 name: '',
                 startYear: year,
@@ -424,6 +455,11 @@ class Calendar {
         html += '<br>';
 
         html += `<button type="submit">${submitButtonText}</button>`;
+
+        if (eventID !== null && eventID !== '') {
+            html += `<button type="submit" name="delete" class="delete">Delete Event</button>`;
+        }
+
         html += '</fieldset>';
         html += '</form>';
 
@@ -620,7 +656,6 @@ class Calendar {
                 eventIDs.forEach(eventID => {
                     const eventURL = `?view=event&eventID=${eventID}`
                     const event = events[eventID];
-                    console.log(event);
                     eventsList += `<li><a href="${eventURL}" title="${event.notes}">${event.name}</a></li>`;
                 });
                 eventsList += '</ul>';
@@ -713,7 +748,6 @@ class Calendar {
                 let date = new Date(showYear, showMonth, day);
                 const iso10 = date.toISOString().substring(0, 10);
                 const eventIDs = eventDates[iso10];
-                console.log(iso10, eventIDs);
 
                 let td = day;
                 if (small === false && eventIDs !== undefined && eventIDs.length > 0) {
@@ -785,14 +819,20 @@ if (form !== null) {
         submitEvent.preventDefault();
         let event = {};
         const eventIDInput = form.querySelector('[name="eventID"]');
-        const eventID = (eventIDInput === null) ? null : eventIDInput.value;
-        form.querySelectorAll('[name]').forEach(input => {
-            if (input.name.substring(0, 6) === 'event-') {
-                const key = input.name.substring(6);
-                event[key] = input.value;
-            }
-        });
-        Calendar.processEvent(event, eventID);
+        const eventID = (eventIDInput === null) ? null : parseInt(eventIDInput.value);
+        const deleteButton = form.querySelector('button[name="delete"]');
+        if (submitEvent.submitter === deleteButton) {
+            Calendar.deleteEvent(eventID);
+        }
+        else {
+            form.querySelectorAll('[name]').forEach(input => {
+                if (input.name.substring(0, 6) === 'event-') {
+                    const key = input.name.substring(6);
+                    event[key] = input.value;
+                }
+            });
+            Calendar.processEvent(event, eventID);
+        }
         location.reload();
     }
 }
