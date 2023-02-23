@@ -34,11 +34,9 @@ class Calendar {
             view = 'month';
         }
         if (!day) {
-            if (view === 'day') {
+            if (!month) {
+                month = Calendar.now.getMonth();
                 day = Calendar.now.getDate();
-                if (!month) {
-                    month = Calendar.now.getMonth();
-                }
             }
             else {
                 day = 1;
