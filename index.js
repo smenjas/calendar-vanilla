@@ -208,7 +208,7 @@ class Calendar {
         const addDates = dateList.filter(date => !oldDateList.includes(date));
 
         for (const date of removeDates) {
-            if (eventDates.hasOwnProperty(date) === false) {
+            if (Object.hasOwn(eventDates, date) === false) {
                 console.log(`Date ${date} not found for eventID ${eventID}`);
                 continue;
             }
@@ -222,7 +222,7 @@ class Calendar {
         }
 
         for (const date of addDates) {
-            if (eventDates.hasOwnProperty(date) === false) {
+            if (Object.hasOwn(eventDates, date) === false) {
                 eventDates[date] = [];
             }
             else {
@@ -247,7 +247,7 @@ class Calendar {
     }
 
     static getMonthLength(year, month) {
-        if (Calendar.monthLengths.hasOwnProperty(year) === false) {
+        if (Object.hasOwn(Calendar.monthLengths, year) === false) {
             Calendar.monthLengths[year] = {};
         }
 
