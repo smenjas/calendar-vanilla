@@ -402,12 +402,25 @@ class Calendar {
         html += '</select>';
         html += '<br>';
 
-        html += '<label>Location</label>';
+        if (event.location.length > 0) {
+            const locationURL = "https://www.google.com/maps/place/" + encodeURIComponent(event.location);
+            html += `<label><a href="${locationURL}" target="_blank">Location</a></label>`;
+        }
+        else {
+            html += '<label>Location</label>';
+        }
         html += `<input name="event-location" value="${event.location}" size="${inputSize}" maxlength="${Calendar.maxLength}}">`;
         html += '<br>';
-        html += '<label>URL</label>';
+
+        if (event.url.length > 0) {
+            html += `<label><a href="${event.url}" target="_blank">URL</a></label>`;
+        }
+        else {
+            html += '<label>URL</label>';
+        }
         html += `<input name="event-url" value="${event.url}" size="${inputSize}" maxlength="${Calendar.maxLength}}">`;
         html += '<br>';
+
         html += '<label>Notes</label>';
         html += `<textarea name="event-notes" rows="5" cols="39" maxlength="${Calendar.maxLength}}">${event.notes}</textarea>`;
         html += '<br>';
