@@ -120,6 +120,11 @@ class Calendar {
     }
 
     static processEvent(event, eventID) {
+        event.name = event.name.trim();
+        if (event.name === '') {
+            return;
+        }
+
         const startDate = new Date(event.startYear, event.startMonth, event.startDay);
         const endDate = new Date(event.endYear, event.endMonth, event.endDay);
 
@@ -131,12 +136,15 @@ class Calendar {
         if (event.name.length > Calendar.maxLength) {
             event.name = event.name.substring(0, Calendar.maxLength);
         }
+        event.location = event.location.trim();
         if (event.location.length > Calendar.maxLength) {
             event.location = event.location.substring(0, Calendar.maxLength);
         }
+        event.url = event.url.trim();
         if (event.url.length > Calendar.maxLength) {
             event.url = event.url.substring(0, Calendar.maxLength);
         }
+        event.notes = event.notes.trim();
         if (event.notes.length > Calendar.maxLength) {
             event.notes = event.notes.substring(0, Calendar.maxLength);
         }
@@ -363,7 +371,7 @@ class Calendar {
 
         html += '<fieldset>';
         html += '<label>Event Name</label>';
-        html += `<input name="event-name" value="${event.name}" size="${inputSize}" maxlength="${Calendar.maxLength}}">`;
+        html += `<input name="event-name" value="${event.name}" size="${inputSize}" maxlength="${Calendar.maxLength}}" required>`;
         html += '<br>';
 
         html += '<label>Starts</label>';
@@ -758,10 +766,7 @@ class Calendar {
 const myCalendar = new Calendar();
 myCalendar.render();
 
-/*
-localStorage.setItem('events', '[]'); // Clear all events.
-localStorage.setItem('eventDates', '{}'); // Clear all events.
-*/
+//localStorage.clear();
 
 const form = document.querySelector('form#event');
 if (form !== null) {
