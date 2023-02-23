@@ -196,7 +196,7 @@ class Calendar {
 
         form.onsubmit = (submitEvent) => {
             submitEvent.preventDefault();
-            let event = {};
+            const event = {};
             const eventIDInput = form.querySelector('[name="eventID"]');
             const eventID = (eventIDInput === null) ? null : parseInt(eventIDInput.value);
             const deleteButton = form.querySelector('button[name="delete"]');
@@ -210,6 +210,7 @@ class Calendar {
                         event[key] = input.value;
                     }
                 });
+                event.completed = form.querySelector('[name="event-completed"]').checked;
                 Calendar.processEvent(event, eventID);
             }
             location.reload();
@@ -483,6 +484,11 @@ class Calendar {
         html += `<textarea name="event-notes" rows="5" cols="39" maxlength="${Calendar.maxLength}}">${event.notes}</textarea>`;
         html += '<br>';
 
+        const checked = (event.completed === true) ? ' checked' : '';
+        html += '<label>Completed</label>';
+        html += `<input type="checkbox" name="event-completed"${checked}>`;
+        html += '<br>';
+
         html += `<button type="submit">${submitButtonText}</button>`;
 
         if (eventID !== null && eventID !== '') {
@@ -679,9 +685,13 @@ class Calendar {
                 eventStarted = true;
                 let eventsList = '<ul>';
                 eventIDs.forEach(eventID => {
-                    const eventURL = `?view=event&eventID=${eventID}`
                     const event = Calendar.events[eventID];
-                    eventsList += `<li><a href="${eventURL}" title="${event.notes}">${event.name}</a></li>`;
+                    const eventURL = `?view=event&eventID=${eventID}`
+                    const eventLink = `<a href="${eventURL}" title="${event.notes}">${event.name}</a>`;
+                    const checked = (event.completed) ? ' checked' : '';
+                    const checkboxTitle = (event.completed) ? 'Completed' : 'Not completed';
+                    const checkbox = `<input type="checkbox" title="${checkboxTitle}" disabled${checked}>`;
+                    eventsList += `<li>${checkbox} ${eventLink}</li>`;
                 });
                 eventsList += '</ul>';
                 html += `<td class="event" rowspan="24">${eventsList}</td>`;
