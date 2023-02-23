@@ -36,7 +36,7 @@ form#event {
   font-size: 1.5rem;
   float: left;
   width: 10rem;
-  padding-right: 1rem;
+  margin: 0.188rem 1rem 0 0;
   text-align: right;
 }
 #event input {
@@ -59,6 +59,16 @@ form#event {
 }
 #events tr.last-row td.event-days {
   border-bottom-right-radius: 1rem;
+}
+
+#events td.event-id,
+#events td.event-days {
+  text-align: right;
+}
+#events td.event-name,
+#events td.event-start,
+#events td.event-end {
+  text-align: left;
 }
 
 nav a, nav a:visited {
@@ -133,6 +143,23 @@ nav a.next-month, nav a.next-year, nav a.tomorrow {
 .calendar .day .time {
   text-align: right;
   width: 3rem;
+}
+.calendar .day .event {
+  text-align: left;
+  vertical-align: top;
+}
+.calendar .day .event ul {
+  border: 1px solid #777;
+  border-radius: 0.5rem;
+  margin: 0;
+  padding: 1.125rem 1rem;
+}
+.calendar .day .event li {
+  list-style-type: none;
+  padding-bottom: 1.125rem;
+}
+.calendar .day .event li:last-child {
+  padding-bottom: 0;
 }
 
 /*
