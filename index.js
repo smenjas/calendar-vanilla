@@ -371,7 +371,7 @@ class Calendar {
 
         html += '<fieldset>';
         html += '<label>Event Name</label>';
-        html += `<input name="event-name" value="${event.name}" size="${inputSize}" maxlength="${Calendar.maxLength}}" required>`;
+        html += `<input name="event-name" value="${event.name}" size="${inputSize}" maxlength="${Calendar.maxLength}}" required autofocus>`;
         html += '<br>';
 
         html += '<label>Starts</label>';
