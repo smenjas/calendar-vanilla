@@ -14,6 +14,8 @@ class HTML {
 }
 
 class Calendar {
+    static eventDates = JSON.parse(localStorage.getItem('eventDates')) || {};
+    static events = JSON.parse(localStorage.getItem('events')) || [];
     static now = new Date();
     static language = 'en-us';
     static maxLength = 255;
@@ -118,23 +120,21 @@ class Calendar {
     }
 
     static deleteEvent(eventID) {
-        let events = JSON.parse(localStorage.getItem('events')) || [];
-        const event = events[eventID];
+        const event = Calendar.events[eventID];
         const dateList = Calendar.listEventDates(event);
         Calendar.updateEventDates(eventID, [], dateList);
-        events.splice(eventID, 1);
-        localStorage.setItem('events', JSON.stringify(events));
+        Calendar.events.splice(eventID, 1);
+        localStorage.setItem('events', JSON.stringify(Calendar.events));
 
-        let eventDates = JSON.parse(localStorage.getItem('eventDates')) || {};
-        for (const date in eventDates) {
-            for (const index in eventDates[date]) {
-                if (eventDates[date][index] > eventID) {
-                    console.log('Decrementing eventID:', eventDates[date][index]);
-                    eventDates[date][index] -= 1;
+        for (const date in Calendar.eventDates) {
+            for (const index in Calendar.eventDates[date]) {
+                if (Calendar.eventDates[date][index] > eventID) {
+                    console.log('Decrementing eventID:', Calendar.eventDates[date][index]);
+                    Calendar.eventDates[date][index] -= 1;
                 }
             }
         }
-        localStorage.setItem('eventDates', JSON.stringify(eventDates));
+        localStorage.setItem('eventDates', JSON.stringify(Calendar.eventDates));
     }
 
     static processEvent(event, eventID) {
@@ -167,22 +167,21 @@ class Calendar {
             event.notes = event.notes.substring(0, Calendar.maxLength);
         }
 
-        let events = JSON.parse(localStorage.getItem('events')) || [];
         let oldDateList = [];
 
         if (eventID === null) {
-            eventID = events.length;
-            events.push(event);
+            eventID = Calendar.events.length;
+            Calendar.events.push(event);
         }
         else {
-            const oldEvent = events[eventID];
+            const oldEvent = Calendar.events[eventID];
             oldDateList = Calendar.listEventDates(oldEvent);
-            events[eventID] = event;
+            Calendar.events[eventID] = event;
         }
 
         const dateList = Calendar.listEventDates(event);
         Calendar.updateEventDates(eventID, dateList, oldDateList);
-        localStorage.setItem('events', JSON.stringify(events));
+        localStorage.setItem('events', JSON.stringify(Calendar.events));
     }
 
     static listEventDates(event) {
@@ -203,40 +202,39 @@ class Calendar {
 
     static updateEventDates(eventID, dateList, oldDateList = []) {
         eventID = parseInt(eventID);
-        let eventDates = JSON.parse(localStorage.getItem('eventDates')) || {};
         const removeDates = oldDateList.filter(date => !dateList.includes(date));
         const addDates = dateList.filter(date => !oldDateList.includes(date));
 
         for (const date of removeDates) {
-            if (Object.hasOwn(eventDates, date) === false) {
+            if (Object.hasOwn(Calendar.eventDates, date) === false) {
                 console.log(`Date ${date} not found for eventID ${eventID}`);
                 continue;
             }
-            const index = eventDates[date].indexOf(eventID);
+            const index = Calendar.eventDates[date].indexOf(eventID);
             if (index === -1) {
                 console.log(`eventID ${eventID} not found for ${date}`);
                 continue;
             }
             console.log(`Deleting eventID ${eventID} from ${date}`);
-            eventDates[date].splice(index, 1);
+            Calendar.eventDates[date].splice(index, 1);
         }
 
         for (const date of addDates) {
-            if (Object.hasOwn(eventDates, date) === false) {
-                eventDates[date] = [];
+            if (Object.hasOwn(Calendar.eventDates, date) === false) {
+                Calendar.eventDates[date] = [];
             }
             else {
-                const index = eventDates[date].indexOf(eventID);
+                const index = Calendar.eventDates[date].indexOf(eventID);
                 if (index !== -1) {
                     console.log(`eventID ${eventID} already exists for ${date}`);
                     continue;
                 }
             }
-            eventDates[date].push(eventID);
+            Calendar.eventDates[date].push(eventID);
             console.log(`Adding eventID ${eventID} for ${date}`);
         }
 
-        localStorage.setItem('eventDates', JSON.stringify(eventDates));
+        localStorage.setItem('eventDates', JSON.stringify(Calendar.eventDates));
     }
 
     static getURL(view, year, month = null, day = null) {
@@ -357,9 +355,8 @@ class Calendar {
             [year, month, day] = Calendar.splitDate(new Date(year, month));
         }
 
-        const events = JSON.parse(localStorage.getItem('events'));
-        const event = (eventID !== null && eventID !== '' && events !== null) ?
-            events[eventID] :
+        const event = (eventID !== null && eventID !== '' && Calendar.events !== null) ?
+            Calendar.events[eventID] :
             {
                 name: '',
                 startYear: year,
@@ -467,9 +464,7 @@ class Calendar {
     }
 
     static renderEvents() {
-        const events = JSON.parse(localStorage.getItem('events')) || [];
-
-        if (events.length < 1) {
+        if (Calendar.events.length < 1) {
             return '';
         }
 
@@ -482,15 +477,15 @@ class Calendar {
         html += '<th class="event-days">Days</th>';
         html += '</tr></thead><tbody>';
 
-        for (let eventID = events.length - 1; eventID >= 0; eventID--) {
-            const event = events[eventID];
+        for (let eventID = Calendar.events.length - 1; eventID >= 0; eventID--) {
+            const event = Calendar.events[eventID];
             const dateList = Calendar.listEventDates(event);
             const eventURL = `<a href="?view=event&eventID=${eventID}">${eventID}</a>`;
             const prettyStartDate = Calendar.formatDateParts(event.startYear, event.startMonth, event.startDay);
             const prettyEndDate = Calendar.formatDateParts(event.endYear, event.endMonth, event.endDay);
             let trClass= '';
 
-            if (count++ === events.length) {
+            if (count++ === Calendar.events.length) {
                 trClass= ' class="last-row"';
             }
 
@@ -626,9 +621,7 @@ class Calendar {
     static renderDay(year, month, day) {
         const date = new Date(year, month, day);
         const iso10 = date.toISOString().substring(0, 10);
-        const events = JSON.parse(localStorage.getItem('events')) || [];
-        const eventDates = JSON.parse(localStorage.getItem('eventDates')) || {};
-        const eventIDs = eventDates[iso10];
+        const eventIDs = Calendar.eventDates[iso10];
         const [nowYear, nowMonth, nowDay, nowHour] = Calendar.splitDate(Calendar.now);
 
         let html = '<table class="day"><thead><tr>';
@@ -655,7 +648,7 @@ class Calendar {
                 let eventsList = '<ul>';
                 eventIDs.forEach(eventID => {
                     const eventURL = `?view=event&eventID=${eventID}`
-                    const event = events[eventID];
+                    const event = Calendar.events[eventID];
                     eventsList += `<li><a href="${eventURL}" title="${event.notes}">${event.name}</a></li>`;
                 });
                 eventsList += '</ul>';
@@ -681,8 +674,6 @@ class Calendar {
         const nextMonth = after.getMonth();
 
         const [nowYear, nowMonth, nowDay] = Calendar.splitDate(Calendar.now);
-        const events = JSON.parse(localStorage.getItem('events')) || [];
-        const eventDates = JSON.parse(localStorage.getItem('eventDates')) || {};
 
         // Which day of the week does this month start on?
         const monthStartsOn = new Date(year, month, 1).getDay();
@@ -747,7 +738,7 @@ class Calendar {
 
                 let date = new Date(showYear, showMonth, day);
                 const iso10 = date.toISOString().substring(0, 10);
-                const eventIDs = eventDates[iso10];
+                const eventIDs = Calendar.eventDates[iso10];
 
                 let td = day;
                 if (small === false && eventIDs !== undefined && eventIDs.length > 0) {
