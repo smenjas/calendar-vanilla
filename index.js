@@ -610,7 +610,7 @@ class Calendar {
                     const eventURL = `?view=event&eventID=${eventID}`
                     const event = events[eventID];
                     console.log(event);
-                    eventsList += `<li><a href="${eventURL}">${event.name}</a></li>`;
+                    eventsList += `<li><a href="${eventURL}" title="${event.notes}">${event.name}</a></li>`;
                 });
                 eventsList += '</ul>';
                 html += `<td class="event" rowspan="24">${eventsList}</td>`;
