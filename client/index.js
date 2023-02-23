@@ -34,11 +34,9 @@ class Calendar {
             view = 'month';
         }
         if (!day) {
-            if (view === 'day') {
+            if (!month) {
+                month = Calendar.now.getMonth();
                 day = Calendar.now.getDate();
-                if (!month) {
-                    month = Calendar.now.getMonth();
-                }
             }
             else {
                 day = 1;
@@ -119,7 +117,32 @@ class Calendar {
         document.querySelector('nav form').submit();
     }
 
+    static deleteEvent(eventID) {
+        let events = JSON.parse(localStorage.getItem('events')) || [];
+        const event = events[eventID];
+        const dateList = Calendar.listEventDates(event);
+        Calendar.updateEventDates(eventID, [], dateList);
+        events.splice(eventID, 1);
+        localStorage.setItem('events', JSON.stringify(events));
+
+        let eventDates = JSON.parse(localStorage.getItem('eventDates')) || {};
+        for (const date in eventDates) {
+            for (const index in eventDates[date]) {
+                if (eventDates[date][index] > eventID) {
+                    console.log('Decrementing eventID:', eventDates[date][index]);
+                    eventDates[date][index] -= 1;
+                }
+            }
+        }
+        localStorage.setItem('eventDates', JSON.stringify(eventDates));
+    }
+
     static processEvent(event, eventID) {
+        event.name = event.name.trim();
+        if (event.name === '') {
+            return;
+        }
+
         const startDate = new Date(event.startYear, event.startMonth, event.startDay);
         const endDate = new Date(event.endYear, event.endMonth, event.endDay);
 
@@ -131,12 +154,15 @@ class Calendar {
         if (event.name.length > Calendar.maxLength) {
             event.name = event.name.substring(0, Calendar.maxLength);
         }
+        event.location = event.location.trim();
         if (event.location.length > Calendar.maxLength) {
             event.location = event.location.substring(0, Calendar.maxLength);
         }
+        event.url = event.url.trim();
         if (event.url.length > Calendar.maxLength) {
             event.url = event.url.substring(0, Calendar.maxLength);
         }
+        event.notes = event.notes.trim();
         if (event.notes.length > Calendar.maxLength) {
             event.notes = event.notes.substring(0, Calendar.maxLength);
         }
@@ -176,13 +202,14 @@ class Calendar {
     }
 
     static updateEventDates(eventID, dateList, oldDateList = []) {
+        eventID = parseInt(eventID);
         let eventDates = JSON.parse(localStorage.getItem('eventDates')) || {};
         const removeDates = oldDateList.filter(date => !dateList.includes(date));
         const addDates = dateList.filter(date => !oldDateList.includes(date));
 
         for (const date of removeDates) {
             if (eventDates.hasOwnProperty(date) === false) {
-                console.log(`Tried to remove ${date}, not found.`);
+                console.log(`Date ${date} not found for eventID ${eventID}`);
                 continue;
             }
             const index = eventDates[date].indexOf(eventID);
@@ -190,6 +217,7 @@ class Calendar {
                 console.log(`eventID ${eventID} not found for ${date}`);
                 continue;
             }
+            console.log(`Deleting eventID ${eventID} from ${date}`);
             eventDates[date].splice(index, 1);
         }
 
@@ -197,7 +225,15 @@ class Calendar {
             if (eventDates.hasOwnProperty(date) === false) {
                 eventDates[date] = [];
             }
+            else {
+                const index = eventDates[date].indexOf(eventID);
+                if (index !== -1) {
+                    console.log(`eventID ${eventID} already exists for ${date}`);
+                    continue;
+                }
+            }
             eventDates[date].push(eventID);
+            console.log(`Adding eventID ${eventID} for ${date}`);
         }
 
         localStorage.setItem('eventDates', JSON.stringify(eventDates));
@@ -321,8 +357,9 @@ class Calendar {
             [year, month, day] = Calendar.splitDate(new Date(year, month));
         }
 
-        const event = (eventID !== null && eventID !== '') ?
-            JSON.parse(localStorage.getItem('events'))[eventID] :
+        const events = JSON.parse(localStorage.getItem('events'));
+        const event = (eventID !== null && eventID !== '' && events !== null) ?
+            events[eventID] :
             {
                 name: '',
                 startYear: year,
@@ -363,7 +400,7 @@ class Calendar {
 
         html += '<fieldset>';
         html += '<label>Event Name</label>';
-        html += `<input name="event-name" value="${event.name}" size="${inputSize}" maxlength="${Calendar.maxLength}}">`;
+        html += `<input name="event-name" value="${event.name}" size="${inputSize}" maxlength="${Calendar.maxLength}}" required autofocus>`;
         html += '<br>';
 
         html += '<label>Starts</label>';
@@ -394,17 +431,35 @@ class Calendar {
         html += '</select>';
         html += '<br>';
 
-        html += '<label>Location</label>';
+        if (event.location.length > 0) {
+            const locationURL = "https://www.google.com/maps/place/" + encodeURIComponent(event.location);
+            html += `<label><a href="${locationURL}" target="_blank">Location</a></label>`;
+        }
+        else {
+            html += '<label>Location</label>';
+        }
         html += `<input name="event-location" value="${event.location}" size="${inputSize}" maxlength="${Calendar.maxLength}}">`;
         html += '<br>';
-        html += '<label>URL</label>';
+
+        if (event.url.length > 0) {
+            html += `<label><a href="${event.url}" target="_blank">URL</a></label>`;
+        }
+        else {
+            html += '<label>URL</label>';
+        }
         html += `<input name="event-url" value="${event.url}" size="${inputSize}" maxlength="${Calendar.maxLength}}">`;
         html += '<br>';
+
         html += '<label>Notes</label>';
         html += `<textarea name="event-notes" rows="5" cols="39" maxlength="${Calendar.maxLength}}">${event.notes}</textarea>`;
         html += '<br>';
 
         html += `<button type="submit">${submitButtonText}</button>`;
+
+        if (eventID !== null && eventID !== '') {
+            html += `<button type="submit" name="delete" class="delete">Delete Event</button>`;
+        }
+
         html += '</fieldset>';
         html += '</form>';
 
@@ -601,8 +656,7 @@ class Calendar {
                 eventIDs.forEach(eventID => {
                     const eventURL = `?view=event&eventID=${eventID}`
                     const event = events[eventID];
-                    console.log(event);
-                    eventsList += `<li><a href="${eventURL}">${event.name}</a></li>`;
+                    eventsList += `<li><a href="${eventURL}" title="${event.notes}">${event.name}</a></li>`;
                 });
                 eventsList += '</ul>';
                 html += `<td class="event" rowspan="24">${eventsList}</td>`;
@@ -694,7 +748,6 @@ class Calendar {
                 let date = new Date(showYear, showMonth, day);
                 const iso10 = date.toISOString().substring(0, 10);
                 const eventIDs = eventDates[iso10];
-                console.log(iso10, eventIDs);
 
                 let td = day;
                 if (small === false && eventIDs !== undefined && eventIDs.length > 0) {
@@ -758,10 +811,7 @@ class Calendar {
 const myCalendar = new Calendar();
 myCalendar.render();
 
-/*
-localStorage.setItem('events', '[]'); // Clear all events.
-localStorage.setItem('eventDates', '{}'); // Clear all events.
-*/
+//localStorage.clear();
 
 const form = document.querySelector('form#event');
 if (form !== null) {
@@ -769,14 +819,20 @@ if (form !== null) {
         submitEvent.preventDefault();
         let event = {};
         const eventIDInput = form.querySelector('[name="eventID"]');
-        const eventID = (eventIDInput === null) ? null : eventIDInput.value;
-        form.querySelectorAll('[name]').forEach(input => {
-            if (input.name.substring(0, 6) === 'event-') {
-                const key = input.name.substring(6);
-                event[key] = input.value;
-            }
-        });
-        Calendar.processEvent(event, eventID);
+        const eventID = (eventIDInput === null) ? null : parseInt(eventIDInput.value);
+        const deleteButton = form.querySelector('button[name="delete"]');
+        if (submitEvent.submitter === deleteButton) {
+            Calendar.deleteEvent(eventID);
+        }
+        else {
+            form.querySelectorAll('[name]').forEach(input => {
+                if (input.name.substring(0, 6) === 'event-') {
+                    const key = input.name.substring(6);
+                    event[key] = input.value;
+                }
+            });
+            Calendar.processEvent(event, eventID);
+        }
         location.reload();
     }
 }
