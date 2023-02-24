@@ -60,6 +60,9 @@ class Calendar {
         this.query['day'] = date.getDate();
         this.query['view'] = view.toLowerCase();
         this.query['eventID'] = eventID;
+
+        this.render();
+        Calendar.processEventForm();
     }
 
     render() {
@@ -182,6 +185,35 @@ class Calendar {
         const dateList = Calendar.listEventDates(event);
         Calendar.updateEventDates(eventID, dateList, oldDateList);
         localStorage.setItem('events', JSON.stringify(Calendar.events));
+    }
+
+    static processEventForm() {
+        const form = document.querySelector('form#event');
+
+        if (form === null) {
+            return;
+        }
+
+        form.onsubmit = (submitEvent) => {
+            submitEvent.preventDefault();
+            let event = {};
+            const eventIDInput = form.querySelector('[name="eventID"]');
+            const eventID = (eventIDInput === null) ? null : parseInt(eventIDInput.value);
+            const deleteButton = form.querySelector('button[name="delete"]');
+            if (submitEvent.submitter === deleteButton) {
+                Calendar.deleteEvent(eventID);
+            }
+            else {
+                form.querySelectorAll('[name]').forEach(input => {
+                    if (input.name.substring(0, 6) === 'event-') {
+                        const key = input.name.substring(6);
+                        event[key] = input.value;
+                    }
+                });
+                Calendar.processEvent(event, eventID);
+            }
+            location.reload();
+        }
     }
 
     static listEventDates(event) {
@@ -799,34 +831,9 @@ class Calendar {
     }
 }
 
-const myCalendar = new Calendar();
-myCalendar.render();
-
 /*
 localStorage.setItem('events', '[]');
 localStorage.setItem('eventDates', '{}');
 */
 
-const form = document.querySelector('form#event');
-if (form !== null) {
-    form.onsubmit = (submitEvent) => {
-        submitEvent.preventDefault();
-        let event = {};
-        const eventIDInput = form.querySelector('[name="eventID"]');
-        const eventID = (eventIDInput === null) ? null : parseInt(eventIDInput.value);
-        const deleteButton = form.querySelector('button[name="delete"]');
-        if (submitEvent.submitter === deleteButton) {
-            Calendar.deleteEvent(eventID);
-        }
-        else {
-            form.querySelectorAll('[name]').forEach(input => {
-                if (input.name.substring(0, 6) === 'event-') {
-                    const key = input.name.substring(6);
-                    event[key] = input.value;
-                }
-            });
-            Calendar.processEvent(event, eventID);
-        }
-        location.reload();
-    }
-}
+new Calendar();
