@@ -802,7 +802,10 @@ class Calendar {
 const myCalendar = new Calendar();
 myCalendar.render();
 
-//localStorage.clear();
+/*
+localStorage.setItem('events', '[]');
+localStorage.setItem('eventDates', '{}');
+*/
 
 const form = document.querySelector('form#event');
 if (form !== null) {
