@@ -14,6 +14,7 @@ class HTML {
 }
 
 class Calendar {
+    static categories = JSON.parse(localStorage.getItem('categories')) || [];
     static eventDates = JSON.parse(localStorage.getItem('eventDates')) || {};
     static events = JSON.parse(localStorage.getItem('events')) || [];
     static now = new Date();
@@ -30,6 +31,7 @@ class Calendar {
         let year = params.get('year');
         let month = params.get('month');
         let day = params.get('day');
+        let categoryID = params.get('categoryID');
         let eventID = params.get('eventID');
 
         if (!view) {
@@ -59,18 +61,27 @@ class Calendar {
         this.query['month'] = date.getMonth();
         this.query['day'] = date.getDate();
         this.query['view'] = view.toLowerCase();
+        this.query['categoryID'] = categoryID;
         this.query['eventID'] = eventID;
 
         this.render();
+        Calendar.processCategoryForm();
         Calendar.processEventForm();
     }
 
     render() {
-        const { year, month, day, view, eventID } = this.query;
+        const { year, month, day, view, categoryID, eventID } = this.query;
 
         let html = '<div class="calendar">';
 
         switch (view) {
+            case 'category':
+                html += '<nav>';
+                html += Calendar.renderCommonNav(view, year, month, day);
+                html += '</nav>';
+                html += this.renderCategoryForm(categoryID, year, month, day);
+                html += Calendar.renderCategories();
+                break;
             case 'event':
                 html += '<nav>';
                 html += Calendar.renderCommonNav(view, year, month, day);
@@ -122,6 +133,12 @@ class Calendar {
         document.querySelector('nav form').submit();
     }
 
+    static deleteCategory(categoryID) {
+        const category = Calendar.categories[categoryID];
+        Calendar.categories.splice(categoryID, 1);
+        localStorage.setItem('categories', JSON.stringify(Calendar.categories));
+    }
+
     static deleteEvent(eventID) {
         const event = Calendar.events[eventID];
         const dateList = Calendar.listEventDates(event);
@@ -138,6 +155,61 @@ class Calendar {
             }
         }
         localStorage.setItem('eventDates', JSON.stringify(Calendar.eventDates));
+    }
+
+    static processCategory(category, categoryID) {
+        category.name = category.name.trim();
+        if (category.name === '') {
+            return;
+        }
+
+        if (category.name.length > Calendar.maxLength) {
+            category.name = category.name.substring(0, Calendar.maxLength);
+        }
+        category.color = category.color.trim();
+        if (category.color.length > Calendar.maxLength) {
+            category.color = category.color.substring(0, Calendar.maxLength);
+        }
+
+        if (categoryID === null) {
+            categoryID = Calendar.categories.length;
+            Calendar.categories.push(category);
+        }
+        else {
+            const oldCategory = Calendar.categories[categoryID];
+            Calendar.categories[categoryID] = category;
+        }
+
+        localStorage.setItem('categories', JSON.stringify(Calendar.categories));
+    }
+
+    static processCategoryForm() {
+        const form = document.querySelector('form#category');
+
+        if (form === null) {
+            return;
+        }
+
+        form.onsubmit = (submitEvent) => {
+            submitEvent.preventDefault();
+            const category = {};
+            const categoryIDInput = form.querySelector('[name="categoryID"]');
+            const categoryID = (categoryIDInput === null) ? null : parseInt(categoryIDInput.value);
+            const deleteButton = form.querySelector('button[name="delete"]');
+            if (submitEvent.submitter === deleteButton) {
+                Calendar.deleteCategory(categoryID);
+            }
+            else {
+                form.querySelectorAll('[name]').forEach(input => {
+                    if (input.name.substring(0, 9) === 'category-') {
+                        const key = input.name.substring(9);
+                        category[key] = input.value;
+                    }
+                });
+                Calendar.processCategory(category, categoryID);
+            }
+            location.reload();
+        }
     }
 
     static processEvent(event, eventID) {
@@ -375,6 +447,105 @@ class Calendar {
         return parts;
     }
 
+    renderCategoryForm(categoryID = null, year = null, month = null, day = null) {
+        const inputSize = 50;
+
+        if (year === null) {
+            [year, month, day] = Calendar.splitDate(Calendar.now);
+        }
+        else if (month === null) {
+            [year, month, day] = Calendar.splitDate(new Date(year));
+        }
+        else if (day === null) {
+            [year, month, day] = Calendar.splitDate(new Date(year, month));
+        }
+
+        const category = (categoryID !== null && categoryID !== '' && Calendar.categories !== null) ?
+            Calendar.categories[categoryID] :
+            {
+                name: '',
+                color: '',
+            };
+
+        if (category === undefined) {
+            return `<p class="error">categoryID ${categoryID} not found.</p>`;
+        }
+
+        let html = '';
+
+        if (categoryID === null || categoryID === '') {
+            html += '<h2>Add New Event Category</h2>';
+        }
+        else {
+            html += '<h2>Edit Event Category</h2>';
+        }
+
+        html += '<form id="category">';
+        html += '<input type="hidden" name="view" value="category">';
+        html += `<input type="hidden" name="year" value="${year}">`;
+        html += `<input type="hidden" name="month" value="${month}">`;
+        html += `<input type="hidden" name="day" value="${day}">`;
+
+        let submitButtonText = "Add Event Category";
+        if (categoryID !== null && categoryID !== '') {
+            html += `<input type="hidden" name="categoryID" value="${categoryID}">`;
+            submitButtonText = "Edit Event Category";
+        }
+
+        html += '<fieldset>';
+        html += '<label>Name</label>';
+        html += `<input name="category-name" value="${category.name}" size="${inputSize}" maxlength="${Calendar.maxLength}}" required autofocus>`;
+        html += '<br>';
+
+        html += '<label>Color</label>';
+        html += `<input name="category-color" value="${category.color}" size="${inputSize}" maxlength="${Calendar.maxLength}}">`;
+        html += '<br>';
+
+        html += `<button type="submit">${submitButtonText}</button>`;
+
+        if (categoryID !== null && categoryID !== '') {
+            html += `<button type="submit" name="delete" class="delete">Delete Event Category</button>`;
+        }
+
+        html += '</fieldset>';
+        html += '</form>';
+
+        return html;
+    }
+
+    static renderCategories() {
+        if (Calendar.categories.length < 1) {
+            return '';
+        }
+
+        let count = 1;
+        let html = '<table id="category"><thead><tr>';
+        html += '<th class="category-id">Category ID</th>';
+        html += '<th class="category-name">Category Name</th>';
+        html += '<th class="category-color">Color</th>';
+        html += '</tr></thead><tbody>';
+
+        for (let categoryID = Calendar.categories.length - 1; categoryID >= 0; categoryID--) {
+            const category = Calendar.categories[categoryID];
+            const categoryURL = `<a href="?view=category&categoryID=${categoryID}">${categoryID}</a>`;
+            let trClass= '';
+
+            if (count++ === Calendar.categories.length) {
+                trClass= ' class="last-row"';
+            }
+
+            html += `<tr${trClass}>`;
+            html += `<td class="category-id">${categoryURL}</td>`;
+            html += `<td class="category-name">${category.name}</td>`;
+            html += `<td class="category-color">${category.color}</td>`;
+            html += '</tr>';
+        }
+
+        html += '</tbody></table>';
+
+        return html;
+    }
+
     renderEventForm(eventID = null, year = null, month = null, day = null) {
         const inputSize = 50;
 
@@ -550,13 +721,15 @@ class Calendar {
         const [nowYear, nowMonth, nowDay] = Calendar.splitDate(Calendar.now);
         const nowURL = Calendar.getURL(view, nowYear, nowMonth, nowDay);
 
-        let addURL = Calendar.getURL('event', year, month, day);
+        const eventURL = Calendar.getURL('event', year, month, day);
+        const categoryURL = Calendar.getURL('category', year, month, day);
 
         let html = `<a href="${yearURL}" class="this-year">Year</a>`;
         html += `<a href="${monthURL}" class="this-month">Month</a>`;
         html += `<a href="${dayURL}" class="this-day">Day</a>`;
         html += `<a href="${nowURL}" class="now" title="${nowTitle}">Now</a>`;
-        html += `<a href="${addURL}" class="add" title="Add New Event">Add</a>`;
+        html += `<a href="${eventURL}" class="add" title="Add New Event">Events</a>`;
+        html += `<a href="${categoryURL}" class="add" title="Add New Category">Categories</a>`;
 
         return html;
     }
