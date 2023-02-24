@@ -575,7 +575,7 @@ class Calendar {
         let html = '<nav>';
         html += Calendar.renderCommonNav('day', year, month, day);
 
-        html += '<form action="" method="get">';
+        html += '<form>';
         html += '<input type="hidden" name="view" value="day">';
         html += '<fieldset id="nav-calendar">';
         html += `<a href="${yesterdayURL}" title="${yesterdayTitle}" class="yesterday">&larr;</a>`;
@@ -609,7 +609,7 @@ class Calendar {
         let html = '<nav>';
         html += Calendar.renderCommonNav('month', year, month, day);
 
-        html += '<form action="" method="get">';
+        html += '<form>';
         html += '<input type="hidden" name="view" value="month">';
         html += '<fieldset id="nav-calendar">';
         html += `<a href="${lastYearURL}" class="last-year" title="Previous year">&lArr;</a>`;
@@ -639,7 +639,7 @@ class Calendar {
         let html = '<nav>';
         html += Calendar.renderCommonNav('year', year, month, day);
 
-        html += '<form action="" method="get">';
+        html += '<form>';
         html += '<input type="hidden" name="view" value="year">';
         html += '<fieldset id="nav-calendar">';
         html += `<a href="${lastYearURL}" class="last-year" title="Previous year">&lArr;</a>`;
