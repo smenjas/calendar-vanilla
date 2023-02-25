@@ -20,6 +20,7 @@ class Calendar {
     static now = new Date();
     static language = 'en-us';
     static maxLength = 255;
+    static maxLengthColor = 7;
     static monthLengths = {};
     static monthNames = Calendar.getMonthNames(Calendar.language);
     static weekdayNames = Calendar.getWeekdayNames(Calendar.language);
@@ -167,8 +168,11 @@ class Calendar {
             category.name = category.name.substring(0, Calendar.maxLength);
         }
         category.color = category.color.trim();
-        if (category.color.length > Calendar.maxLength) {
-            category.color = category.color.substring(0, Calendar.maxLength);
+        if (category.color.length > Calendar.maxLengthColor) {
+            category.color = category.color.substring(0, Calendar.maxLengthColor);
+        }
+        if (!/^#[0-9a-f]{6}$/i.test(category.color)) {
+            category.color = '';
         }
 
         if (categoryID === null) {
@@ -498,7 +502,7 @@ class Calendar {
         html += '<br>';
 
         html += '<label>Color</label>';
-        html += `<input name="category-color" value="${category.color}" size="${inputSize}" maxlength="${Calendar.maxLength}}">`;
+        html += `<input name="category-color" value="${category.color}" size="${Calendar.maxLengthColor}" maxlength="${Calendar.maxLengthColor}}">`;
         html += '<br>';
 
         html += `<button type="submit">${submitButtonText}</button>`;
