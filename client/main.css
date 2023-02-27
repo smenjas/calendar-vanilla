@@ -22,7 +22,7 @@ input {
 
 form#category {
   overflow: hidden;
-  width: 50rem;
+  width: 32rem;
   margin: auto;
   text-align: left;
 }
