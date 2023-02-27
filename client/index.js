@@ -24,7 +24,7 @@ class Calendar {
     static monthLengths = {};
     static monthNames = Calendar.getMonthNames(Calendar.language);
     static weekdayNames = Calendar.getWeekdayNames(Calendar.language);
-    static colorPattern = /^#[0-9a-f]{6}$/i;
+    static colorPattern = /^#([0-9a-f]{6}|[0-9a-f]{3})$/i;
 
     constructor() {
         const params = new URLSearchParams(window.location.search);
