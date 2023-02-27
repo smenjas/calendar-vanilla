@@ -973,13 +973,21 @@ class Calendar {
             const eventURL = `<a href="?view=event&eventID=${eventID}">${eventID}</a>`;
             const prettyStartDate = Calendar.formatDateParts(event.startYear, event.startMonth, event.startDay);
             const prettyEndDate = Calendar.formatDateParts(event.endYear, event.endMonth, event.endDay);
-            const categoryName = (event.categoryID in Calendar.categories) ? Calendar.categories[event.categoryID].name : 'None';
             const trClass = (count++ === Calendar.events.length) ? ' class="last-row"' : '';
+
+            let categoryName = 'None';
+            let style = '';
+            if (event.categoryID in Calendar.categories) {
+                const category = Calendar.categories[event.categoryID];
+                const textColor = (Color.isLight(category.color)) ? 'black' : 'white';
+                categoryName = category.name;
+                style = `background-color: ${category.color}; color: ${textColor}`;
+            }
 
             html += `<tr${trClass}>`;
             html += `<td class="event-id">${eventURL}</td>`;
             html += `<td class="event-name">${event.name}</td>`;
-            html += `<td class="event-category">${categoryName}</td>`;
+            html += `<td class="event-category" style="${style}">${categoryName}</td>`;
             html += `<td class="event-start">${prettyStartDate}</td>`;
             html += `<td class="event-end">${prettyEndDate}</td>`;
             html += `<td class="event-days">${dateList.length}</td>`;
