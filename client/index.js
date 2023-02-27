@@ -546,7 +546,7 @@ class Calendar {
         let html = '<table id="category"><thead><tr>';
         html += '<th class="category-id">Category ID</th>';
         html += '<th class="category-name">Category Name</th>';
-        html += '<th class="category-color">Color</th>';
+        html += '<th class="category-color" colspan="2">Color</th>';
         html += '</tr></thead><tbody>';
 
         for (let categoryID = Calendar.categories.length - 1; categoryID >= 0; categoryID--) {
@@ -561,7 +561,8 @@ class Calendar {
             html += `<tr${trClass}>`;
             html += `<td class="category-id">${categoryURL}</td>`;
             html += `<td class="category-name">${category.name}</td>`;
-            html += `<td class="category-color">${category.color}</td>`;
+            html += `<td class="category-color-code">${category.color}</td>`;
+            html += `<td class="category-color" style="background-color: ${category.color}" title="${category.color}"></td>`;
             html += '</tr>';
         }
 
