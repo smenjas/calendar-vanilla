@@ -776,7 +776,7 @@ class Calendar {
             Calendar.events[eventID] :
             {
                 name: '',
-                category: -1,
+                categoryID: -1,
                 startYear: year,
                 startMonth: month,
                 startDay: day,
@@ -819,8 +819,8 @@ class Calendar {
         html += '<br>';
 
         html += '<label>Category</label>';
-        html += '<select name="event-category">';
-        html += Calendar.getCategoryOptions(event.category);
+        html += '<select name="event-categoryID">';
+        html += Calendar.getCategoryOptions(event.categoryID);
         html += '</select>';
         html += '<br>';
 
@@ -913,13 +913,13 @@ class Calendar {
             const eventURL = `<a href="?view=event&eventID=${eventID}">${eventID}</a>`;
             const prettyStartDate = Calendar.formatDateParts(event.startYear, event.startMonth, event.startDay);
             const prettyEndDate = Calendar.formatDateParts(event.endYear, event.endMonth, event.endDay);
-            const category = (event.category in Calendar.categories) ? Calendar.categories[event.category].name : 'None';
+            const categoryName = (event.categoryID in Calendar.categories) ? Calendar.categories[event.categoryID].name : 'None';
             const trClass = (count++ === Calendar.events.length) ? ' class="last-row"' : '';
 
             html += `<tr${trClass}>`;
             html += `<td class="event-id">${eventURL}</td>`;
             html += `<td class="event-name">${event.name}</td>`;
-            html += `<td class="event-category">${category}</td>`;
+            html += `<td class="event-category">${categoryName}</td>`;
             html += `<td class="event-start">${prettyStartDate}</td>`;
             html += `<td class="event-end">${prettyEndDate}</td>`;
             html += `<td class="event-days">${dateList.length}</td>`;
