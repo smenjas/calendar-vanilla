@@ -1,5 +1,6 @@
 class Color {
-    static hexPattern = /^#([0-9a-f]{6}|[0-9a-f]{3})$/i;
+    static hexPattern = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
+    static partialHexPattern = /^#([0-9a-f]{0,2}|[0-9a-f]{4,5})$/i;
     static names = {
         aliceblue: '#f0f8ff',
         antiquewhite: '#faebd7',
@@ -443,11 +444,15 @@ class Calendar {
         const colorInput = form.querySelector('[name="category-color"]');
         colorInput.addEventListener('input', event => {
             if (Color.hexPattern.test(colorInput.value) ||
+                (colorInput.value in Color.names)) {
+                colorInput.style.backgroundColor = '#afa';
+            }
+            else if (Color.partialHexPattern.test(colorInput.value) ||
                 (colorInput.value in Color.substrings)) {
-                colorInput.style.backgroundColor = '#eee';
+                colorInput.style.backgroundColor = '#dfd';
             }
             else {
-                colorInput.style.backgroundColor = '#f88';
+                colorInput.style.backgroundColor = '#faa';
             }
         });
     }
