@@ -61,6 +61,14 @@ form#category {
   border-bottom-right-radius: 1rem;
 }
 
+#category td.category-id {
+  text-align: right;
+}
+#category td.category-name,
+#category td.category-color-code {
+  text-align: left;
+}
+
 form#event {
   overflow: hidden;
   width: 50rem;
@@ -107,6 +115,7 @@ form#event {
   text-align: right;
 }
 #events td.event-name,
+#events td.event-category,
 #events td.event-start,
 #events td.event-end {
   text-align: left;

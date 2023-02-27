@@ -1,14 +1,25 @@
 class HTML {
     static getSelectOptions(options, selected) {
-        let html = '';
-        for (const option in options) {
-            const optionText = options[option];
-            let selectedAttr = '';
-            if (selected.toString() === option.toString()) {
-                selectedAttr = ' selected';
-            }
-            html += `<option value="${option}"${selectedAttr}>${optionText}</option>`;
+        if (selected === null || selected in {undefined, NaN}) {
+            selected = '';
         }
+
+        let html = '';
+
+        if (options instanceof Map) {
+            for (const [option, text] of options) {
+                const s = (`${option}` === `${selected}`) ? ' selected' : '';
+                html += `<option value="${option}"${s}>${text}</option>`;
+            }
+        }
+        else {
+            for (const option in options) {
+                const text = options[option];
+                const s = (`${option}` === `${selected}`) ? ' selected' : '';
+                html += `<option value="${option}"${s}>${text}</option>`;
+            }
+        }
+
         return html;
     }
 }
@@ -425,6 +436,15 @@ class Calendar {
         return weekdayNames;
     }
 
+    static getCategoryOptions(category) {
+        const options = new Map();
+        options.set(-1, 'None');
+        Calendar.categories.forEach((category, categoryID) => {
+            options.set(categoryID, category.name);
+        });
+        return HTML.getSelectOptions(options, category);
+    }
+
     static getDayOptions(year, month, day) {
         const monthLength = Calendar.getMonthLength(year, month);
         const days = {};
@@ -588,6 +608,7 @@ class Calendar {
             Calendar.events[eventID] :
             {
                 name: '',
+                category: -1,
                 startYear: year,
                 startMonth: month,
                 startDay: day,
@@ -627,6 +648,12 @@ class Calendar {
         html += '<fieldset>';
         html += '<label>Event Name</label>';
         html += `<input name="event-name" value="${event.name}" size="${inputSize}" maxlength="${Calendar.maxLength}}" required autofocus>`;
+        html += '<br>';
+
+        html += '<label>Category</label>';
+        html += '<select name="event-category">';
+        html += Calendar.getCategoryOptions(event.category);
+        html += '</select>';
         html += '<br>';
 
         html += '<label>Starts</label>';
@@ -706,6 +733,7 @@ class Calendar {
         let html = '<table id="events"><thead><tr>';
         html += '<th class="event-id">Event ID</th>';
         html += '<th class="event-name">Event Name</th>';
+        html += '<th class="event-category">Category</th>';
         html += '<th class="event-start">Starts</th>';
         html += '<th class="event-end">Ends</th>';
         html += '<th class="event-days">Days</th>';
@@ -717,15 +745,13 @@ class Calendar {
             const eventURL = `<a href="?view=event&eventID=${eventID}">${eventID}</a>`;
             const prettyStartDate = Calendar.formatDateParts(event.startYear, event.startMonth, event.startDay);
             const prettyEndDate = Calendar.formatDateParts(event.endYear, event.endMonth, event.endDay);
-            let trClass= '';
-
-            if (count++ === Calendar.events.length) {
-                trClass= ' class="last-row"';
-            }
+            const category = (event.category in Calendar.categories) ? Calendar.categories[event.category].name : 'None';
+            const trClass = (count++ === Calendar.events.length) ? ' class="last-row"' : '';
 
             html += `<tr${trClass}>`;
             html += `<td class="event-id">${eventURL}</td>`;
             html += `<td class="event-name">${event.name}</td>`;
+            html += `<td class="event-category">${category}</td>`;
             html += `<td class="event-start">${prettyStartDate}</td>`;
             html += `<td class="event-end">${prettyEndDate}</td>`;
             html += `<td class="event-days">${dateList.length}</td>`;
