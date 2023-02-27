@@ -174,7 +174,7 @@ class Calendar {
             category.color = category.color.substring(0, Calendar.maxLengthColor);
         }
         if (!Calendar.colorPattern.test(category.color)) {
-            category.color = '';
+            return;
         }
 
         if (categoryID === null) {
