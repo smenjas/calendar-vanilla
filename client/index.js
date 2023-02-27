@@ -24,6 +24,7 @@ class Calendar {
     static monthLengths = {};
     static monthNames = Calendar.getMonthNames(Calendar.language);
     static weekdayNames = Calendar.getWeekdayNames(Calendar.language);
+    static colorPattern = /^#[0-9a-f]{6}$/i;
 
     constructor() {
         const params = new URLSearchParams(window.location.search);
@@ -67,6 +68,7 @@ class Calendar {
 
         this.render();
         Calendar.processCategoryForm();
+        Calendar.validateCategoryForm();
         Calendar.processEventForm();
     }
 
@@ -171,7 +173,7 @@ class Calendar {
         if (category.color.length > Calendar.maxLengthColor) {
             category.color = category.color.substring(0, Calendar.maxLengthColor);
         }
-        if (!/^#[0-9a-f]{6}$/i.test(category.color)) {
+        if (!Calendar.colorPattern.test(category.color)) {
             category.color = '';
         }
 
@@ -214,6 +216,24 @@ class Calendar {
             }
             location.reload();
         }
+    }
+
+    static validateCategoryForm() {
+        const form = document.querySelector('form#category');
+
+        if (form === null) {
+            return;
+        }
+
+        const colorInput = form.querySelector('[name="category-color"]');
+        colorInput.addEventListener('input', event => {
+            if (Calendar.colorPattern.test(colorInput.value)) {
+                colorInput.style.backgroundColor = '#eee';
+            }
+            else {
+                colorInput.style.backgroundColor = '#f88';
+            }
+        });
     }
 
     static processEvent(event, eventID) {
