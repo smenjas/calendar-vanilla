@@ -315,6 +315,21 @@ class Calendar {
         const category = Calendar.categories[categoryID];
         Calendar.categories.splice(categoryID, 1);
         localStorage.setItem('categories', JSON.stringify(Calendar.categories));
+
+        for (const eventID in Calendar.events) {
+            const event = Calendar.events[eventID];
+            if (event.categoryID === categoryID) {
+                console.log('Setting categoryID', event.categoryID, 'for eventID', eventID, 'to', -1);
+                event.categoryID = -1;
+            }
+            else if (event.categoryID > categoryID) {
+                console.log('Decrementing categoryID', event.categoryID, 'for eventID', eventID);
+                event.categoryID -= 1;
+            }
+            Calendar.events[eventID] = event;
+        }
+
+        localStorage.setItem('events', JSON.stringify(Calendar.events));
     }
 
     static deleteEvent(eventID) {
