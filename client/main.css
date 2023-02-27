@@ -20,6 +20,55 @@ input {
   padding: 0.3rem;
 }
 
+form#category {
+  overflow: hidden;
+  width: 32rem;
+  margin: auto;
+  text-align: left;
+}
+#category button, #category input {
+  border: 1px solid black;
+  background: #eee;
+  color: black;
+  font-size: 1.5rem;
+}
+#category label {
+  font-size: 1.5rem;
+  float: left;
+  width: 10rem;
+  margin: 0.188rem 1rem 0 0;
+  text-align: right;
+}
+#category input {
+  width: calc(100% - 12rem);
+  float: left;
+}
+#category button {
+  width: calc(100% - 11rem);
+  float: right;
+}
+
+#category th.category-id {
+  border-top-left-radius: 1rem;
+}
+#category th.category-color {
+  border-top-right-radius: 1rem;
+}
+#category tr.last-row td.category-id {
+  border-bottom-left-radius: 1rem;
+}
+#category tr.last-row td.category-color {
+  border-bottom-right-radius: 1rem;
+}
+
+#category td.category-id {
+  text-align: right;
+}
+#category td.category-name,
+#category td.category-color-code {
+  text-align: left;
+}
+
 form#event {
   overflow: hidden;
   width: 50rem;
@@ -66,6 +115,7 @@ form#event {
   text-align: right;
 }
 #events td.event-name,
+#events td.event-category,
 #events td.event-start,
 #events td.event-end {
   text-align: left;

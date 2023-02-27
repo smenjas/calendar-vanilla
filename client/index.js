@@ -1,24 +1,202 @@
+class Color {
+    static hexPattern = /^#([0-9a-f]{6}|[0-9a-f]{3})$/i;
+    static names = {
+        aliceblue: '#f0f8ff',
+        antiquewhite: '#faebd7',
+        aqua: '#00ffff',
+        aquamarine: '#7fffd4',
+        azure: '#f0ffff',
+        beige: '#f5f5dc',
+        bisque: '#ffe4c4',
+        black: '#000000',
+        blanchedalmond: '#ffebcd',
+        blue: '#0000ff',
+        blueviolet: '#8a2be2',
+        brown: '#a52a2a',
+        burlywood: '#deb887',
+        cadetblue: '#5f9ea0',
+        chartreuse: '#7fff00',
+        chocolate: '#d2691e',
+        coral: '#ff7f50',
+        cornflowerblue: '#6495ed',
+        cornsilk: '#fff8dc',
+        crimson: '#dc143c',
+        cyan: '#00ffff',
+        darkblue: '#00008b',
+        darkcyan: '#008b8b',
+        darkgoldenrod: '#b8860b',
+        darkgray: '#a9a9a9',
+        darkgreen: '#006400',
+        darkgrey: '#a9a9a9',
+        darkkhaki: '#bdb76b',
+        darkmagenta: '#8b008b',
+        darkolivegreen: '#556b2f',
+        darkorange: '#ff8c00',
+        darkorchid: '#9932cc',
+        darkred: '#8b0000',
+        darksalmon: '#e9967a',
+        darkseagreen: '#8fbc8f',
+        darkslateblue: '#483d8b',
+        darkslategray: '#2f4f4f',
+        darkslategrey: '#2f4f4f',
+        darkturquoise: '#00ced1',
+        darkviolet: '#9400d3',
+        deeppink: '#ff1493',
+        deepskyblue: '#00bfff',
+        dimgray: '#696969',
+        dimgrey: '#696969',
+        dodgerblue: '#1e90ff',
+        firebrick: '#b22222',
+        floralwhite: '#fffaf0',
+        forestgreen: '#228b22',
+        fuchsia: '#ff00ff',
+        gainsboro: '#dcdcdc',
+        ghostwhite: '#f8f8ff',
+        gold: '#ffd700',
+        goldenrod: '#daa520',
+        gray: '#808080',
+        green: '#008000',
+        greenyellow: '#adff2f',
+        grey: '#808080',
+        honeydew: '#f0fff0',
+        hotpink: '#ff69b4',
+        indianred: '#cd5c5c',
+        indigo: '#4b0082',
+        ivory: '#fffff0',
+        khaki: '#f0e68c',
+        lavender: '#e6e6fa',
+        lavenderblush: '#fff0f5',
+        lawngreen: '#7cfc00',
+        lemonchiffon: '#fffacd',
+        lightblue: '#add8e6',
+        lightcoral: '#f08080',
+        lightcyan: '#e0ffff',
+        lightgoldenrodyellow: '#fafad2',
+        lightgray: '#d3d3d3',
+        lightgreen: '#90ee90',
+        lightgrey: '#d3d3d3',
+        lightpink: '#ffb6c1',
+        lightsalmon: '#ffa07a',
+        lightseagreen: '#20b2aa',
+        lightskyblue: '#87cefa',
+        lightslategray: '#778899',
+        lightslategrey: '#778899',
+        lightsteelblue: '#b0c4de',
+        lightyellow: '#ffffe0',
+        lime: '#00ff00',
+        limegreen: '#32cd32',
+        linen: '#faf0e6',
+        magenta: '#ff00ff',
+        maroon: '#800000',
+        mediumaquamarine: '#66cdaa',
+        mediumblue: '#0000cd',
+        mediumorchid: '#ba55d3',
+        mediumpurple: '#9370db',
+        mediumseagreen: '#3cb371',
+        mediumslateblue: '#7b68ee',
+        mediumspringgreen: '#00fa9a',
+        mediumturquoise: '#48d1cc',
+        mediumvioletred: '#c71585',
+        midnightblue: '#191970',
+        mintcream: '#f5fffa',
+        mistyrose: '#ffe4e1',
+        moccasin: '#ffe4b5',
+        navajowhite: '#ffdead',
+        navy: '#000080',
+        oldlace: '#fdf5e6',
+        olive: '#808000',
+        olivedrab: '#6b8e23',
+        orange: '#ffa500',
+        orangered: '#ff4500',
+        orchid: '#da70d6',
+        palegoldenrod: '#eee8aa',
+        palegreen: '#98fb98',
+        paleturquoise: '#afeeee',
+        palevioletred: '#db7093',
+        papayawhip: '#ffefd5',
+        peachpuff: '#ffdab9',
+        peru: '#cd853f',
+        pink: '#ffc0cb',
+        plum: '#dda0dd',
+        powderblue: '#b0e0e6',
+        purple: '#800080',
+        rebeccapurple: '#663399',
+        red: '#ff0000',
+        rosybrown: '#bc8f8f',
+        royalblue: '#4169e1',
+        saddlebrown: '#8b4513',
+        salmon: '#fa8072',
+        sandybrown: '#f4a460',
+        seagreen: '#2e8b57',
+        seashell: '#fff5ee',
+        sienna: '#a0522d',
+        silver: '#c0c0c0',
+        skyblue: '#87ceeb',
+        slateblue: '#6a5acd',
+        slategray: '#708090',
+        slategrey: '#708090',
+        snow: '#fffafa',
+        springgreen: '#00ff7f',
+        steelblue: '#4682b4',
+        tan: '#d2b48c',
+        teal: '#008080',
+        thistle: '#d8bfd8',
+        tomato: '#ff6347',
+        turquoise: '#40e0d0',
+        violet: '#ee82ee',
+        wheat: '#f5deb3',
+        white: '#ffffff',
+        whitesmoke: '#f5f5f5',
+        yellow: '#ffff00',
+        yellowgreen: '#9acd32',
+    };
+
+    static expandHex(hex) {
+        // Expand 3 digit hexadecimal color codes into 6 digit codes.
+        return hex.replace(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i, '#$1$1$2$2$3$3');
+    }
+
+    static findName(hex) {
+        hex = Color.expandHex(hex);
+        hex = hex.toLowerCase();
+        return Object.keys(Color.names).find(name => Color.names[name] === hex);
+    }
+}
+
 class HTML {
     static getSelectOptions(options, selected) {
-        let html = '';
-        for (const option in options) {
-            const optionText = options[option];
-            let selectedAttr = '';
-            if (selected.toString() === option.toString()) {
-                selectedAttr = ' selected';
-            }
-            html += `<option value="${option}"${selectedAttr}>${optionText}</option>`;
+        if (selected === null || selected in {undefined, NaN}) {
+            selected = '';
         }
+
+        let html = '';
+
+        if (options instanceof Map) {
+            for (const [option, text] of options) {
+                const s = (`${option}` === `${selected}`) ? ' selected' : '';
+                html += `<option value="${option}"${s}>${text}</option>`;
+            }
+        }
+        else {
+            for (const option in options) {
+                const text = options[option];
+                const s = (`${option}` === `${selected}`) ? ' selected' : '';
+                html += `<option value="${option}"${s}>${text}</option>`;
+            }
+        }
+
         return html;
     }
 }
 
 class Calendar {
+    static categories = JSON.parse(localStorage.getItem('categories')) || [];
     static eventDates = JSON.parse(localStorage.getItem('eventDates')) || {};
     static events = JSON.parse(localStorage.getItem('events')) || [];
     static now = new Date();
     static language = 'en-us';
     static maxLength = 255;
+    static maxLengthColor = 22;
     static monthLengths = {};
     static monthNames = Calendar.getMonthNames(Calendar.language);
     static weekdayNames = Calendar.getWeekdayNames(Calendar.language);
@@ -30,6 +208,7 @@ class Calendar {
         let year = params.get('year');
         let month = params.get('month');
         let day = params.get('day');
+        let categoryID = params.get('categoryID');
         let eventID = params.get('eventID');
 
         if (!view) {
@@ -59,18 +238,28 @@ class Calendar {
         this.query['month'] = date.getMonth();
         this.query['day'] = date.getDate();
         this.query['view'] = view.toLowerCase();
+        this.query['categoryID'] = categoryID;
         this.query['eventID'] = eventID;
 
         this.render();
+        Calendar.processCategoryForm();
+        Calendar.validateCategoryForm();
         Calendar.processEventForm();
     }
 
     render() {
-        const { year, month, day, view, eventID } = this.query;
+        const { year, month, day, view, categoryID, eventID } = this.query;
 
         let html = '<div class="calendar">';
 
         switch (view) {
+            case 'category':
+                html += '<nav>';
+                html += Calendar.renderCommonNav(view, year, month, day);
+                html += '</nav>';
+                html += this.renderCategoryForm(categoryID, year, month, day);
+                html += Calendar.renderCategories();
+                break;
             case 'event':
                 html += '<nav>';
                 html += Calendar.renderCommonNav(view, year, month, day);
@@ -122,6 +311,12 @@ class Calendar {
         document.querySelector('nav form').submit();
     }
 
+    static deleteCategory(categoryID) {
+        const category = Calendar.categories[categoryID];
+        Calendar.categories.splice(categoryID, 1);
+        localStorage.setItem('categories', JSON.stringify(Calendar.categories));
+    }
+
     static deleteEvent(eventID) {
         const event = Calendar.events[eventID];
         const dateList = Calendar.listEventDates(event);
@@ -138,6 +333,88 @@ class Calendar {
             }
         }
         localStorage.setItem('eventDates', JSON.stringify(Calendar.eventDates));
+    }
+
+    static processCategory(category, categoryID) {
+        category.name = category.name.trim();
+        if (category.name === '') {
+            return;
+        }
+
+        if (category.name.length > Calendar.maxLength) {
+            category.name = category.name.substring(0, Calendar.maxLength);
+        }
+        // Accept CSS color names, case insensitive, with spaces.
+        // For example: "Light goldenrod yellow"
+        category.color = category.color.trim();
+        if (category.color.length > Calendar.maxLengthColor) {
+            category.color = category.color.substring(0, Calendar.maxLengthColor);
+        }
+        const colorName = category.color.replaceAll(' ', '').toLowerCase();
+        if (colorName in Color.names) {
+            category.color = Color.names[colorName];
+        }
+        if (!Color.hexPattern.test(category.color)) {
+            return;
+        }
+
+        if (categoryID === null) {
+            categoryID = Calendar.categories.length;
+            Calendar.categories.push(category);
+        }
+        else {
+            const oldCategory = Calendar.categories[categoryID];
+            Calendar.categories[categoryID] = category;
+        }
+
+        localStorage.setItem('categories', JSON.stringify(Calendar.categories));
+    }
+
+    static processCategoryForm() {
+        const form = document.querySelector('form#category');
+
+        if (form === null) {
+            return;
+        }
+
+        form.onsubmit = (submitEvent) => {
+            submitEvent.preventDefault();
+            const category = {};
+            const categoryIDInput = form.querySelector('[name="categoryID"]');
+            const categoryID = (categoryIDInput === null) ? null : parseInt(categoryIDInput.value);
+            const deleteButton = form.querySelector('button[name="delete"]');
+            if (submitEvent.submitter === deleteButton) {
+                Calendar.deleteCategory(categoryID);
+            }
+            else {
+                form.querySelectorAll('[name]').forEach(input => {
+                    if (input.name.substring(0, 9) === 'category-') {
+                        const key = input.name.substring(9);
+                        category[key] = input.value;
+                    }
+                });
+                Calendar.processCategory(category, categoryID);
+            }
+            location.reload();
+        }
+    }
+
+    static validateCategoryForm() {
+        const form = document.querySelector('form#category');
+
+        if (form === null) {
+            return;
+        }
+
+        const colorInput = form.querySelector('[name="category-color"]');
+        colorInput.addEventListener('input', event => {
+            if (Color.hexPattern.test(colorInput.value)) {
+                colorInput.style.backgroundColor = '#eee';
+            }
+            else {
+                colorInput.style.backgroundColor = '#f88';
+            }
+        });
     }
 
     static processEvent(event, eventID) {
@@ -329,6 +606,15 @@ class Calendar {
         return weekdayNames;
     }
 
+    static getCategoryOptions(category) {
+        const options = new Map();
+        options.set(-1, 'None');
+        Calendar.categories.forEach((category, categoryID) => {
+            options.set(categoryID, category.name);
+        });
+        return HTML.getSelectOptions(options, category);
+    }
+
     static getDayOptions(year, month, day) {
         const monthLength = Calendar.getMonthLength(year, month);
         const days = {};
@@ -375,6 +661,104 @@ class Calendar {
         return parts;
     }
 
+    renderCategoryForm(categoryID = null, year = null, month = null, day = null) {
+        const inputSize = 50;
+
+        if (year === null) {
+            [year, month, day] = Calendar.splitDate(Calendar.now);
+        }
+        else if (month === null) {
+            [year, month, day] = Calendar.splitDate(new Date(year));
+        }
+        else if (day === null) {
+            [year, month, day] = Calendar.splitDate(new Date(year, month));
+        }
+
+        const category = (categoryID !== null && categoryID !== '' && Calendar.categories !== null) ?
+            Calendar.categories[categoryID] :
+            {
+                name: '',
+                color: '',
+            };
+
+        if (category === undefined) {
+            return `<p class="error">categoryID ${categoryID} not found.</p>`;
+        }
+
+        let html = '';
+
+        if (categoryID === null || categoryID === '') {
+            html += '<h2>Add New Event Category</h2>';
+        }
+        else {
+            html += '<h2>Edit Event Category</h2>';
+        }
+
+        html += '<form id="category">';
+        html += '<input type="hidden" name="view" value="category">';
+        html += `<input type="hidden" name="year" value="${year}">`;
+        html += `<input type="hidden" name="month" value="${month}">`;
+        html += `<input type="hidden" name="day" value="${day}">`;
+
+        let submitButtonText = "Add Event Category";
+        if (categoryID !== null && categoryID !== '') {
+            html += `<input type="hidden" name="categoryID" value="${categoryID}">`;
+            submitButtonText = "Edit Event Category";
+        }
+
+        html += '<fieldset>';
+        html += '<label>Name</label>';
+        html += `<input name="category-name" value="${category.name}" size="${inputSize}" maxlength="${Calendar.maxLength}}" required autofocus>`;
+        html += '<br>';
+
+        html += '<label>Color</label>';
+        html += `<input name="category-color" value="${category.color}" size="${Calendar.maxLengthColor}" maxlength="${Calendar.maxLengthColor}}">`;
+        html += '<br>';
+
+        html += `<button type="submit">${submitButtonText}</button>`;
+
+        if (categoryID !== null && categoryID !== '') {
+            html += `<button type="submit" name="delete" class="delete">Delete Event Category</button>`;
+        }
+
+        html += '</fieldset>';
+        html += '</form>';
+
+        return html;
+    }
+
+    static renderCategories() {
+        if (Calendar.categories.length < 1) {
+            return '';
+        }
+
+        let count = 1;
+        let html = '<table id="category"><thead><tr>';
+        html += '<th class="category-id">Category ID</th>';
+        html += '<th class="category-name">Category Name</th>';
+        html += '<th class="category-color" colspan="2">Color</th>';
+        html += '</tr></thead><tbody>';
+
+        for (let categoryID = Calendar.categories.length - 1; categoryID >= 0; categoryID--) {
+            const category = Calendar.categories[categoryID];
+            const colorName = Color.findName(category.color);
+            const categoryTitle = (colorName !== undefined) ? colorName : category.color;
+            const categoryURL = `<a href="?view=category&categoryID=${categoryID}">${categoryID}</a>`;
+            const trClass = (count++ === Calendar.categories.length) ? ' class="last-row"' : '';
+
+            html += `<tr${trClass}>`;
+            html += `<td class="category-id">${categoryURL}</td>`;
+            html += `<td class="category-name">${category.name}</td>`;
+            html += `<td class="category-color-code">${category.color}</td>`;
+            html += `<td class="category-color" style="background-color: ${category.color}" title="${categoryTitle}"></td>`;
+            html += '</tr>';
+        }
+
+        html += '</tbody></table>';
+
+        return html;
+    }
+
     renderEventForm(eventID = null, year = null, month = null, day = null) {
         const inputSize = 50;
 
@@ -392,6 +776,7 @@ class Calendar {
             Calendar.events[eventID] :
             {
                 name: '',
+                category: -1,
                 startYear: year,
                 startMonth: month,
                 startDay: day,
@@ -431,6 +816,12 @@ class Calendar {
         html += '<fieldset>';
         html += '<label>Event Name</label>';
         html += `<input name="event-name" value="${event.name}" size="${inputSize}" maxlength="${Calendar.maxLength}}" required autofocus>`;
+        html += '<br>';
+
+        html += '<label>Category</label>';
+        html += '<select name="event-category">';
+        html += Calendar.getCategoryOptions(event.category);
+        html += '</select>';
         html += '<br>';
 
         html += '<label>Starts</label>';
@@ -510,6 +901,7 @@ class Calendar {
         let html = '<table id="events"><thead><tr>';
         html += '<th class="event-id">Event ID</th>';
         html += '<th class="event-name">Event Name</th>';
+        html += '<th class="event-category">Category</th>';
         html += '<th class="event-start">Starts</th>';
         html += '<th class="event-end">Ends</th>';
         html += '<th class="event-days">Days</th>';
@@ -521,15 +913,13 @@ class Calendar {
             const eventURL = `<a href="?view=event&eventID=${eventID}">${eventID}</a>`;
             const prettyStartDate = Calendar.formatDateParts(event.startYear, event.startMonth, event.startDay);
             const prettyEndDate = Calendar.formatDateParts(event.endYear, event.endMonth, event.endDay);
-            let trClass= '';
-
-            if (count++ === Calendar.events.length) {
-                trClass= ' class="last-row"';
-            }
+            const category = (event.category in Calendar.categories) ? Calendar.categories[event.category].name : 'None';
+            const trClass = (count++ === Calendar.events.length) ? ' class="last-row"' : '';
 
             html += `<tr${trClass}>`;
             html += `<td class="event-id">${eventURL}</td>`;
             html += `<td class="event-name">${event.name}</td>`;
+            html += `<td class="event-category">${category}</td>`;
             html += `<td class="event-start">${prettyStartDate}</td>`;
             html += `<td class="event-end">${prettyEndDate}</td>`;
             html += `<td class="event-days">${dateList.length}</td>`;
@@ -550,13 +940,15 @@ class Calendar {
         const [nowYear, nowMonth, nowDay] = Calendar.splitDate(Calendar.now);
         const nowURL = Calendar.getURL(view, nowYear, nowMonth, nowDay);
 
-        let addURL = Calendar.getURL('event', year, month, day);
+        const eventURL = Calendar.getURL('event', year, month, day);
+        const categoryURL = Calendar.getURL('category', year, month, day);
 
         let html = `<a href="${yearURL}" class="this-year">Year</a>`;
         html += `<a href="${monthURL}" class="this-month">Month</a>`;
         html += `<a href="${dayURL}" class="this-day">Day</a>`;
         html += `<a href="${nowURL}" class="now" title="${nowTitle}">Now</a>`;
-        html += `<a href="${addURL}" class="add" title="Add New Event">Add</a>`;
+        html += `<a href="${eventURL}" class="add" title="Add New Event">Events</a>`;
+        html += `<a href="${categoryURL}" class="add" title="Add New Category">Categories</a>`;
 
         return html;
     }
