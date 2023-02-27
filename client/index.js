@@ -150,6 +150,7 @@ class Color {
         yellow: '#ffff00',
         yellowgreen: '#9acd32',
     };
+    static substrings = Color.#listSubstrings();
 
     static expandHex(hex) {
         // Expand 3 digit hexadecimal color codes into 6 digit codes.
@@ -160,6 +161,24 @@ class Color {
         hex = Color.expandHex(hex);
         hex = hex.toLowerCase();
         return Object.keys(Color.names).find(name => Color.names[name] === hex);
+    }
+
+    static #listSubstrings() {
+        const substrings = {};
+
+        for (const name in Color.names) {
+            for (let i = 1; i <= name.length; i++) {
+                const substring = name.substring(0, i);
+                if (!(substring in substrings)) {
+                    substrings[substring] = [name];
+                }
+                else if (substrings[substring].indexOf(name) === -1) {
+                    substrings[substring].push(name);
+                }
+            }
+        }
+
+        return substrings;
     }
 }
 
@@ -423,7 +442,8 @@ class Calendar {
 
         const colorInput = form.querySelector('[name="category-color"]');
         colorInput.addEventListener('input', event => {
-            if (Color.hexPattern.test(colorInput.value)) {
+            if (Color.hexPattern.test(colorInput.value) ||
+                (colorInput.value in Color.substrings)) {
                 colorInput.style.backgroundColor = '#eee';
             }
             else {
