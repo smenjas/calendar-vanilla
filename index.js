@@ -1151,7 +1151,15 @@ class Calendar {
                     const checked = (event.completed) ? ' checked' : '';
                     const checkboxTitle = (event.completed) ? 'Completed' : 'Not completed';
                     const checkbox = `<input type="checkbox" title="${checkboxTitle}" disabled${checked}>`;
-                    eventsList += `<li>${checkbox} ${eventLink}</li>`;
+
+                    let style = '';
+                    if (event.categoryID in Calendar.categories) {
+                        const category = Calendar.categories[event.categoryID];
+                        const textColor = (Color.isLight(category.color)) ? 'black' : 'white';
+                        style = `background-color: ${category.color}; color: ${textColor}`;
+                    }
+
+                    eventsList += `<li style="${style}">${checkbox} ${eventLink}</li>`;
                 });
                 eventsList += '</ul>';
                 html += `<td class="event" rowspan="24">${eventsList}</td>`;
