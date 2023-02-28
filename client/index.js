@@ -791,11 +791,24 @@ class Calendar {
             return '';
         }
 
+        const categoryCount = {};
+        Calendar.events.forEach((event, eventID) => {
+            console.log(eventID, event.name, event.categoryID);
+            if (event.categoryID in categoryCount) {
+                categoryCount[event.categoryID] += 1;
+            }
+            else {
+                categoryCount[event.categoryID] = 1;
+            }
+        });
+        console.log(categoryCount);
+
         let count = 1;
         let html = '<table id="category"><thead><tr>';
         html += '<th class="category-id">Category ID</th>';
         html += '<th class="category-name">Category Name</th>';
         html += '<th class="category-color">Color</th>';
+        html += '<th class="events">Events</th>';
         html += '</tr></thead><tbody>';
 
         for (let categoryID = Calendar.categories.length - 1; categoryID >= 0; categoryID--) {
@@ -805,12 +818,14 @@ class Calendar {
             const colorName = Color.findName(category.color);
             const categoryTitle = (colorName !== undefined) ? colorName : category.color;
             const categoryURL = `<a href="?view=category&categoryID=${categoryID}">${categoryID}</a>`;
+            const numEvents = (categoryID in categoryCount) ? categoryCount[categoryID] : 0;
             const trClass = (count++ === Calendar.categories.length) ? ' class="last-row"' : '';
 
             html += `<tr${trClass}>`;
             html += `<td class="category-id">${categoryURL}</td>`;
             html += `<td class="category-name">${category.name}</td>`;
             html += `<td class="category-color" style="${style}" title="${categoryTitle}">${category.color}</td>`;
+            html += `<td class="events">${numEvents}</td>`;
             html += '</tr>';
         }
 

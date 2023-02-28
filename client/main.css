@@ -51,17 +51,18 @@ form#category {
 #category th.category-id {
   border-top-left-radius: 1rem;
 }
-#category th.category-color {
+#category th.events {
   border-top-right-radius: 1rem;
 }
 #category tr.last-row td.category-id {
   border-bottom-left-radius: 1rem;
 }
-#category tr.last-row td.category-color {
+#category tr.last-row td.events {
   border-bottom-right-radius: 1rem;
 }
 
-#category td.category-id {
+#category td.category-id,
+#category td.events {
   text-align: right;
 }
 #category td.category-name,
