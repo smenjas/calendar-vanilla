@@ -1,5 +1,6 @@
 class Color {
-    static hexPattern = /^#([0-9a-f]{6}|[0-9a-f]{3})$/i;
+    static hexPattern = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
+    static partialHexPattern = /^#([0-9a-f]{0,2}|[0-9a-f]{4,5})$/i;
     static names = {
         aliceblue: '#f0f8ff',
         antiquewhite: '#faebd7',
@@ -152,6 +153,16 @@ class Color {
     };
     static substrings = Color.#listSubstrings();
 
+    static calculateBrightness(hex) {
+        const fullHex = Color.expandHex(hex);
+        const red = parseInt(fullHex.substring(1, 3), 16);
+        const green = parseInt(fullHex.substring(3, 5), 16);
+        const blue = parseInt(fullHex.substring(5, 8), 16);
+
+        // See: https://en.wikipedia.org/wiki/Rec._709#Luma_coefficients
+        return (0.2126 * red) + (0.7152 * green) + (0.0722 * blue);
+    }
+
     static expandHex(hex) {
         // Expand 3 digit hexadecimal color codes into 6 digit codes.
         return hex.replace(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i, '#$1$1$2$2$3$3');
@@ -161,6 +172,15 @@ class Color {
         hex = Color.expandHex(hex);
         hex = hex.toLowerCase();
         return Object.keys(Color.names).find(name => Color.names[name] === hex);
+    }
+
+    static isDark(hex) {
+        return !Color.isLight(hex);
+    }
+
+    static isLight(hex) {
+        const luma = Color.calculateBrightness(hex);
+        return luma > 128;
     }
 
     static #listSubstrings() {
@@ -443,11 +463,15 @@ class Calendar {
         const colorInput = form.querySelector('[name="category-color"]');
         colorInput.addEventListener('input', event => {
             if (Color.hexPattern.test(colorInput.value) ||
+                (colorInput.value in Color.names)) {
+                colorInput.style.backgroundColor = '#afa';
+            }
+            else if (Color.partialHexPattern.test(colorInput.value) ||
                 (colorInput.value in Color.substrings)) {
-                colorInput.style.backgroundColor = '#eee';
+                colorInput.style.backgroundColor = '#dfd';
             }
             else {
-                colorInput.style.backgroundColor = '#f88';
+                colorInput.style.backgroundColor = '#faa';
             }
         });
     }
@@ -767,25 +791,41 @@ class Calendar {
             return '';
         }
 
+        const categoryCount = {};
+        Calendar.events.forEach((event, eventID) => {
+            console.log(eventID, event.name, event.categoryID);
+            if (event.categoryID in categoryCount) {
+                categoryCount[event.categoryID] += 1;
+            }
+            else {
+                categoryCount[event.categoryID] = 1;
+            }
+        });
+        console.log(categoryCount);
+
         let count = 1;
         let html = '<table id="category"><thead><tr>';
         html += '<th class="category-id">Category ID</th>';
         html += '<th class="category-name">Category Name</th>';
-        html += '<th class="category-color" colspan="2">Color</th>';
+        html += '<th class="category-color">Color</th>';
+        html += '<th class="events">Events</th>';
         html += '</tr></thead><tbody>';
 
         for (let categoryID = Calendar.categories.length - 1; categoryID >= 0; categoryID--) {
             const category = Calendar.categories[categoryID];
+            const textColor = (Color.isLight(category.color)) ? 'black' : 'white';
+            const style = `background-color: ${category.color}; color: ${textColor}`;
             const colorName = Color.findName(category.color);
             const categoryTitle = (colorName !== undefined) ? colorName : category.color;
             const categoryURL = `<a href="?view=category&categoryID=${categoryID}">${categoryID}</a>`;
+            const numEvents = (categoryID in categoryCount) ? categoryCount[categoryID] : 0;
             const trClass = (count++ === Calendar.categories.length) ? ' class="last-row"' : '';
 
             html += `<tr${trClass}>`;
             html += `<td class="category-id">${categoryURL}</td>`;
             html += `<td class="category-name">${category.name}</td>`;
-            html += `<td class="category-color-code">${category.color}</td>`;
-            html += `<td class="category-color" style="background-color: ${category.color}" title="${categoryTitle}"></td>`;
+            html += `<td class="category-color" style="${style}" title="${categoryTitle}">${category.color}</td>`;
+            html += `<td class="events">${numEvents}</td>`;
             html += '</tr>';
         }
 
@@ -948,13 +988,21 @@ class Calendar {
             const eventURL = `<a href="?view=event&eventID=${eventID}">${eventID}</a>`;
             const prettyStartDate = Calendar.formatDateParts(event.startYear, event.startMonth, event.startDay);
             const prettyEndDate = Calendar.formatDateParts(event.endYear, event.endMonth, event.endDay);
-            const categoryName = (event.categoryID in Calendar.categories) ? Calendar.categories[event.categoryID].name : 'None';
             const trClass = (count++ === Calendar.events.length) ? ' class="last-row"' : '';
+
+            let categoryName = 'None';
+            let style = '';
+            if (event.categoryID in Calendar.categories) {
+                const category = Calendar.categories[event.categoryID];
+                const textColor = (Color.isLight(category.color)) ? 'black' : 'white';
+                categoryName = category.name;
+                style = `background-color: ${category.color}; color: ${textColor}`;
+            }
 
             html += `<tr${trClass}>`;
             html += `<td class="event-id">${eventURL}</td>`;
             html += `<td class="event-name">${event.name}</td>`;
-            html += `<td class="event-category">${categoryName}</td>`;
+            html += `<td class="event-category" style="${style}">${categoryName}</td>`;
             html += `<td class="event-start">${prettyStartDate}</td>`;
             html += `<td class="event-end">${prettyEndDate}</td>`;
             html += `<td class="event-days">${dateList.length}</td>`;
@@ -1118,7 +1166,15 @@ class Calendar {
                     const checked = (event.completed) ? ' checked' : '';
                     const checkboxTitle = (event.completed) ? 'Completed' : 'Not completed';
                     const checkbox = `<input type="checkbox" title="${checkboxTitle}" disabled${checked}>`;
-                    eventsList += `<li>${checkbox} ${eventLink}</li>`;
+
+                    let style = '';
+                    if (event.categoryID in Calendar.categories) {
+                        const category = Calendar.categories[event.categoryID];
+                        const textColor = (Color.isLight(category.color)) ? 'black' : 'white';
+                        style = `background-color: ${category.color}; color: ${textColor}`;
+                    }
+
+                    eventsList += `<li style="${style}">${checkbox} ${eventLink}</li>`;
                 });
                 eventsList += '</ul>';
                 html += `<td class="event" rowspan="24">${eventsList}</td>`;
