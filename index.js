@@ -1,4 +1,5 @@
 class Color {
+    static hexNames = {};
     static hexPattern = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
     static partialHexPattern = /^#([0-9a-f]{0,2}|[0-9a-f]{4,5})$/i;
     static names = {
@@ -171,7 +172,15 @@ class Color {
     static findName(hex) {
         hex = Color.expandHex(hex);
         hex = hex.toLowerCase();
-        return Object.keys(Color.names).find(name => Color.names[name] === hex);
+
+        if (Object.hasOwn(Color.hexNames, hex)) {
+            return Color.hexNames[hex];
+        }
+
+        const name = Object.keys(Color.names).find(name => Color.names[name] === hex);
+        Color.hexNames[hex] = name;
+
+        return name;
     }
 
     static isDark(hex) {
