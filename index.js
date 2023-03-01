@@ -506,12 +506,19 @@ class Calendar {
         const almostValid = '#dfd';
         const invalid = '#faa';
 
-        if (Color.hexPattern.test(colorInput.value) ||
-            (colorInput.value in Color.names)) {
+        if (colorInput.value === '') {
+            colorInput.style.backgroundColor = invalid;
+        }
+        else if (colorInput.value in Color.names) {
             colorInput.style.backgroundColor = valid;
         }
-        else if (Color.partialHexPattern.test(colorInput.value) ||
-            (colorInput.value in Color.substrings)) {
+        else if (colorInput.value in Color.substrings) {
+            colorInput.style.backgroundColor = almostValid;
+        }
+        else if (Color.hexPattern.test(colorInput.value)) {
+            colorInput.style.backgroundColor = valid;
+        }
+        else if (Color.partialHexPattern.test(colorInput.value)) {
             colorInput.style.backgroundColor = almostValid;
         }
         else {
