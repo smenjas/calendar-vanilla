@@ -502,16 +502,20 @@ class Calendar {
     }
 
     static validateColorInput(colorInput) {
+        const valid = '#afa';
+        const almostValid = '#dfd';
+        const invalid = '#faa';
+
         if (Color.hexPattern.test(colorInput.value) ||
             (colorInput.value in Color.names)) {
-            colorInput.style.backgroundColor = '#afa';
+            colorInput.style.backgroundColor = valid;
         }
         else if (Color.partialHexPattern.test(colorInput.value) ||
             (colorInput.value in Color.substrings)) {
-            colorInput.style.backgroundColor = '#dfd';
+            colorInput.style.backgroundColor = almostValid;
         }
         else {
-            colorInput.style.backgroundColor = '#faa';
+            colorInput.style.backgroundColor = invalid;
         }
     }
 
