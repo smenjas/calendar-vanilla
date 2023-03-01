@@ -793,7 +793,6 @@ class Calendar {
 
         const categoryCount = {};
         Calendar.events.forEach((event, eventID) => {
-            console.log(eventID, event.name, event.categoryID);
             if (event.categoryID in categoryCount) {
                 categoryCount[event.categoryID] += 1;
             }
@@ -801,7 +800,6 @@ class Calendar {
                 categoryCount[event.categoryID] = 1;
             }
         });
-        console.log(categoryCount);
 
         let count = 1;
         let html = '<table id="category"><thead><tr>';
