@@ -350,6 +350,34 @@ class Calendar {
         document.querySelector('nav form').submit();
     }
 
+    static handleEventEnd() {
+        const year = parseInt(document.querySelector('[name="event-endYear"]').value);
+        const month = parseInt(document.querySelector('[name="event-endMonth"]').value);
+        const monthLength = Calendar.getMonthLength(year, month);
+
+        let day = parseInt(document.querySelector('[name="event-endDay"]').value);
+        if (day > monthLength) {
+            day = monthLength;
+        }
+
+        const selectDay = document.querySelector('[name="event-endDay"]');
+        selectDay.innerHTML = Calendar.getDayOptions(year, month, day);
+    }
+
+    static handleEventStart() {
+        const year = parseInt(document.querySelector('[name="event-startYear"]').value);
+        const month = parseInt(document.querySelector('[name="event-startMonth"]').value);
+        const monthLength = Calendar.getMonthLength(year, month);
+
+        let day = parseInt(document.querySelector('[name="event-startDay"]').value);
+        if (day > monthLength) {
+            day = monthLength;
+        }
+
+        const selectDay = document.querySelector('[name="event-startDay"]');
+        selectDay.innerHTML = Calendar.getDayOptions(year, month, day);
+    }
+
     static deleteCategory(categoryID) {
         const category = Calendar.categories[categoryID];
         Calendar.categories.splice(categoryID, 1);
@@ -898,7 +926,7 @@ class Calendar {
         html += '<br>';
 
         html += '<label>Starts</label>';
-        html += '<select name="event-startMonth">';
+        html += '<select name="event-startMonth" onchange="Calendar.handleEventStart()">';
         html += Calendar.getMonthOptions(event.startMonth);
         html += '</select>';
 
@@ -906,13 +934,13 @@ class Calendar {
         html += Calendar.getDayOptions(event.startYear, event.startMonth, event.startDay);
         html += '</select>';
 
-        html += '<select name="event-startYear">';
+        html += '<select name="event-startYear" onchange="Calendar.handleEventStart()">';
         html += Calendar.getYearOptions(event.startYear);
         html += '</select>';
         html += '<br>';
 
         html += '<label>Ends</label>';
-        html += '<select name="event-endMonth">';
+        html += '<select name="event-endMonth" onchange="Calendar.handleEventEnd()">';
         html += Calendar.getMonthOptions(event.endMonth);
         html += '</select>';
 
@@ -920,7 +948,7 @@ class Calendar {
         html += Calendar.getDayOptions(event.endYear, event.endMonth, event.endDay);
         html += '</select>';
 
-        html += '<select name="event-endYear">';
+        html += '<select name="event-endYear" onchange="Calendar.handleEventEnd()">';
         html += Calendar.getYearOptions(event.endYear);
         html += '</select>';
         html += '<br>';
