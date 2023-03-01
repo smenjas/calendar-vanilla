@@ -1035,12 +1035,12 @@ class Calendar {
     }
 
     static renderDayNav(year, month, day) {
-        const yesterday = new Date(year, month, day - 1);
+        const yesterday = new Date(year, month, parseInt(day) - 1);
         const yesterdayTitle = Calendar.formatDate(yesterday);
         const [yesterdaysYear, yesterdaysMonth, yesterdaysDay] = Calendar.splitDate(yesterday);
         const yesterdayURL = Calendar.getURL('day', yesterdaysYear, yesterdaysMonth, yesterdaysDay);
 
-        const tomorrow = new Date(year, month, day + 1);
+        const tomorrow = new Date(year, month, parseInt(day) + 1);
         const tomorrowTitle = Calendar.formatDate(tomorrow);
         const [tomorrowsYear, tomorrowsMonth, tomorrowsDay] = Calendar.splitDate(tomorrow);
         const tomorrowURL = Calendar.getURL('day', tomorrowsYear, tomorrowsMonth, tomorrowsDay);
@@ -1074,10 +1074,10 @@ class Calendar {
     }
 
     static renderMonthNav(year, month, day) {
-        const lastMonthURL = Calendar.getURL('month', year, month - 1);
-        const nextMonthURL = Calendar.getURL('month', year, month + 1);
-        const lastYearURL = Calendar.getURL('month', year - 1, month);
-        const nextYearURL = Calendar.getURL('month', year + 1, month);
+        const lastMonthURL = Calendar.getURL('month', year, parseInt(month) - 1);
+        const nextMonthURL = Calendar.getURL('month', year, parseInt(month) + 1);
+        const lastYearURL = Calendar.getURL('month', parseInt(year) - 1, month);
+        const nextYearURL = Calendar.getURL('month', parseInt(year) + 1, month);
 
         let html = '<nav>';
         html += Calendar.renderCommonNav('month', year, month, day);
@@ -1106,8 +1106,8 @@ class Calendar {
     }
 
     static renderYearNav(year, month, day) {
-        const lastYearURL = Calendar.getURL('year', year - 1);
-        const nextYearURL = Calendar.getURL('year', year + 1);
+        const lastYearURL = Calendar.getURL('year', parseInt(year) - 1);
+        const nextYearURL = Calendar.getURL('year', parseInt(year) + 1);
 
         let html = '<nav>';
         html += Calendar.renderCommonNav('year', year, month, day);
@@ -1187,12 +1187,12 @@ class Calendar {
     }
 
     static renderMonth(year, month, small = false) {
-        const before = new Date(year, month - 1);
+        const before = new Date(year, parseInt(month) - 1);
         const lastMonthsYear = before.getFullYear();
         const lastMonth = before.getMonth();
         const lastMonthsLength = Calendar.getMonthLength(lastMonthsYear, lastMonth);
 
-        const after = new Date(year, month + 1);
+        const after = new Date(year, parseInt(month) + 1);
         const nextMonthsYear = after.getFullYear();
         const nextMonth = after.getMonth();
 
