@@ -48,25 +48,25 @@ form#category {
   float: right;
 }
 
-#category th.category-id {
+#categories th.category-id {
   border-top-left-radius: 1rem;
 }
-#category th.events {
+#categories th.events {
   border-top-right-radius: 1rem;
 }
-#category tr.last-row td.category-id {
+#categories tr.last-row td.category-id {
   border-bottom-left-radius: 1rem;
 }
-#category tr.last-row td.events {
+#categories tr.last-row td.events {
   border-bottom-right-radius: 1rem;
 }
 
-#category td.category-id,
-#category td.events {
+#categories td.category-id,
+#categories td.events {
   text-align: right;
 }
-#category td.category-name,
-#category td.category-color-code {
+#categories td.category-name,
+#categories td.category-color-code {
   text-align: left;
 }
 

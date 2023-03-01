@@ -830,7 +830,7 @@ class Calendar {
         });
 
         let count = 1;
-        let html = '<table id="category"><thead><tr>';
+        let html = '<table id="categories"><thead><tr>';
         html += '<th class="category-id">Category ID</th>';
         html += '<th class="category-name">Category Name</th>';
         html += '<th class="category-color">Color</th>';
