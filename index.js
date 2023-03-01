@@ -620,7 +620,7 @@ class Calendar {
 
         if (Calendar.monthLengths[year][month] === undefined) {
             // Day zero is last month's max date.
-            const monthEnd = new Date(year, month + 1, 0);
+            const monthEnd = new Date(year, parseInt(month) + 1, 0);
             Calendar.monthLengths[year][month] = monthEnd.getDate();
         }
 
