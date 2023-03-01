@@ -808,7 +808,7 @@ class Calendar {
         html += '<br>';
 
         html += '<label>Color</label>';
-        html += `<input name="category-color" value="${category.color}" size="${Calendar.maxLengthColor}" maxlength="${Calendar.maxLengthColor}}">`;
+        html += `<input name="category-color" value="${category.color}" size="${Calendar.maxLengthColor}" maxlength="${Calendar.maxLengthColor}}" required>`;
         html += '<br>';
 
         html += `<button type="submit">${submitButtonText}</button>`;
