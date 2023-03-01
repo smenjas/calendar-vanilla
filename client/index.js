@@ -350,6 +350,34 @@ class Calendar {
         document.querySelector('nav form').submit();
     }
 
+    static handleEventEnd() {
+        const year = parseInt(document.querySelector('[name="event-endYear"]').value);
+        const month = parseInt(document.querySelector('[name="event-endMonth"]').value);
+        const monthLength = Calendar.getMonthLength(year, month);
+
+        let day = parseInt(document.querySelector('[name="event-endDay"]').value);
+        if (day > monthLength) {
+            day = monthLength;
+        }
+
+        const selectDay = document.querySelector('[name="event-endDay"]');
+        selectDay.innerHTML = Calendar.getDayOptions(year, month, day);
+    }
+
+    static handleEventStart() {
+        const year = parseInt(document.querySelector('[name="event-startYear"]').value);
+        const month = parseInt(document.querySelector('[name="event-startMonth"]').value);
+        const monthLength = Calendar.getMonthLength(year, month);
+
+        let day = parseInt(document.querySelector('[name="event-startDay"]').value);
+        if (day > monthLength) {
+            day = monthLength;
+        }
+
+        const selectDay = document.querySelector('[name="event-startDay"]');
+        selectDay.innerHTML = Calendar.getDayOptions(year, month, day);
+    }
+
     static deleteCategory(categoryID) {
         const category = Calendar.categories[categoryID];
         Calendar.categories.splice(categoryID, 1);
@@ -620,7 +648,7 @@ class Calendar {
 
         if (Calendar.monthLengths[year][month] === undefined) {
             // Day zero is last month's max date.
-            const monthEnd = new Date(year, month + 1, 0);
+            const monthEnd = new Date(year, parseInt(month) + 1, 0);
             Calendar.monthLengths[year][month] = monthEnd.getDate();
         }
 
@@ -898,7 +926,7 @@ class Calendar {
         html += '<br>';
 
         html += '<label>Starts</label>';
-        html += '<select name="event-startMonth">';
+        html += '<select name="event-startMonth" onchange="Calendar.handleEventStart()">';
         html += Calendar.getMonthOptions(event.startMonth);
         html += '</select>';
 
@@ -906,13 +934,13 @@ class Calendar {
         html += Calendar.getDayOptions(event.startYear, event.startMonth, event.startDay);
         html += '</select>';
 
-        html += '<select name="event-startYear">';
+        html += '<select name="event-startYear" onchange="Calendar.handleEventStart()">';
         html += Calendar.getYearOptions(event.startYear);
         html += '</select>';
         html += '<br>';
 
         html += '<label>Ends</label>';
-        html += '<select name="event-endMonth">';
+        html += '<select name="event-endMonth" onchange="Calendar.handleEventEnd()">';
         html += Calendar.getMonthOptions(event.endMonth);
         html += '</select>';
 
@@ -920,7 +948,7 @@ class Calendar {
         html += Calendar.getDayOptions(event.endYear, event.endMonth, event.endDay);
         html += '</select>';
 
-        html += '<select name="event-endYear">';
+        html += '<select name="event-endYear" onchange="Calendar.handleEventEnd()">';
         html += Calendar.getYearOptions(event.endYear);
         html += '</select>';
         html += '<br>';
@@ -1035,12 +1063,12 @@ class Calendar {
     }
 
     static renderDayNav(year, month, day) {
-        const yesterday = new Date(year, month, day - 1);
+        const yesterday = new Date(year, month, parseInt(day) - 1);
         const yesterdayTitle = Calendar.formatDate(yesterday);
         const [yesterdaysYear, yesterdaysMonth, yesterdaysDay] = Calendar.splitDate(yesterday);
         const yesterdayURL = Calendar.getURL('day', yesterdaysYear, yesterdaysMonth, yesterdaysDay);
 
-        const tomorrow = new Date(year, month, day + 1);
+        const tomorrow = new Date(year, month, parseInt(day) + 1);
         const tomorrowTitle = Calendar.formatDate(tomorrow);
         const [tomorrowsYear, tomorrowsMonth, tomorrowsDay] = Calendar.splitDate(tomorrow);
         const tomorrowURL = Calendar.getURL('day', tomorrowsYear, tomorrowsMonth, tomorrowsDay);
@@ -1074,10 +1102,10 @@ class Calendar {
     }
 
     static renderMonthNav(year, month, day) {
-        const lastMonthURL = Calendar.getURL('month', year, month - 1);
-        const nextMonthURL = Calendar.getURL('month', year, month + 1);
-        const lastYearURL = Calendar.getURL('month', year - 1, month);
-        const nextYearURL = Calendar.getURL('month', year + 1, month);
+        const lastMonthURL = Calendar.getURL('month', year, parseInt(month) - 1);
+        const nextMonthURL = Calendar.getURL('month', year, parseInt(month) + 1);
+        const lastYearURL = Calendar.getURL('month', parseInt(year) - 1, month);
+        const nextYearURL = Calendar.getURL('month', parseInt(year) + 1, month);
 
         let html = '<nav>';
         html += Calendar.renderCommonNav('month', year, month, day);
@@ -1106,8 +1134,8 @@ class Calendar {
     }
 
     static renderYearNav(year, month, day) {
-        const lastYearURL = Calendar.getURL('year', year - 1);
-        const nextYearURL = Calendar.getURL('year', year + 1);
+        const lastYearURL = Calendar.getURL('year', parseInt(year) - 1);
+        const nextYearURL = Calendar.getURL('year', parseInt(year) + 1);
 
         let html = '<nav>';
         html += Calendar.renderCommonNav('year', year, month, day);
@@ -1187,12 +1215,12 @@ class Calendar {
     }
 
     static renderMonth(year, month, small = false) {
-        const before = new Date(year, month - 1);
+        const before = new Date(year, parseInt(month) - 1);
         const lastMonthsYear = before.getFullYear();
         const lastMonth = before.getMonth();
         const lastMonthsLength = Calendar.getMonthLength(lastMonthsYear, lastMonth);
 
-        const after = new Date(year, month + 1);
+        const after = new Date(year, parseInt(month) + 1);
         const nextMonthsYear = after.getFullYear();
         const nextMonth = after.getMonth();
 
