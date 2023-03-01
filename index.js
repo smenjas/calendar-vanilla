@@ -820,8 +820,15 @@ class Calendar {
         html += `<input name="category-name" value="${category.name}" size="${inputSize}" maxlength="${Calendar.maxLength}}" required autofocus>`;
         html += '<br>';
 
+        const colorNames = new Map();
+        for (const name of Object.keys(Color.names)) {
+            colorNames.set(name, name);
+        }
         html += '<label>Color</label>';
-        html += `<input name="category-color" value="${category.color}" size="${Calendar.maxLengthColor}" maxlength="${Calendar.maxLengthColor}}" required>`;
+        html += `<input name="category-color" list="color-names" value="${category.color}" size="${Calendar.maxLengthColor}" maxlength="${Calendar.maxLengthColor}}" required>`;
+        html += '<datalist id="color-names">';
+        html += HTML.getSelectOptions(colorNames);
+        html += '</datalist>';
         html += '<br>';
 
         html += `<button type="submit">${submitButtonText}</button>`;
