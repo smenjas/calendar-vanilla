@@ -498,19 +498,21 @@ class Calendar {
         }
 
         const colorInput = form.querySelector('[name="category-color"]');
-        colorInput.addEventListener('input', event => {
-            if (Color.hexPattern.test(colorInput.value) ||
-                (colorInput.value in Color.names)) {
-                colorInput.style.backgroundColor = '#afa';
-            }
-            else if (Color.partialHexPattern.test(colorInput.value) ||
-                (colorInput.value in Color.substrings)) {
-                colorInput.style.backgroundColor = '#dfd';
-            }
-            else {
-                colorInput.style.backgroundColor = '#faa';
-            }
-        });
+        colorInput.addEventListener('input', event => Calendar.validateColorInput(event.target));
+    }
+
+    static validateColorInput(colorInput) {
+        if (Color.hexPattern.test(colorInput.value) ||
+            (colorInput.value in Color.names)) {
+            colorInput.style.backgroundColor = '#afa';
+        }
+        else if (Color.partialHexPattern.test(colorInput.value) ||
+            (colorInput.value in Color.substrings)) {
+            colorInput.style.backgroundColor = '#dfd';
+        }
+        else {
+            colorInput.style.backgroundColor = '#faa';
+        }
     }
 
     static processEvent(event, eventID) {
