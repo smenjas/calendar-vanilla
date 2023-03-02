@@ -498,19 +498,32 @@ class Calendar {
         }
 
         const colorInput = form.querySelector('[name="category-color"]');
-        colorInput.addEventListener('input', event => {
-            if (Color.hexPattern.test(colorInput.value) ||
-                (colorInput.value in Color.names)) {
-                colorInput.style.backgroundColor = '#afa';
-            }
-            else if (Color.partialHexPattern.test(colorInput.value) ||
-                (colorInput.value in Color.substrings)) {
-                colorInput.style.backgroundColor = '#dfd';
-            }
-            else {
-                colorInput.style.backgroundColor = '#faa';
-            }
-        });
+        colorInput.addEventListener('input', event => Calendar.validateColorInput(event.target));
+    }
+
+    static validateColorInput(colorInput) {
+        const valid = '#afa';
+        const almostValid = '#dfd';
+        const invalid = '#faa';
+
+        if (colorInput.value === '') {
+            colorInput.style.backgroundColor = invalid;
+        }
+        else if (colorInput.value in Color.names) {
+            colorInput.style.backgroundColor = valid;
+        }
+        else if (colorInput.value in Color.substrings) {
+            colorInput.style.backgroundColor = almostValid;
+        }
+        else if (Color.hexPattern.test(colorInput.value)) {
+            colorInput.style.backgroundColor = valid;
+        }
+        else if (Color.partialHexPattern.test(colorInput.value)) {
+            colorInput.style.backgroundColor = almostValid;
+        }
+        else {
+            colorInput.style.backgroundColor = invalid;
+        }
     }
 
     static processEvent(event, eventID) {
@@ -807,8 +820,15 @@ class Calendar {
         html += `<input name="category-name" value="${category.name}" size="${inputSize}" maxlength="${Calendar.maxLength}}" required autofocus>`;
         html += '<br>';
 
+        const colorNames = new Map();
+        for (const name of Object.keys(Color.names)) {
+            colorNames.set(name, name);
+        }
         html += '<label>Color</label>';
-        html += `<input name="category-color" value="${category.color}" size="${Calendar.maxLengthColor}" maxlength="${Calendar.maxLengthColor}}">`;
+        html += `<input name="category-color" list="color-names" value="${category.color}" size="${Calendar.maxLengthColor}" maxlength="${Calendar.maxLengthColor}}" required>`;
+        html += '<datalist id="color-names">';
+        html += HTML.getSelectOptions(colorNames);
+        html += '</datalist>';
         html += '<br>';
 
         html += `<button type="submit">${submitButtonText}</button>`;
