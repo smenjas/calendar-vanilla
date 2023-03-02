@@ -213,9 +213,11 @@ nav a.next-month, nav a.next-year, nav a.tomorrow {
   list-style-type: none;
   padding: 0.5rem 0.25rem;
 }
-.calendar .day .event li:first-child,
+.calendar .day .event li:first-child {
+  border-radius: 0.5rem 0.5rem 0 0;
+}
 .calendar .day .event li:last-child {
-  border-radius: 0.5rem;
+  border-radius: 0 0 0.5rem 0.5rem;
 }
 
 /*
