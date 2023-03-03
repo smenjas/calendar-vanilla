@@ -313,6 +313,9 @@ class Calendar {
                 html += this.renderCategoryForm(categoryID, year, month, day);
                 html += Calendar.renderCategories();
                 break;
+            case 'colors':
+                html += Calendar.renderColors();
+                break;
             case 'event':
                 html += '<nav>';
                 html += Calendar.renderCommonNav(view, year, month, day);
@@ -883,6 +886,58 @@ class Calendar {
             html += `<td class="category-name">${category.name}</td>`;
             html += `<td class="category-color" style="${style}" title="${categoryTitle}">${category.color}</td>`;
             html += `<td class="events">${numEvents}</td>`;
+            html += '</tr>';
+        }
+
+        html += '</tbody></table>';
+
+        return html;
+    }
+
+    static renderColors() {
+        let html = '<table id="color-names"><thead>';
+        html += '<th class="color-name">Name</th>';
+        html += '<th class="color-code">Code</th>';
+        html += '</tr></thead><tbody>';
+
+        for (const name in Color.names) {
+            const hex = Color.names[name];
+            const textColor = (Color.isLight(hex)) ? 'black' : 'white';
+            const codeStyle = Color.style(hex);
+            const nameStyle = `background: ${name}; color: ${textColor}`;
+
+            html += '<tr>';
+            html += `<td class="color-name" style="${nameStyle}">${name}</td>`;
+            html += `<td class="color-code" style="${codeStyle}">${hex}</td>`;
+            html += '</tr>';
+        }
+
+        html += '</tbody></table>';
+
+        const max = parseInt('fff', 16);
+        let count = 0;
+        let rowMax = 16;
+
+        html += '<table id="color-codes"><thead><tr>';
+
+        for (; count < rowMax; count += 1) {
+            const hex = '#' + count.toString(16).padStart(3, '0');
+            const style = Color.style(hex);
+            html += `<th style="${style}">${hex}</th>`;
+        }
+
+        html += '</tr></thead><tbody>';
+
+        while (rowMax < max) {
+            rowMax += 16;
+            html += '<tr>';
+
+            for (; count < rowMax; count += 1) {
+                const hex = '#' + count.toString(16).padStart(3, '0');
+                const style = Color.style(hex);
+                html += `<td style="${style}">${hex}</td>`;
+            }
+
             html += '</tr>';
         }
 
