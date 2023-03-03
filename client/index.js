@@ -858,7 +858,6 @@ class Calendar {
             }
         });
 
-        let count = 1;
         let html = '<table id="categories"><thead><tr>';
         html += '<th class="category-id">Category ID</th>';
         html += '<th class="category-name">Category Name</th>';
@@ -874,9 +873,8 @@ class Calendar {
             const categoryTitle = (colorName !== undefined) ? colorName : category.color;
             const categoryURL = `<a href="?view=category&categoryID=${categoryID}">${categoryID}</a>`;
             const numEvents = (categoryID in categoryCount) ? categoryCount[categoryID] : 0;
-            const trClass = (count++ === Calendar.categories.length) ? ' class="last-row"' : '';
 
-            html += `<tr${trClass}>`;
+            html += '<tr>';
             html += `<td class="category-id">${categoryURL}</td>`;
             html += `<td class="category-name">${category.name}</td>`;
             html += `<td class="category-color" style="${style}" title="${categoryTitle}">${category.color}</td>`;
@@ -1027,7 +1025,6 @@ class Calendar {
             return '';
         }
 
-        let count = 1;
         let html = '<table id="events"><thead><tr>';
         html += '<th class="event-id">Event ID</th>';
         html += '<th class="event-name">Event Name</th>';
@@ -1043,7 +1040,6 @@ class Calendar {
             const eventURL = `<a href="?view=event&eventID=${eventID}">${eventID}</a>`;
             const prettyStartDate = Calendar.formatDateParts(event.startYear, event.startMonth, event.startDay);
             const prettyEndDate = Calendar.formatDateParts(event.endYear, event.endMonth, event.endDay);
-            const trClass = (count++ === Calendar.events.length) ? ' class="last-row"' : '';
 
             let categoryName = 'None';
             let style = '';
@@ -1054,7 +1050,7 @@ class Calendar {
                 style = `background-color: ${category.color}; color: ${textColor}`;
             }
 
-            html += `<tr${trClass}>`;
+            html += '<tr>';
             html += `<td class="event-id">${eventURL}</td>`;
             html += `<td class="event-name">${event.name}</td>`;
             html += `<td class="event-category" style="${style}">${categoryName}</td>`;
@@ -1275,8 +1271,6 @@ class Calendar {
         let day = 0;
         let monthHasBegun = false;
         let monthHasEnded = false;
-        let rowCount = 1;
-        let trClass = '';
 
         while (monthHasEnded === false) {
             let tr = '';
@@ -1346,11 +1340,7 @@ class Calendar {
                 tr += `<td class="${tdClass}" title="${tdTitle}">${td}</td>`;
             }
 
-            if (rowCount++ === weeksInMonth) {
-                trClass = ' class="last-row"';
-            }
-
-            html += `<tr${trClass}>${tr}</tr>`;
+            html += `<tr>${tr}</tr>`;
         }
 
         html += '</tbody></table>';
