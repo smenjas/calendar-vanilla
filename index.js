@@ -209,6 +209,11 @@ class Color {
 
         return substrings;
     }
+
+    static style(hex) {
+        const textColor = (Color.isLight(hex)) ? 'black' : 'white';
+        return `background-color: ${hex}; color: ${textColor}`;
+    }
 }
 
 class HTML {
@@ -867,8 +872,7 @@ class Calendar {
 
         for (let categoryID = Calendar.categories.length - 1; categoryID >= 0; categoryID--) {
             const category = Calendar.categories[categoryID];
-            const textColor = (Color.isLight(category.color)) ? 'black' : 'white';
-            const style = `background-color: ${category.color}; color: ${textColor}`;
+            const style = Color.style(category.color);
             const colorName = Color.findName(category.color);
             const categoryTitle = (colorName !== undefined) ? colorName : category.color;
             const categoryURL = `<a href="?view=category&categoryID=${categoryID}">${categoryID}</a>`;
@@ -1045,9 +1049,8 @@ class Calendar {
             let style = '';
             if (event.categoryID in Calendar.categories) {
                 const category = Calendar.categories[event.categoryID];
-                const textColor = (Color.isLight(category.color)) ? 'black' : 'white';
                 categoryName = category.name;
-                style = `background-color: ${category.color}; color: ${textColor}`;
+                style = Color.style(category.color);
             }
 
             html += '<tr>';
@@ -1221,8 +1224,7 @@ class Calendar {
                     let style = '';
                     if (event.categoryID in Calendar.categories) {
                         const category = Calendar.categories[event.categoryID];
-                        const textColor = (Color.isLight(category.color)) ? 'black' : 'white';
-                        style = `background-color: ${category.color}; color: ${textColor}`;
+                        style = Color.style(category.color);
                     }
 
                     eventsList += `<li style="${style}">${checkbox} ${eventLink}</li>`;
