@@ -397,7 +397,7 @@ class Calendar {
                 html += '<nav>';
                 html += Calendar.renderCommonNav(view, year, month, day);
                 html += '</nav>';
-                html += this.renderCategoryForm(categoryID, year, month, day);
+                html += Calendar.renderCategoryForm(categoryID, year, month, day);
                 html += Calendar.renderCategories();
                 break;
             case 'colors':
@@ -407,7 +407,7 @@ class Calendar {
                 html += '<nav>';
                 html += Calendar.renderCommonNav(view, year, month, day);
                 html += '</nav>';
-                html += this.renderEventForm(eventID, year, month, day);
+                html += Calendar.renderEventForm(eventID, year, month, day);
                 html += Calendar.renderEvents();
                 break;
             case 'year':
@@ -865,7 +865,7 @@ class Calendar {
         return parts;
     }
 
-    renderCategoryForm(categoryID = null, year = null, month = null, day = null) {
+    static renderCategoryForm(categoryID = null, year = null, month = null, day = null) {
         const inputSize = 50;
 
         if (year === null) {
@@ -1037,7 +1037,7 @@ class Calendar {
         return html;
     }
 
-    renderEventForm(eventID = null, year = null, month = null, day = null) {
+    static renderEventForm(eventID = null, year = null, month = null, day = null) {
         const inputSize = 50;
 
         if (year === null) {
