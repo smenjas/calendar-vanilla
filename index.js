@@ -152,6 +152,7 @@ class Color {
         yellow: '#ffff00',
         yellowgreen: '#9acd32',
     };
+    static #shorts = {};
     static substrings = Color.#listSubstrings();
 
     static calculateBrightness(hex) {
@@ -208,6 +209,92 @@ class Color {
         }
 
         return substrings;
+    }
+
+    static shortenHex(hex) {
+        // Accepts a 6 digit hex code, with a leading # (e.g. "#cd853f").
+        // Returns a 3 digit hex code, with a leading # (e.g. "#c84").
+
+        if (hex.length !== 7) {
+            return hex;
+        }
+
+        const red = hex.substring(1, 3);
+        const green = hex.substring(3, 5);
+        const blue = hex.substring(5, 8);
+
+        const r = Color.shortenHexComponent(red);
+        if (r.length !== 1) {
+            return hex;
+        }
+
+        const g = Color.shortenHexComponent(green);
+        if (g.length !== 1) {
+            return hex;
+        }
+
+        const b = Color.shortenHexComponent(blue);
+        if (b.length !== 1) {
+            return hex;
+        }
+
+        return `#${r}${g}${b}`;
+    }
+
+    static shortenHexComponent(hex) {
+        // Accepts a 2 digit hex code, without a leading # (e.g. "f0").
+        // Returns the nearest 1 digit hex code (e.g. "e").
+
+        if (hex.length !== 2) {
+            return '';
+        }
+
+        // Is it already cached?
+        if (hex in Color.#shorts) {
+            return Color.#shorts[hex];
+        }
+
+        // Is it already the same hexadecimal digit repeated?
+        const h = hex.substring(0, 1);
+        if (h === hex.substring(1)) {
+            Color.#shorts[hex] = h;
+            return h;
+        }
+
+        // What is the most significant figure repeated?
+        const hh = `${h}${h}`;
+
+        // What are the decimal values?
+        const dec = parseInt(hex, 16);
+        const d = parseInt(h, 16);
+        const dd = parseInt(hh, 16);
+
+        // Find decimal candidates above and below our input.
+        let above = dd;
+        let below = dd;
+        if (dd > dec) {
+            const n = (d < 1) ? d : d - 1;
+            const x = n.toString(16);
+            const xx = `${x}${x}`;
+            below = parseInt(xx, 16);
+        }
+        else {
+            const n = (d > 14) ? d : d + 1;
+            const x = n.toString(16);
+            const xx = `${x}${x}`;
+            above = parseInt(xx, 16);
+        }
+
+        // Which candidate is nearer to our input?
+        const decimal = ((above - dec) < 9) ? above : below;
+
+        // Convert the winning decimal to hex, and shorten it.
+        const ret = decimal.toString(16).substring(1);
+
+        // Cache the result.
+        Color.#shorts[hex] = ret;
+
+        return ret;
     }
 
     static style(hex) {
@@ -898,17 +985,21 @@ class Calendar {
         let html = '<table id="color-names"><thead>';
         html += '<th class="color-name">Name</th>';
         html += '<th class="color-code">Code</th>';
+        html += '<th class="color-code" title="Nearest short code">Short</th>';
         html += '</tr></thead><tbody>';
 
         for (const name in Color.names) {
             const hex = Color.names[name];
-            const textColor = (Color.isLight(hex)) ? 'black' : 'white';
+            const shortHex = Color.shortenHex(hex);
             const codeStyle = Color.style(hex);
+            const shortCodeStyle = Color.style(shortHex);
+            const textColor = (Color.isLight(hex)) ? 'black' : 'white';
             const nameStyle = `background: ${name}; color: ${textColor}`;
 
             html += '<tr>';
             html += `<td class="color-name" style="${nameStyle}">${name}</td>`;
             html += `<td class="color-code" style="${codeStyle}">${hex}</td>`;
+            html += `<td class="color-code" style="${shortCodeStyle}">${shortHex}</td>`;
             html += '</tr>';
         }
 
