@@ -391,6 +391,7 @@ class Calendar {
         Calendar.processCategoryForm();
         Calendar.validateCategoryForm();
         Calendar.processEventForm();
+        Calendar.handleColorForm();
     }
 
     render() {
@@ -407,6 +408,7 @@ class Calendar {
                 html += Calendar.renderCategories();
                 break;
             case 'colors':
+                html += Calendar.renderColorForm();
                 html += Calendar.renderColors();
                 break;
             case 'event':
@@ -445,6 +447,20 @@ class Calendar {
 
     static formatDateParts(year, month, day) {
         return `${Calendar.monthNames[month]} ${day}, ${year}`;
+    }
+
+    static handleColorForm() {
+        const form = document.querySelector('form#color');
+
+        if (form === null) {
+            return;
+        }
+
+        const input = form.querySelector('input[name="color"]');
+        input.addEventListener('input', event => {
+            const colorsDiv = document.querySelector('div#colors');
+            colorsDiv.innerHTML = Calendar.renderColors(input.value);
+        });
     }
 
     static handleDayNav() {
@@ -987,14 +1003,35 @@ class Calendar {
         return html;
     }
 
-    static renderColors() {
+    static renderColorForm() {
+        let html = '<form id="color">';
+        html += '<input name="color">';
+        html += '</form>';
+
+        return html;
+    }
+
+    static renderColors(color = null) {
+        let html = '<div id="colors">';
+        html += Calendar.renderColorNames(color);
+        html += Calendar.renderColorCodes(color);
+        html += '</div>';
+        return html;
+    }
+
+    static renderColorNames(color = null) {
+        if (color !== null && color.substring(0, 1) === '#') {
+            return '';
+        }
+
         let html = '<table class="color-names"><thead>';
         html += '<th class="color-name">Name</th>';
         html += '<th class="color-code">Code</th>';
         html += '<th class="color-code" title="Nearest short code">Short</th>';
         html += '</tr></thead><tbody>';
 
-        for (const name in Color.names) {
+        const colorNames = (color in Color.substrings) ? Color.substrings[color] : Object.keys(Color.names);
+        for (const name of colorNames) {
             const hex = Color.names[name];
             const hexLuma = Color.getBrightnessPercentage(hex, 1);
             const hexTitle = `Brightness: ${hexLuma}%`;
@@ -1017,11 +1054,15 @@ class Calendar {
 
         html += '</tbody></table>';
 
+        return html;
+    }
+
+    static renderColorCodes(color = null) {
         const max = parseInt('fff', 16);
         let count = 0;
         let rowMax = 16;
 
-        html = '<table class="color-codes"><tbody>';
+        let html = '<table class="color-codes"><tbody>';
 
         while (rowMax < max) {
             html += '<tr>';
@@ -1030,6 +1071,11 @@ class Calendar {
                 const hex = '#' + count.toString(16).padStart(3, '0');
                 const luma = Color.getBrightnessPercentage(hex, 1);
                 const title = `Brightness: ${luma}%`;
+
+                if (color !== null && hex.substring(0, color.length) !== color) {
+                    continue;
+                }
+
                 const style = Color.style(hex);
                 html += `<td style="${style}" title="${title}">${hex}</td>`;
             }
