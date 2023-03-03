@@ -242,7 +242,7 @@ class Calendar {
     static eventDates = JSON.parse(localStorage.getItem('eventDates')) || {};
     static events = JSON.parse(localStorage.getItem('events')) || [];
     static now = new Date();
-    static language = 'en-us';
+    static language = document.querySelector('html').getAttribute('lang');
     static maxLength = 255;
     static maxLengthColor = 22;
     static monthLengths = {};
