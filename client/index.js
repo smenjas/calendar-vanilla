@@ -209,6 +209,11 @@ class Color {
 
         return substrings;
     }
+
+    static style(hex) {
+        const textColor = (Color.isLight(hex)) ? 'black' : 'white';
+        return `background-color: ${hex}; color: ${textColor}`;
+    }
 }
 
 class HTML {
@@ -307,6 +312,9 @@ class Calendar {
                 html += '</nav>';
                 html += this.renderCategoryForm(categoryID, year, month, day);
                 html += Calendar.renderCategories();
+                break;
+            case 'colors':
+                html += Calendar.renderColors();
                 break;
             case 'event':
                 html += '<nav>';
@@ -858,7 +866,6 @@ class Calendar {
             }
         });
 
-        let count = 1;
         let html = '<table id="categories"><thead><tr>';
         html += '<th class="category-id">Category ID</th>';
         html += '<th class="category-name">Category Name</th>';
@@ -868,19 +875,69 @@ class Calendar {
 
         for (let categoryID = Calendar.categories.length - 1; categoryID >= 0; categoryID--) {
             const category = Calendar.categories[categoryID];
-            const textColor = (Color.isLight(category.color)) ? 'black' : 'white';
-            const style = `background-color: ${category.color}; color: ${textColor}`;
+            const style = Color.style(category.color);
             const colorName = Color.findName(category.color);
             const categoryTitle = (colorName !== undefined) ? colorName : category.color;
             const categoryURL = `<a href="?view=category&categoryID=${categoryID}">${categoryID}</a>`;
             const numEvents = (categoryID in categoryCount) ? categoryCount[categoryID] : 0;
-            const trClass = (count++ === Calendar.categories.length) ? ' class="last-row"' : '';
 
-            html += `<tr${trClass}>`;
+            html += '<tr>';
             html += `<td class="category-id">${categoryURL}</td>`;
             html += `<td class="category-name">${category.name}</td>`;
             html += `<td class="category-color" style="${style}" title="${categoryTitle}">${category.color}</td>`;
             html += `<td class="events">${numEvents}</td>`;
+            html += '</tr>';
+        }
+
+        html += '</tbody></table>';
+
+        return html;
+    }
+
+    static renderColors() {
+        let html = '<table id="color-names"><thead>';
+        html += '<th class="color-name">Name</th>';
+        html += '<th class="color-code">Code</th>';
+        html += '</tr></thead><tbody>';
+
+        for (const name in Color.names) {
+            const hex = Color.names[name];
+            const textColor = (Color.isLight(hex)) ? 'black' : 'white';
+            const codeStyle = Color.style(hex);
+            const nameStyle = `background: ${name}; color: ${textColor}`;
+
+            html += '<tr>';
+            html += `<td class="color-name" style="${nameStyle}">${name}</td>`;
+            html += `<td class="color-code" style="${codeStyle}">${hex}</td>`;
+            html += '</tr>';
+        }
+
+        html += '</tbody></table>';
+
+        const max = parseInt('fff', 16);
+        let count = 0;
+        let rowMax = 16;
+
+        html += '<table id="color-codes"><thead><tr>';
+
+        for (; count < rowMax; count += 1) {
+            const hex = '#' + count.toString(16).padStart(3, '0');
+            const style = Color.style(hex);
+            html += `<th style="${style}">${hex}</th>`;
+        }
+
+        html += '</tr></thead><tbody>';
+
+        while (rowMax < max) {
+            rowMax += 16;
+            html += '<tr>';
+
+            for (; count < rowMax; count += 1) {
+                const hex = '#' + count.toString(16).padStart(3, '0');
+                const style = Color.style(hex);
+                html += `<td style="${style}">${hex}</td>`;
+            }
+
             html += '</tr>';
         }
 
@@ -1027,7 +1084,6 @@ class Calendar {
             return '';
         }
 
-        let count = 1;
         let html = '<table id="events"><thead><tr>';
         html += '<th class="event-id">Event ID</th>';
         html += '<th class="event-name">Event Name</th>';
@@ -1043,18 +1099,16 @@ class Calendar {
             const eventURL = `<a href="?view=event&eventID=${eventID}">${eventID}</a>`;
             const prettyStartDate = Calendar.formatDateParts(event.startYear, event.startMonth, event.startDay);
             const prettyEndDate = Calendar.formatDateParts(event.endYear, event.endMonth, event.endDay);
-            const trClass = (count++ === Calendar.events.length) ? ' class="last-row"' : '';
 
             let categoryName = 'None';
             let style = '';
             if (event.categoryID in Calendar.categories) {
                 const category = Calendar.categories[event.categoryID];
-                const textColor = (Color.isLight(category.color)) ? 'black' : 'white';
                 categoryName = category.name;
-                style = `background-color: ${category.color}; color: ${textColor}`;
+                style = Color.style(category.color);
             }
 
-            html += `<tr${trClass}>`;
+            html += '<tr>';
             html += `<td class="event-id">${eventURL}</td>`;
             html += `<td class="event-name">${event.name}</td>`;
             html += `<td class="event-category" style="${style}">${categoryName}</td>`;
@@ -1225,8 +1279,7 @@ class Calendar {
                     let style = '';
                     if (event.categoryID in Calendar.categories) {
                         const category = Calendar.categories[event.categoryID];
-                        const textColor = (Color.isLight(category.color)) ? 'black' : 'white';
-                        style = `background-color: ${category.color}; color: ${textColor}`;
+                        style = Color.style(category.color);
                     }
 
                     eventsList += `<li style="${style}">${checkbox} ${eventLink}</li>`;
@@ -1275,8 +1328,6 @@ class Calendar {
         let day = 0;
         let monthHasBegun = false;
         let monthHasEnded = false;
-        let rowCount = 1;
-        let trClass = '';
 
         while (monthHasEnded === false) {
             let tr = '';
@@ -1346,11 +1397,7 @@ class Calendar {
                 tr += `<td class="${tdClass}" title="${tdTitle}">${td}</td>`;
             }
 
-            if (rowCount++ === weeksInMonth) {
-                trClass = ' class="last-row"';
-            }
-
-            html += `<tr${trClass}>${tr}</tr>`;
+            html += `<tr>${tr}</tr>`;
         }
 
         html += '</tbody></table>';
