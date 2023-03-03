@@ -1,5 +1,5 @@
 class Color {
-    static hexNames = {};
+    static #hexNames = {};
     static hexPattern = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
     static partialHexPattern = /^#([0-9a-f]{0,2}|[0-9a-f]{4,5})$/i;
     static names = {
@@ -174,12 +174,12 @@ class Color {
         hex = Color.expandHex(hex);
         hex = hex.toLowerCase();
 
-        if (Object.hasOwn(Color.hexNames, hex)) {
-            return Color.hexNames[hex];
+        if (Object.hasOwn(Color.#hexNames, hex)) {
+            return Color.#hexNames[hex];
         }
 
         const name = Object.keys(Color.names).find(name => Color.names[name] === hex);
-        Color.hexNames[hex] = name;
+        Color.#hexNames[hex] = name;
 
         return name;
     }
@@ -337,7 +337,7 @@ class Calendar {
     static language = document.querySelector('html').getAttribute('lang');
     static maxLength = 255;
     static maxLengthColor = 22;
-    static monthLengths = {};
+    static #monthLengths = {};
     static monthNames = Calendar.getMonthNames(Calendar.language);
     static weekdayNames = Calendar.getWeekdayNames(Calendar.language);
 
@@ -759,17 +759,17 @@ class Calendar {
     }
 
     static getMonthLength(year, month) {
-        if (Object.hasOwn(Calendar.monthLengths, year) === false) {
-            Calendar.monthLengths[year] = {};
+        if (Object.hasOwn(Calendar.#monthLengths, year) === false) {
+            Calendar.#monthLengths[year] = {};
         }
 
-        if (Calendar.monthLengths[year][month] === undefined) {
+        if (Calendar.#monthLengths[year][month] === undefined) {
             // Day zero is last month's max date.
             const monthEnd = new Date(year, parseInt(month) + 1, 0);
-            Calendar.monthLengths[year][month] = monthEnd.getDate();
+            Calendar.#monthLengths[year][month] = monthEnd.getDate();
         }
 
-        return Calendar.monthLengths[year][month];
+        return Calendar.#monthLengths[year][month];
     }
 
     static getMonthName(date, language, format = 'long') {
