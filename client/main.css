@@ -189,10 +189,12 @@ nav a.next-month, nav a.next-year, nav a.tomorrow {
   padding: 0.5rem 0.25rem;
 }
 .calendar .day .event li:first-child {
-  border-radius: 0.5rem 0.5rem 0 0;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
 }
 .calendar .day .event li:last-child {
-  border-radius: 0 0 0.5rem 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
 }
 
 /*
