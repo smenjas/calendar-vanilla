@@ -155,16 +155,6 @@ class Color {
     static #shorts = {};
     static substrings = Color.#listSubstrings();
 
-    static calculateBrightness(hex) {
-        const fullHex = Color.expandHex(hex);
-        const red = parseInt(fullHex.substring(1, 3), 16);
-        const green = parseInt(fullHex.substring(3, 5), 16);
-        const blue = parseInt(fullHex.substring(5, 8), 16);
-
-        // See: https://en.wikipedia.org/wiki/Rec._709#Luma_coefficients
-        return (0.2126 * red) + (0.7152 * green) + (0.0722 * blue);
-    }
-
     static expandHex(hex) {
         // Expand 3 digit hexadecimal color codes into 6 digit codes.
         return hex.replace(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i, '#$1$1$2$2$3$3');
@@ -189,8 +179,24 @@ class Color {
     }
 
     static isLight(hex) {
-        const luma = Color.calculateBrightness(hex);
+        const luma = Color.getBrightness(hex);
         return luma > 128;
+    }
+
+    static getBrightness(hex) {
+        const fullHex = Color.expandHex(hex);
+        const red = parseInt(fullHex.substring(1, 3), 16);
+        const green = parseInt(fullHex.substring(3, 5), 16);
+        const blue = parseInt(fullHex.substring(5, 8), 16);
+
+        // See: https://en.wikipedia.org/wiki/Rec._709#Luma_coefficients
+        return (0.2126 * red) + (0.7152 * green) + (0.0722 * blue);
+    }
+
+    static getBrightnessPercentage(hex, digits = 0) {
+        const luma = Color.getBrightness(hex) / 255;
+        const percent = luma * 100;
+        return percent.toFixed(digits);
     }
 
     static #listSubstrings() {
@@ -990,16 +996,22 @@ class Calendar {
 
         for (const name in Color.names) {
             const hex = Color.names[name];
+            const hexLuma = Color.getBrightnessPercentage(hex, 1);
+            const hexTitle = `Brightness: ${hexLuma}%`;
+            const hexStyle = Color.style(hex);
+
             const shortHex = Color.shortenHex(hex);
-            const codeStyle = Color.style(hex);
-            const shortCodeStyle = Color.style(shortHex);
+            const shortHexLuma = Color.getBrightnessPercentage(shortHex, 1);
+            const shortHexTitle = `Brightness: ${shortHexLuma}%`;
+            const shortHexStyle = Color.style(shortHex);
+
             const textColor = (Color.isLight(hex)) ? 'black' : 'white';
             const nameStyle = `background: ${name}; color: ${textColor}`;
 
             html += '<tr>';
             html += `<td class="color-name" style="${nameStyle}">${name}</td>`;
-            html += `<td class="color-code" style="${codeStyle}">${hex}</td>`;
-            html += `<td class="color-code" style="${shortCodeStyle}">${shortHex}</td>`;
+            html += `<td class="color-code" style="${hexStyle}" title="${hexTitle}">${hex}</td>`;
+            html += `<td class="color-code" style="${shortHexStyle}" title="${shortHexTitle}">${shortHex}</td>`;
             html += '</tr>';
         }
 
@@ -1013,8 +1025,10 @@ class Calendar {
 
         for (; count < rowMax; count += 1) {
             const hex = '#' + count.toString(16).padStart(3, '0');
+            const luma = Color.getBrightnessPercentage(hex, 1);
+            const title = `Brightness: ${luma}%`;
             const style = Color.style(hex);
-            html += `<th style="${style}">${hex}</th>`;
+            html += `<th style="${style}" title="${title}">${hex}</th>`;
         }
 
         html += '</tr></thead><tbody>';
@@ -1025,8 +1039,10 @@ class Calendar {
 
             for (; count < rowMax; count += 1) {
                 const hex = '#' + count.toString(16).padStart(3, '0');
+                const luma = Color.getBrightnessPercentage(hex, 1);
+                const title = `Brightness: ${luma}%`;
                 const style = Color.style(hex);
-                html += `<td style="${style}">${hex}</td>`;
+                html += `<td style="${style}" title="${title}">${hex}</td>`;
             }
 
             html += '</tr>';
