@@ -152,6 +152,7 @@ class Color {
         yellow: '#ffff00',
         yellowgreen: '#9acd32',
     };
+    static namedCodes = Color.#getNamedCodes();
     static #shorts = {};
     static substrings = Color.#listSubstrings();
 
@@ -199,12 +200,34 @@ class Color {
         return percent.toFixed(digits);
     }
 
+    static #getNamedCodes() {
+        const codes = {};
+        for (const name in Color.names) {
+            const code = Color.names[name];
+            codes[code] = name;
+        }
+        return codes;
+    }
+
     static #listSubstrings() {
         const substrings = {};
 
         for (const name in Color.names) {
             for (let i = 1; i <= name.length; i++) {
                 const substring = name.substring(0, i);
+                if (!(substring in substrings)) {
+                    substrings[substring] = [name];
+                }
+                else if (substrings[substring].indexOf(name) === -1) {
+                    substrings[substring].push(name);
+                }
+            }
+        }
+
+        for (const code in Color.namedCodes) {
+            const name = Color.namedCodes[code];
+            for (let i = 1; i <= code.length; i++) {
+                const substring = code.substring(0, i);
                 if (!(substring in substrings)) {
                     substrings[substring] = [name];
                 }
@@ -1020,7 +1043,14 @@ class Calendar {
     }
 
     static renderColorNames(color = null) {
-        if (color !== null && color.substring(0, 1) === '#') {
+        if (color !== null) {
+            color = color.trim();
+        }
+
+        const colorNames = (!color) ? Object.keys(Color.names) :
+            (color in Color.substrings) ? Color.substrings[color] : [];
+
+        if (colorNames.length < 1) {
             return '';
         }
 
@@ -1030,7 +1060,6 @@ class Calendar {
         html += '<th class="color-code" title="Nearest short code">Short</th>';
         html += '</tr></thead><tbody>';
 
-        const colorNames = (color in Color.substrings) ? Color.substrings[color] : Object.keys(Color.names);
         for (const name of colorNames) {
             const hex = Color.names[name];
             const hexLuma = Color.getBrightnessPercentage(hex, 1);
@@ -1058,6 +1087,10 @@ class Calendar {
     }
 
     static renderColorCodes(color = null) {
+        if (color !== null) {
+            color = color.trim();
+        }
+
         const max = parseInt('fff', 16);
         let count = 0;
         let rowMax = 16;
