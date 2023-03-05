@@ -988,7 +988,7 @@ class Calendar {
     }
 
     static renderColors() {
-        let html = '<table id="color-names"><thead>';
+        let html = '<table class="color-names"><thead>';
         html += '<th class="color-name">Name</th>';
         html += '<th class="color-code">Code</th>';
         html += '<th class="color-code" title="Nearest short code">Short</th>';
@@ -1021,7 +1021,7 @@ class Calendar {
         let count = 0;
         let rowMax = 16;
 
-        html += '<table id="color-codes"><thead><tr>';
+        html = '<table class="color-codes"><thead><tr>';
 
         for (; count < rowMax; count += 1) {
             const hex = '#' + count.toString(16).padStart(3, '0');
