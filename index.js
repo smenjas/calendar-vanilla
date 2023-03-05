@@ -1096,11 +1096,10 @@ class Calendar {
         const max = parseInt('fff', 16);
         let count = 0;
         let rowMax = 16;
-
-        let html = '<table class="color-codes"><tbody>';
+        let html = '';
 
         while (rowMax < max) {
-            html += '<tr>';
+            let tr = '';
 
             for (; count < rowMax; count += 1) {
                 const hex = '#' + prefix + count.toString(16).padStart(3, '0');
@@ -1112,14 +1111,19 @@ class Calendar {
                 }
 
                 const style = Color.style(hex);
-                html += `<td style="${style}" title="${title}">${hex}</td>`;
+                tr += `<td style="${style}" title="${title}">${hex}</td>`;
             }
 
-            html += '</tr>';
+            if (tr.length > 0) {
+                html += `<tr>${tr}</tr>`;
+            }
+
             rowMax += 16;
         }
 
-        html += '</tbody></table>';
+        if (html.length > 0) {
+            html = `<table class="color-codes"><tbody>${html}</tbody></table>`;
+        }
 
         return html;
     }
