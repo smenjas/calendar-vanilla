@@ -244,9 +244,12 @@ class Color {
         return substrings;
     }
 
-    static shortenHex(hex) {
+    static shortenHex(hex, strict = true) {
         // Accepts a 6 digit hex code, with a leading # (e.g. "#cd853f").
-        // Returns a 3 digit hex code, with a leading # (e.g. "#c84").
+        // Returns a 3 digit hex code only if all 3 color components are
+        // repeated (e.g. "#663399" becomes "#639") when the 2nd arg is omitted
+        // or true and otherwise returns the 1st arg, or the closest 3 digit
+        // hex code if the 2nd arg is false (e.g. "#cd853f" becomes "#c84").
 
         if (hex.length !== 7) {
             return hex;
@@ -256,17 +259,17 @@ class Color {
         const green = hex.substring(3, 5);
         const blue = hex.substring(5, 8);
 
-        const r = Color.shortenHexComponent(red);
+        const r = Color.shortenHexComponent(red, strict);
         if (r.length !== 1) {
             return hex;
         }
 
-        const g = Color.shortenHexComponent(green);
+        const g = Color.shortenHexComponent(green, strict);
         if (g.length !== 1) {
             return hex;
         }
 
-        const b = Color.shortenHexComponent(blue);
+        const b = Color.shortenHexComponent(blue, strict);
         if (b.length !== 1) {
             return hex;
         }
@@ -274,9 +277,11 @@ class Color {
         return `#${r}${g}${b}`;
     }
 
-    static shortenHexComponent(hex) {
-        // Accepts a 2 digit hex code, without a leading # (e.g. "f0").
-        // Returns the nearest 1 digit hex code (e.g. "e").
+    static shortenHexComponent(hex, strict = true) {
+        // Accepts a 2 digit hex code, without a leading # (e.g. "ff").
+        // Returns a single hex digit if the 1st is repetitive, (e.g. "ff"
+        // becomes "f"), or the nearest 1 digit hex code (e.g. "f0" becomes
+        // "e") if the 2nd arg is false.
 
         if (hex.length !== 2) {
             return '';
@@ -292,6 +297,10 @@ class Color {
         if (h === hex.substring(1)) {
             Color.#shorts[hex] = h;
             return h;
+        }
+
+        if (strict) {
+            return '';
         }
 
         // What is the most significant figure repeated?
@@ -1070,7 +1079,7 @@ class Calendar {
             const hexTitle = `Brightness: ${hexLuma}%`;
             const hexStyle = Color.style(hex);
 
-            const shortHex = Color.shortenHex(hex);
+            const shortHex = Color.shortenHex(hex, false);
             const shortHexLuma = Color.getBrightnessPercentage(shortHex, 1);
             const shortHexTitle = `Brightness: ${shortHexLuma}%`;
             const shortHexStyle = Color.style(shortHex);
