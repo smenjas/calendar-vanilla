@@ -218,13 +218,15 @@ class Color {
         if (!name) {
             name = string;
         }
-        for (let i = 1; i <= string.length; i++) {
-            const substring = string.substring(0, i);
-            if (!(substring in substrings)) {
-                substrings[substring] = [name];
-            }
-            else if (substrings[substring].indexOf(name) === -1) {
-                substrings[substring].push(name);
+        for (let start = 0; start < string.length; start++) {
+            for (let end = 1; end <= string.length; end++) {
+                const substring = string.substring(start, end);
+                if (!(substring in substrings)) {
+                    substrings[substring] = [name];
+                }
+                else if (substrings[substring].indexOf(name) === -1) {
+                    substrings[substring].push(name);
+                }
             }
         }
     }
