@@ -240,7 +240,7 @@ class Color {
             const name = Color.namedCodes[code];
             Color.#addSubstrings(substrings, code, name);
 
-            const short = Color.shortenHex(code);
+            const short = Color.shortenHex(code, false);
             if (short.length !== 4) {
                 continue;
             }
