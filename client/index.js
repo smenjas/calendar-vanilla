@@ -152,6 +152,7 @@ class Color {
         yellow: '#ffff00',
         yellowgreen: '#9acd32',
     };
+    static namedCodes = Color.#getNamedCodes();
     static #shorts = {};
     static substrings = Color.#listSubstrings();
 
@@ -199,12 +200,27 @@ class Color {
         return percent.toFixed(digits);
     }
 
-    static #listSubstrings() {
-        const substrings = {};
-
+    static #getNamedCodes() {
+        const codes = {};
         for (const name in Color.names) {
-            for (let i = 1; i <= name.length; i++) {
-                const substring = name.substring(0, i);
+            const code = Color.names[name];
+            codes[code] = name;
+        }
+        return codes;
+    }
+
+    static #addSubstrings(substrings, string, name = null) {
+        // Accepts:
+        // - an object, with substrings as keys, and matching names in an array,
+        // - the string to add substrings of, starting from the beginning,
+        // - an optional name to store in the array, otherwise uses the 2nd arg.
+        // Returns undefined, modifies the object (1st arg) by reference.
+        if (!name) {
+            name = string;
+        }
+        for (let start = 0; start < string.length; start++) {
+            for (let end = 1; end <= string.length; end++) {
+                const substring = string.substring(start, end);
                 if (!(substring in substrings)) {
                     substrings[substring] = [name];
                 }
@@ -213,13 +229,35 @@ class Color {
                 }
             }
         }
+    }
+
+    static #listSubstrings() {
+        const substrings = {};
+
+        for (const name in Color.names) {
+            Color.#addSubstrings(substrings, name);
+        }
+
+        for (const code in Color.namedCodes) {
+            const name = Color.namedCodes[code];
+            Color.#addSubstrings(substrings, code, name);
+
+            const short = Color.shortenHex(code, false);
+            if (short.length !== 4) {
+                continue;
+            }
+            Color.#addSubstrings(substrings, short, name);
+        }
 
         return substrings;
     }
 
-    static shortenHex(hex) {
+    static shortenHex(hex, strict = true) {
         // Accepts a 6 digit hex code, with a leading # (e.g. "#cd853f").
-        // Returns a 3 digit hex code, with a leading # (e.g. "#c84").
+        // Returns a 3 digit hex code only if all 3 color components are
+        // repeated (e.g. "#663399" becomes "#639") when the 2nd arg is omitted
+        // or true and otherwise returns the 1st arg, or the closest 3 digit
+        // hex code if the 2nd arg is false (e.g. "#cd853f" becomes "#c84").
 
         if (hex.length !== 7) {
             return hex;
@@ -229,17 +267,17 @@ class Color {
         const green = hex.substring(3, 5);
         const blue = hex.substring(5, 8);
 
-        const r = Color.shortenHexComponent(red);
+        const r = Color.shortenHexComponent(red, strict);
         if (r.length !== 1) {
             return hex;
         }
 
-        const g = Color.shortenHexComponent(green);
+        const g = Color.shortenHexComponent(green, strict);
         if (g.length !== 1) {
             return hex;
         }
 
-        const b = Color.shortenHexComponent(blue);
+        const b = Color.shortenHexComponent(blue, strict);
         if (b.length !== 1) {
             return hex;
         }
@@ -247,9 +285,11 @@ class Color {
         return `#${r}${g}${b}`;
     }
 
-    static shortenHexComponent(hex) {
-        // Accepts a 2 digit hex code, without a leading # (e.g. "f0").
-        // Returns the nearest 1 digit hex code (e.g. "e").
+    static shortenHexComponent(hex, strict = true) {
+        // Accepts a 2 digit hex code, without a leading # (e.g. "ff").
+        // Returns a single hex digit if the 1st is repetitive, (e.g. "ff"
+        // becomes "f"), or the nearest 1 digit hex code (e.g. "f0" becomes
+        // "e") if the 2nd arg is false.
 
         if (hex.length !== 2) {
             return '';
@@ -265,6 +305,10 @@ class Color {
         if (h === hex.substring(1)) {
             Color.#shorts[hex] = h;
             return h;
+        }
+
+        if (strict) {
+            return '';
         }
 
         // What is the most significant figure repeated?
@@ -391,6 +435,7 @@ class Calendar {
         Calendar.processCategoryForm();
         Calendar.validateCategoryForm();
         Calendar.processEventForm();
+        Calendar.handleColorForm();
     }
 
     render() {
@@ -407,6 +452,7 @@ class Calendar {
                 html += Calendar.renderCategories();
                 break;
             case 'colors':
+                html += Calendar.renderColorForm();
                 html += Calendar.renderColors();
                 break;
             case 'event':
@@ -445,6 +491,20 @@ class Calendar {
 
     static formatDateParts(year, month, day) {
         return `${Calendar.monthNames[month]} ${day}, ${year}`;
+    }
+
+    static handleColorForm() {
+        const form = document.querySelector('form#color');
+
+        if (form === null) {
+            return;
+        }
+
+        const input = form.querySelector('input[name="color"]');
+        input.addEventListener('input', event => {
+            const colorsDiv = document.querySelector('div#colors');
+            colorsDiv.innerHTML = Calendar.renderColors(input.value);
+        });
     }
 
     static handleDayNav() {
@@ -987,20 +1047,47 @@ class Calendar {
         return html;
     }
 
-    static renderColors() {
-        let html = '<table id="color-names"><thead>';
+    static renderColorForm() {
+        let html = '<form id="color">';
+        html += '<input name="color">';
+        html += '</form>';
+
+        return html;
+    }
+
+    static renderColors(color = null) {
+        let html = '<div id="colors">';
+        html += Calendar.renderColorNames(color);
+        html += Calendar.renderColorCodes(color);
+        html += '</div>';
+        return html;
+    }
+
+    static renderColorNames(color = null) {
+        if (color !== null) {
+            color = color.trim();
+        }
+
+        const colorNames = (!color) ? Object.keys(Color.names) :
+            (color in Color.substrings) ? Color.substrings[color] : [];
+
+        if (colorNames.length < 1) {
+            return '';
+        }
+
+        let html = '<table class="color-names"><thead>';
         html += '<th class="color-name">Name</th>';
         html += '<th class="color-code">Code</th>';
         html += '<th class="color-code" title="Nearest short code">Short</th>';
         html += '</tr></thead><tbody>';
 
-        for (const name in Color.names) {
+        for (const name of colorNames) {
             const hex = Color.names[name];
             const hexLuma = Color.getBrightnessPercentage(hex, 1);
             const hexTitle = `Brightness: ${hexLuma}%`;
             const hexStyle = Color.style(hex);
 
-            const shortHex = Color.shortenHex(hex);
+            const shortHex = Color.shortenHex(hex, false);
             const shortHexLuma = Color.getBrightnessPercentage(shortHex, 1);
             const shortHexTitle = `Brightness: ${shortHexLuma}%`;
             const shortHexStyle = Color.style(shortHex);
@@ -1017,38 +1104,47 @@ class Calendar {
 
         html += '</tbody></table>';
 
+        return html;
+    }
+
+    static renderColorCodes(color = null) {
+        if (color !== null) {
+            color = color.trim();
+        }
+
+        const prefix = (color !== null && color.length > 4) ? color.substring(1, 4) : '';
+
         const max = parseInt('fff', 16);
         let count = 0;
         let rowMax = 16;
-
-        html += '<table id="color-codes"><thead><tr>';
-
-        for (; count < rowMax; count += 1) {
-            const hex = '#' + count.toString(16).padStart(3, '0');
-            const luma = Color.getBrightnessPercentage(hex, 1);
-            const title = `Brightness: ${luma}%`;
-            const style = Color.style(hex);
-            html += `<th style="${style}" title="${title}">${hex}</th>`;
-        }
-
-        html += '</tr></thead><tbody>';
+        let html = '';
 
         while (rowMax < max) {
-            rowMax += 16;
-            html += '<tr>';
+            let tr = '';
 
             for (; count < rowMax; count += 1) {
-                const hex = '#' + count.toString(16).padStart(3, '0');
+                const hex = '#' + prefix + count.toString(16).padStart(3, '0');
                 const luma = Color.getBrightnessPercentage(hex, 1);
                 const title = `Brightness: ${luma}%`;
+
+                if (color !== null && hex.substring(0, color.length) !== color) {
+                    continue;
+                }
+
                 const style = Color.style(hex);
-                html += `<td style="${style}" title="${title}">${hex}</td>`;
+                tr += `<td style="${style}" title="${title}">${hex}</td>`;
             }
 
-            html += '</tr>';
+            if (tr.length > 0) {
+                html += `<tr>${tr}</tr>`;
+            }
+
+            rowMax += 16;
         }
 
-        html += '</tbody></table>';
+        if (html.length > 0) {
+            html = `<table class="color-codes"><tbody>${html}</tbody></table>`;
+        }
 
         return html;
     }
