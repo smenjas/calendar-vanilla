@@ -1128,7 +1128,7 @@ class Calendar {
                 const title = `Brightness: ${luma}%`;
 
                 if (color !== null && hex.indexOf(color) === -1) {
-                    tr += (color.length < 3) ? '<td style="border: none"></td>' : '';
+                    tr += (color.length < 3) ? '<td></td>' : '';
                     continue;
                 }
 
