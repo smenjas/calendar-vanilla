@@ -48,6 +48,13 @@ form#category {
   float: right;
 }
 
+table.color-codes th,
+table.color-codes td,
+table.color-names th,
+table.color-names td {
+  border: none;
+}
+
 table.color-codes tr:first-child td:first-child,
 tr:first-child th:first-child {
   border-top-left-radius: 1rem;
