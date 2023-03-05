@@ -239,6 +239,12 @@ class Color {
         for (const code in Color.namedCodes) {
             const name = Color.namedCodes[code];
             Color.#addSubstrings(substrings, code, name);
+
+            const short = Color.shortenHex(code);
+            if (short.length !== 4) {
+                continue;
+            }
+            Color.#addSubstrings(substrings, short, name);
         }
 
         return substrings;
