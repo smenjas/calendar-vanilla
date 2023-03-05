@@ -209,32 +209,36 @@ class Color {
         return codes;
     }
 
+    static #addSubstrings(substrings, string, name = null) {
+        // Accepts:
+        // - an object, with substrings as keys, and matching names in an array,
+        // - the string to add substrings of, starting from the beginning,
+        // - an optional name to store in the array, otherwise uses the 2nd arg.
+        // Returns undefined, modifies the object (1st arg) by reference.
+        if (!name) {
+            name = string;
+        }
+        for (let i = 1; i <= string.length; i++) {
+            const substring = string.substring(0, i);
+            if (!(substring in substrings)) {
+                substrings[substring] = [name];
+            }
+            else if (substrings[substring].indexOf(name) === -1) {
+                substrings[substring].push(name);
+            }
+        }
+    }
+
     static #listSubstrings() {
         const substrings = {};
 
         for (const name in Color.names) {
-            for (let i = 1; i <= name.length; i++) {
-                const substring = name.substring(0, i);
-                if (!(substring in substrings)) {
-                    substrings[substring] = [name];
-                }
-                else if (substrings[substring].indexOf(name) === -1) {
-                    substrings[substring].push(name);
-                }
-            }
+            Color.#addSubstrings(substrings, name);
         }
 
         for (const code in Color.namedCodes) {
             const name = Color.namedCodes[code];
-            for (let i = 1; i <= code.length; i++) {
-                const substring = code.substring(0, i);
-                if (!(substring in substrings)) {
-                    substrings[substring] = [name];
-                }
-                else if (substrings[substring].indexOf(name) === -1) {
-                    substrings[substring].push(name);
-                }
-            }
+            Color.#addSubstrings(substrings, code, name);
         }
 
         return substrings;
