@@ -48,9 +48,11 @@ form#category {
   float: right;
 }
 
+table.color-codes tr:first-child td:first-child,
 tr:first-child th:first-child {
   border-top-left-radius: 1rem;
 }
+table.color-codes tr:first-child td:last-child,
 tr:first-child th:last-child {
   border-top-right-radius: 1rem;
 }

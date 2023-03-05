@@ -1021,20 +1021,9 @@ class Calendar {
         let count = 0;
         let rowMax = 16;
 
-        html = '<table class="color-codes"><thead><tr>';
-
-        for (; count < rowMax; count += 1) {
-            const hex = '#' + count.toString(16).padStart(3, '0');
-            const luma = Color.getBrightnessPercentage(hex, 1);
-            const title = `Brightness: ${luma}%`;
-            const style = Color.style(hex);
-            html += `<th style="${style}" title="${title}">${hex}</th>`;
-        }
-
-        html += '</tr></thead><tbody>';
+        html = '<table class="color-codes"><tbody>';
 
         while (rowMax < max) {
-            rowMax += 16;
             html += '<tr>';
 
             for (; count < rowMax; count += 1) {
@@ -1046,6 +1035,7 @@ class Calendar {
             }
 
             html += '</tr>';
+            rowMax += 16;
         }
 
         html += '</tbody></table>';
