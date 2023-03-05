@@ -1091,6 +1091,8 @@ class Calendar {
             color = color.trim();
         }
 
+        const prefix = (color !== null && color.length > 4) ? color.substring(1, 4) : '';
+
         const max = parseInt('fff', 16);
         let count = 0;
         let rowMax = 16;
@@ -1101,7 +1103,7 @@ class Calendar {
             html += '<tr>';
 
             for (; count < rowMax; count += 1) {
-                const hex = '#' + count.toString(16).padStart(3, '0');
+                const hex = '#' + prefix + count.toString(16).padStart(3, '0');
                 const luma = Color.getBrightnessPercentage(hex, 1);
                 const title = `Brightness: ${luma}%`;
 
