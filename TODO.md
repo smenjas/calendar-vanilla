@@ -8,8 +8,8 @@
 - [x] Navigate by year, forward or backward.
 - [x] Show a yearly view.
 - [ ] Show a weekly view.
-- [ ] Show a daily view.
-- [ ] Allow adding, editing, and deleting events.
-- [ ] Allow marking events as completed.
-- [ ] Add event categories, with a color for each.
+- [x] Show a daily view.
+- [x] Allow adding, editing, and deleting events.
+- [x] Allow marking events as completed.
+- [x] Add event categories, with a color for each.
 - [ ] Set goals (e.g. exercise twice a week).
