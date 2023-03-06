@@ -9,4 +9,23 @@ HTML, CSS, & client-side JS.
 - No server side processing (e.g. Node or Deno)
 - No dev tools except Git, an editor, and a web browser
 
-Copyright 2023 Benjamin Thornton, all rights reserved.
+## Goals
+- [x] Support light and dark color themes
+- [ ] Support desktop and mobile layouts
+- [x] Show a calendar
+  - [x] Monthly
+  - [x] Yearly
+  - [x] Daily
+- [x] Identify today
+- [x] Allow navigatioin, forward and backward
+- [x] Remember events
+  - [x] Create
+  - [x] Read
+  - [x] Update
+  - [x] Delete
+- [x] Categorize events
+  - [x] Create
+  - [x] Read
+  - [x] Update
+  - [x] Delete
+- [ ] Set goals (e.g. exercise twice a week)
