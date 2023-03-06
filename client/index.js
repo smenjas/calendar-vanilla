@@ -963,10 +963,10 @@ class Calendar {
         let html = '';
 
         if (categoryID === null || categoryID === '') {
-            html += '<h2>Add New Event Category</h2>';
+            html += '<h1>Add New Event Category</h1>';
         }
         else {
-            html += '<h2>Edit Event Category</h2>';
+            html += '<h1>Edit Event Category</h1>';
         }
 
         html += '<form id="category">';
@@ -1191,10 +1191,10 @@ class Calendar {
         let html = '';
 
         if (eventID === null || eventID === '') {
-            html += '<h2>Add New Event</h2>';
+            html += '<h1>Add New Event</h1>';
         }
         else {
-            html += '<h2>Edit Event</h2>';
+            html += '<h1>Edit Event</h1>';
         }
 
         html += '<form id="event">';
@@ -1624,7 +1624,7 @@ class Calendar {
             const monthName = Calendar.monthNames[m];
 
             html += `<div class="month" id="month-${m}">`;
-            html += `<h3><a href="${monthURL}">${monthName}<span></span></a></h3>`;
+            html += `<h2><a href="${monthURL}">${monthName}<span></span></a></h2>`;
             html += Calendar.renderMonth(year, m, true);
             html += '</div>';
         }
