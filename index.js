@@ -204,7 +204,12 @@ class Color {
         const codes = {};
         for (const name in Color.names) {
             const code = Color.names[name];
-            codes[code] = name;
+            if (code in codes) {
+                codes[code].push(name);
+            }
+            else {
+                codes[code] = [name];
+            }
         }
         return codes;
     }
@@ -239,14 +244,15 @@ class Color {
         }
 
         for (const code in Color.namedCodes) {
-            const name = Color.namedCodes[code];
-            Color.#addSubstrings(substrings, code, name);
-
+            const names = Color.namedCodes[code];
             const short = Color.shortenHex(code, false);
-            if (short.length !== 4) {
-                continue;
+            for (const name of names) {
+                Color.#addSubstrings(substrings, code, name);
+                if (short.length !== 4) {
+                    continue;
+                }
+                Color.#addSubstrings(substrings, short, name);
             }
-            Color.#addSubstrings(substrings, short, name);
         }
 
         return substrings;
