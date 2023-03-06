@@ -219,7 +219,7 @@ class Color {
             name = string;
         }
         for (let start = 0; start < string.length; start++) {
-            for (let end = 1; end <= string.length; end++) {
+            for (let end = start + 1; end <= string.length; end++) {
                 const substring = string.substring(start, end);
                 if (!(substring in substrings)) {
                     substrings[substring] = [name];
