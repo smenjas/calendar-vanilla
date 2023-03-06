@@ -295,20 +295,19 @@ class Color {
             return '';
         }
 
-        // Is it already cached?
-        if (hex in Color.#shorts) {
-            return Color.#shorts[hex];
-        }
-
         // Is it already the same hexadecimal digit repeated?
-        const h = hex.substring(0, 1);
-        if (h === hex.substring(1)) {
-            Color.#shorts[hex] = h;
+        const h = hex[0];
+        if (h === hex[1]) {
             return h;
         }
 
         if (strict) {
             return '';
+        }
+
+        // Is it already cached?
+        if (hex in Color.#shorts) {
+            return Color.#shorts[hex];
         }
 
         // What is the most significant figure repeated?
@@ -339,7 +338,7 @@ class Color {
         const decimal = ((above - dec) < 9) ? above : below;
 
         // Convert the winning decimal to hex, and shorten it.
-        const ret = decimal.toString(16).substring(1);
+        const ret = decimal.toString(16).substring(0, 1);
 
         // Cache the result.
         Color.#shorts[hex] = ret;
