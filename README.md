@@ -17,7 +17,7 @@ HTML, CSS, & client-side JS.
   - [x] Yearly
   - [x] Daily
 - [x] Identify today
-- [x] Allow navigatioin, forward and backward
+- [x] Allow navigation, forward and backward
 - [x] Remember events
   - [x] Create
   - [x] Read
