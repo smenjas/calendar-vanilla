@@ -10,6 +10,7 @@ HTML, CSS, & client-side JS.
 - No dev tools except Git, an editor, and a web browser
 
 ## Goals
+- [ ] Automate testing
 - [x] Support light and dark color themes
 - [ ] Support desktop and mobile layouts
 - [x] Show a calendar
