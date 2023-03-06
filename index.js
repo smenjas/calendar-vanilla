@@ -1114,12 +1114,12 @@ class Calendar {
 
         const prefix = (color !== null && color.length > 4) ? color.substring(1, 4) : '';
 
-        const max = parseInt('fff', 16);
+        const max = 4096;
         let count = 0;
-        let rowMax = 16;
+        let rowMax = 0;
         let html = '';
 
-        while (rowMax < max) {
+        while (rowMax <= max) {
             let tr = '';
 
             for (; count < rowMax; count += 1) {
