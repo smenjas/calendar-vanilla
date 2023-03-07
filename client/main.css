@@ -268,7 +268,7 @@ td.last-month, td.next-month {
     color: #faf;
   }
 
-  #event button, #event input, #event select, #event textarea {
+  button, input, select, textarea {
     border: 1px solid white;
     background: #111;
     color: white;
