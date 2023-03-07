@@ -47,14 +47,15 @@ fieldset label {
 }
 
 form#category {
-  text-align: left;
   width: 32rem;
 }
 form#event {
-  text-align: left;
   width: 50rem;
 }
 
+nav, h1 {
+  text-align: center;
+}
 nav a, nav a:visited {
   font-size: 1.6rem;
   padding-left: 1.3rem;
@@ -85,12 +86,6 @@ nav a.next-month, nav a.next-year, nav a.tomorrow {
 #events td.event-days {
   text-align: right;
 }
-#events td.event-name,
-#events td.event-category,
-#events td.event-start,
-#events td.event-end {
-  text-align: left;
-}
 
 table.color-codes th,
 table.color-codes td,
@@ -118,10 +113,6 @@ tr:last-child td:last-child {
 #categories td.events {
   text-align: right;
 }
-#categories td.category-name,
-#categories td.category-color-code {
-  text-align: left;
-}
 
 .calendar table {
   border: 1px solid black;
@@ -135,6 +126,10 @@ tr:last-child td:last-child {
 .calendar th, .calendar td {
   border: 1px solid #bbb;
   padding: 0.5rem;
+}
+.year h2,
+.month td {
+  text-align: center;
 }
 .calendar>.month td {
   height: 5rem;
@@ -218,9 +213,6 @@ https://stackoverflow.com/a/3494108/12841859
   border: 1px solid black;
 }
 
-.calendar {
-  text-align: center;
-}
 td.last-month, td.next-month {
   background: #ddd;
 }
