@@ -55,6 +55,38 @@ form#event {
   width: 50rem;
 }
 
+nav a, nav a:visited {
+  font-size: 1.6rem;
+  padding-left: 1.3rem;
+  padding-right: 1.3rem;
+}
+nav a, nav a:visited, .month h2 a, .month h2 a:visited {
+  background: white;
+  color: black;
+}
+.day .event a, .day .event a:visited {
+  background: inherit;
+  color: inherit;
+}
+.month td a, .month td a:visited {
+  color: black;
+  text-decoration: none;
+}
+nav a:hover, .month h2 a:hover {
+  background: black;
+  color: white;
+}
+nav a, .month h2 a {
+  text-decoration: none;
+  font-style: bold;
+}
+nav a.last-month, nav a.last-year, nav a.yesterday {
+  margin-right: 1rem;
+}
+nav a.next-month, nav a.next-year, nav a.tomorrow {
+  margin-left: 1rem;
+}
+
 #events td.event-id,
 #events td.event-days {
   text-align: right;
@@ -95,38 +127,6 @@ tr:last-child td:last-child {
 #categories td.category-name,
 #categories td.category-color-code {
   text-align: left;
-}
-
-nav a, nav a:visited {
-  font-size: 1.6rem;
-  padding-left: 1.3rem;
-  padding-right: 1.3rem;
-}
-nav a, nav a:visited, .month h2 a, .month h2 a:visited {
-  background: white;
-  color: black;
-}
-.day .event a, .day .event a:visited {
-  background: inherit;
-  color: inherit;
-}
-.month td a, .month td a:visited {
-  color: black;
-  text-decoration: none;
-}
-nav a:hover, .month h2 a:hover {
-  background: black;
-  color: white;
-}
-nav a, .month h2 a {
-  text-decoration: none;
-  font-style: bold;
-}
-nav a.last-month, nav a.last-year, nav a.yesterday {
-  margin-right: 1rem;
-}
-nav a.next-month, nav a.next-year, nav a.tomorrow {
-  margin-left: 1rem;
 }
 
 .calendar table {
