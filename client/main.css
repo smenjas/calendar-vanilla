@@ -92,16 +92,18 @@ nav a.tomorrow {
   margin-left: 1rem;
 }
 
-#events td.event-id,
-#events td.event-days {
-  text-align: right;
+table {
+  border: 1px solid black;
+  border-radius: 1rem;
+  border-spacing: 0;
+  margin: auto;
 }
-
-table.color-codes th,
-table.color-codes td,
-table.color-names th,
-table.color-names td {
-  border: none;
+th {
+  background: #ccc;
+}
+th, td {
+  border: 1px solid #bbb;
+  padding: 0.5rem;
 }
 
 table.color-codes tr:first-child td:first-child,
@@ -119,23 +121,26 @@ tr:last-child td:last-child {
   border-bottom-right-radius: 1rem;
 }
 
+table.color-codes th,
+table.color-codes td,
+table.color-names th,
+table.color-names td {
+  border: none;
+}
+
 #categories td.category-id,
 #categories td.events {
   text-align: right;
 }
+#events td.event-id,
+#events td.event-days {
+  text-align: right;
+}
 
-table {
-  border: 1px solid black;
-  border-radius: 1rem;
-  border-spacing: 0;
-  margin: auto;
-}
-th {
-  background: #ccc;
-}
-th, td {
-  border: 1px solid #bbb;
-  padding: 0.5rem;
+.year {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  gap: 0.5rem;
 }
 .year h2,
 .month td {
@@ -145,10 +150,14 @@ th, td {
   height: 5rem;
   width: 5rem;
 }
-.year {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
-  gap: 0.5rem;
+td.last-month,
+td.next-month {
+  background: #ddd;
+}
+.month td.now,
+.day tr.now {
+  border: 1px solid black;
+  background: #bbb;
 }
 .day {
   width: 43rem;
@@ -209,16 +218,6 @@ https://stackoverflow.com/a/3494108/12841859
 }
 .calendar>.month td a span:hover {
   border: 1px solid black;
-}
-
-td.last-month,
-td.next-month {
-  background: #ddd;
-}
-.month td.now,
-.day tr.now {
-  border: 1px solid black;
-  background: #bbb;
 }
 
 @media screen and (prefers-color-scheme: dark) {
