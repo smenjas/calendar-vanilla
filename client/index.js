@@ -446,7 +446,7 @@ class Calendar {
     render() {
         const { year, month, day, view, categoryID, eventID } = this.query;
 
-        let html = '<div class="calendar">';
+        let html = '';
 
         switch (view) {
             case 'category':
@@ -456,10 +456,12 @@ class Calendar {
                 html += Calendar.renderCategoryForm(categoryID, year, month, day);
                 html += Calendar.renderCategories();
                 break;
+
             case 'colors':
                 html += Calendar.renderColorForm();
                 html += Calendar.renderColors();
                 break;
+
             case 'event':
                 html += '<nav>';
                 html += Calendar.renderCommonNav(view, year, month, day);
@@ -467,21 +469,29 @@ class Calendar {
                 html += Calendar.renderEventForm(eventID, year, month, day);
                 html += Calendar.renderEvents();
                 break;
+
             case 'year':
                 html += Calendar.renderYearNav(year, month, day);
+                html += '<div class="calendar">';
                 html += Calendar.renderYear(year, month, day);
+                html += '</div>';
                 break;
+
             case 'day':
                 html += Calendar.renderDayNav(year, month, day);
+                html += '<div class="calendar">';
                 html += Calendar.renderDay(year, month, day);
+                html += '</div>';
                 break;
+
             default:
                 html += Calendar.renderMonthNav(year, month, day);
+                html += '<div class="calendar">';
                 html += Calendar.renderMonth(year, month);
+                html += '</div>';
                 break;
         }
 
-        html += '</div>';
 
         document.body.insertAdjacentHTML('beforeend', html);
     }
