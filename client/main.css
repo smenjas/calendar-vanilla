@@ -1,319 +1,284 @@
 body {
-  font-family: sans-serif;
-  background: white;
-  color: black;
+    font-family: sans-serif;
+    background: white;
+    color: black;
 }
 a {
-  color: #005;
+    color: #005;
 }
 a:visited {
-  color: #505;
+    color: #505;
 }
 
+form {
+    overflow: hidden;
+    margin: auto;
+}
 fieldset {
-  border: none;
+    border: none;
+}
+button, input, select, textarea {
+    border: 1px solid black;
+    background: #eee;
+    color: black;
+    font-size: 1.5rem;
 }
 button {
-  height: 2.5rem;
+    height: 2.5rem;
 }
 input {
-  padding: 0.3rem;
+    padding: 0.3rem;
+}
+
+fieldset button {
+    float: right;
+    width: calc(100% - 11rem);
+}
+fieldset input {
+    float: left;
+    width: calc(100% - 12rem);
+}
+fieldset label {
+    font-size: 1.5rem;
+    float: left;
+    width: 10rem;
+    margin: 0.188rem 1rem 0 0;
+    text-align: right;
 }
 
 form#category {
-  overflow: hidden;
-  width: 32rem;
-  margin: auto;
-  text-align: left;
+    width: 32rem;
 }
-#category button, #category input {
-  border: 1px solid black;
-  background: #eee;
-  color: black;
-  font-size: 1.5rem;
+form#event {
+    width: 50rem;
 }
-#category label {
-  font-size: 1.5rem;
-  float: left;
-  width: 10rem;
-  margin: 0.188rem 1rem 0 0;
-  text-align: right;
+
+nav, h1 {
+    text-align: center;
 }
-#category input {
-  width: calc(100% - 12rem);
-  float: left;
+nav a,
+nav a:visited {
+    font-size: 1.6rem;
+    padding-left: 1.3rem;
+    padding-right: 1.3rem;
 }
-#category button {
-  width: calc(100% - 11rem);
-  float: right;
+nav a,
+nav a:visited,
+.year h2 a,
+.year h2 a:visited {
+    background: white;
+    color: black;
+    font-style: bold;
+    text-decoration: none;
+}
+nav a:hover,
+.month h2 a:hover {
+    background: black;
+    color: white;
+}
+.month td a,
+.month td a:visited {
+    color: black;
+    text-decoration: none;
+}
+nav a.last-month,
+nav a.last-year,
+nav a.yesterday {
+    margin-right: 1rem;
+}
+nav a.next-month,
+nav a.next-year,
+nav a.tomorrow {
+    margin-left: 1rem;
+}
+
+table {
+    border: 1px solid black;
+    border-radius: 1rem;
+    border-spacing: 0;
+    margin: auto;
+}
+th {
+    background: #ccc;
+}
+th, td {
+    border: 1px solid #bbb;
+    padding: 0.5rem;
+}
+
+table.color-codes tr:first-child td:first-child,
+tr:first-child th:first-child {
+    border-top-left-radius: 1rem;
+}
+table.color-codes tr:first-child td:last-child,
+tr:first-child th:last-child {
+    border-top-right-radius: 1rem;
+}
+tr:last-child td:first-child {
+    border-bottom-left-radius: 1rem;
+}
+tr:last-child td:last-child {
+    border-bottom-right-radius: 1rem;
 }
 
 table.color-codes th,
 table.color-codes td,
 table.color-names th,
 table.color-names td {
-  border: none;
-}
-
-table.color-codes tr:first-child td:first-child,
-tr:first-child th:first-child {
-  border-top-left-radius: 1rem;
-}
-table.color-codes tr:first-child td:last-child,
-tr:first-child th:last-child {
-  border-top-right-radius: 1rem;
-}
-tr:last-child td:first-child {
-  border-bottom-left-radius: 1rem;
-}
-tr:last-child td:last-child {
-  border-bottom-right-radius: 1rem;
+    border: none;
 }
 
 #categories td.category-id,
 #categories td.events {
-  text-align: right;
+    text-align: right;
 }
-#categories td.category-name,
-#categories td.category-color-code {
-  text-align: left;
-}
-
-form#event {
-  overflow: hidden;
-  width: 50rem;
-  margin: auto;
-  text-align: left;
-}
-#event button, #event input, #event select, #event textarea {
-  border: 1px solid black;
-  background: #eee;
-  color: black;
-  font-size: 1.5rem;
-}
-#event label {
-  font-size: 1.5rem;
-  float: left;
-  width: 10rem;
-  margin: 0.188rem 1rem 0 0;
-  text-align: right;
-}
-#event input {
-  width: calc(100% - 12rem);
-  float: left;
-}
-#event button {
-  width: calc(100% - 11rem);
-  float: right;
-}
-
 #events td.event-id,
 #events td.event-days {
-  text-align: right;
-}
-#events td.event-name,
-#events td.event-category,
-#events td.event-start,
-#events td.event-end {
-  text-align: left;
+    text-align: right;
 }
 
-nav a, nav a:visited {
-  font-size: 1.6rem;
-  padding-left: 1.3rem;
-  padding-right: 1.3rem;
+.year {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    gap: 0.5rem;
 }
-nav a, nav a:visited, .month h2 a, .month h2 a:visited {
-  background: white;
-  color: black;
-}
-.day .event a, .day .event a:visited {
-  background: inherit;
-  color: inherit;
-}
-.month td a, .month td a:visited {
-  color: black;
-  text-decoration: none;
-}
-nav a:hover, .month h2 a:hover {
-  background: black;
-  color: white;
-}
-nav select, nav button {
-  border: 1px solid black;
-  font-size: 1.5rem;
-}
-nav a, .month h2 a {
-  text-decoration: none;
-  font-style: bold;
-}
-nav a.last-month, nav a.last-year, nav a.yesterday {
-  margin-right: 1rem;
-}
-nav a.next-month, nav a.next-year, nav a.tomorrow {
-  margin-left: 1rem;
-}
-
-.calendar table {
-  border: 1px solid black;
-  border-radius: 1rem;
-  border-spacing: 0;
-  margin: auto;
-}
-.calendar th {
-  background: #ccc;
-}
-.calendar th, .calendar td {
-  border: 1px solid #bbb;
-  padding: 0.5rem;
+.year h2,
+.month td {
+    text-align: center;
 }
 .calendar>.month td {
-  height: 5rem;
-  width: 5rem;
+    height: 5rem;
+    width: 5rem;
 }
-.calendar .year {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
-  gap: 0.5rem;
+td.last-month,
+td.next-month {
+    background: #ddd;
 }
-.calendar .day {
-  width: 43rem;
+.month td.now,
+.day tr.now {
+    border: 1px solid black;
+    background: #bbb;
 }
-.calendar .day .time {
-  text-align: right;
-  width: 3rem;
+.day {
+    width: 43rem;
 }
-.calendar .day .event {
-  text-align: left;
-  vertical-align: top;
+.day .time {
+    text-align: right;
+    width: 3rem;
 }
-.calendar .day .event ul {
-  border: 1px solid #777;
-  border-radius: 0.5rem;
-  margin: 0;
-  padding: 0;
+.day .event {
+    text-align: left;
+    vertical-align: top;
 }
-.calendar .day .event li {
-  list-style-type: none;
-  padding: 0.5rem 0.25rem;
+.day .event a,
+.day .event a:visited {
+    background: inherit;
+    color: inherit;
 }
-.calendar .day .event li:first-child {
-  border-top-left-radius: 0.5rem;
-  border-top-right-radius: 0.5rem;
+.day .event ul {
+    border: 1px solid #777;
+    border-radius: 0.5rem;
+    margin: 0;
+    padding: 0;
 }
-.calendar .day .event li:last-child {
-  border-bottom-left-radius: 0.5rem;
-  border-bottom-right-radius: 0.5rem;
+.day .event li {
+    list-style: none;
+    padding: 0.5rem 0.25rem;
+}
+.day .event li:first-child {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+.day .event li:last-child {
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
 }
 
 /*
 Make the whole month clickable, in year view.
-https://stackoverflow.com/a/3494108/12841859
-*/
-.calendar .year .month {
-  position: relative;
-}
-.calendar .year a span {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  z-index: 1;
-}
-.calendar .year a span:hover {
-  border: 2px solid black;
-  border-radius: 1rem;
-}
-
-/*
 Make the whole day clickable, in month view.
 https://stackoverflow.com/a/3494108/12841859
 */
+.year .month,
 .calendar>.month td {
-  position: relative;
+    position: relative;
 }
+.year a span,
 .calendar>.month td a span {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  z-index: 1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+.year a span:hover {
+    border: 2px solid black;
+    border-radius: 1rem;
 }
 .calendar>.month td a span:hover {
-  border: 1px solid black;
-}
-
-.calendar {
-  text-align: center;
-}
-td.last-month, td.next-month {
-  background: #ddd;
-}
-.month td.now, .day tr.now {
-  border: 1px solid black;
-  background: #bbb;
+    border: 1px solid black;
 }
 
 @media screen and (prefers-color-scheme: dark) {
-  body {
-    background: black;
-    color: white;
-  }
-  a {
-    color: #aaf;
-  }
-  a:visited {
-    color: #faf;
-  }
+    body {
+        background: black;
+        color: white;
+    }
+    a {
+        color: #aaf;
+    }
+    a:visited {
+        color: #faf;
+    }
 
-  #event button, #event input, #event select, #event textarea {
-    border: 1px solid white;
-    background: #111;
-    color: white;
-  }
+    button, input, select, textarea {
+        border: 1px solid white;
+        background: #222;
+        color: white;
+    }
 
-  nav a, nav a:visited, .month h2 a, .month h2 a:visited {
-    background: black;
-    color: white;
-  }
-  nav a:hover, .month h2 a:hover {
-    background: white;
-    color: black;
-  }
-  .month td a, .month td a:visited {
-    color: white;
-    text-decoration: none;
-  }
-  nav select, nav button {
-    background: black;
-    color: white;
-    border: 1px solid white;
-  }
+    nav a,
+    nav a:visited,
+    .month h2 a,
+    .month h2 a:visited {
+        background: black;
+        color: white;
+    }
+    nav a:hover,
+    .month h2 a:hover {
+        background: white;
+        color: black;
+    }
+    .month td a,
+    .month td a:visited {
+        color: white;
+    }
 
-  .calendar table {
-    border: 1px solid white;
-  }
-  .calendar th {
-    background: #333;
-  }
-  .calendar th, .calendar td {
-    border: 1px solid #444;
-  }
+    table {
+        border: 1px solid white;
+    }
+    th {
+        background: #333;
+    }
+    th, td {
+        border: 1px solid #444;
+    }
 
-  td.last-month, td.next-month {
-    background: #222;
-  }
-  .month td.now, .day tr.now {
-    border: 1px solid white;
-    background: #444;
-  }
+    td.last-month,
+    td.next-month {
+        background: #222;
+    }
+    .month td.now,
+    .day tr.now {
+        border: 1px solid white;
+        background: #444;
+    }
 
-  .calendar .year a span:hover {
-    border: 2px solid white;
-  }
-  .calendar>.month td a span:hover {
-    border: 1px solid white;
-  }
+    .year a span:hover {
+        border: 2px solid white;
+    }
+    .calendar>.month td a span:hover {
+        border: 1px solid white;
+    }
 }
