@@ -220,6 +220,16 @@ https://stackoverflow.com/a/3494108/12841859
     border: 1px solid black;
 }
 
+@media print {
+    nav {
+        display: none;
+    }
+    .day .event li {
+        background: white !important;
+        color: black !important;
+    }
+}
+
 @media screen {
     /*
     https://benmyers.dev/blog/native-visually-hidden/
