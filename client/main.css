@@ -56,29 +56,39 @@ form#event {
 nav, h1 {
   text-align: center;
 }
-nav a, nav a:visited {
+nav a,
+nav a:visited {
   font-size: 1.6rem;
   padding-left: 1.3rem;
   padding-right: 1.3rem;
 }
-nav a, nav a:visited, .year h2 a, .year h2 a:visited {
+nav a,
+nav a:visited,
+.year h2 a,
+.year h2 a:visited {
   background: white;
   color: black;
   font-style: bold;
   text-decoration: none;
 }
-nav a:hover, .month h2 a:hover {
+nav a:hover,
+.month h2 a:hover {
   background: black;
   color: white;
 }
-.month td a, .month td a:visited {
+.month td a,
+.month td a:visited {
   color: black;
   text-decoration: none;
 }
-nav a.last-month, nav a.last-year, nav a.yesterday {
+nav a.last-month,
+nav a.last-year,
+nav a.yesterday {
   margin-right: 1rem;
 }
-nav a.next-month, nav a.next-year, nav a.tomorrow {
+nav a.next-month,
+nav a.next-year,
+nav a.tomorrow {
   margin-left: 1rem;
 }
 
@@ -151,7 +161,8 @@ th, td {
   text-align: left;
   vertical-align: top;
 }
-.day .event a, .day .event a:visited {
+.day .event a,
+.day .event a:visited {
   background: inherit;
   color: inherit;
 }
@@ -200,10 +211,12 @@ https://stackoverflow.com/a/3494108/12841859
   border: 1px solid black;
 }
 
-td.last-month, td.next-month {
+td.last-month,
+td.next-month {
   background: #ddd;
 }
-.month td.now, .day tr.now {
+.month td.now,
+.day tr.now {
   border: 1px solid black;
   background: #bbb;
 }
@@ -226,15 +239,20 @@ td.last-month, td.next-month {
     color: white;
   }
 
-  nav a, nav a:visited, .month h2 a, .month h2 a:visited {
+  nav a,
+  nav a:visited,
+  .month h2 a,
+  .month h2 a:visited {
     background: black;
     color: white;
   }
-  nav a:hover, .month h2 a:hover {
+  nav a:hover,
+  .month h2 a:hover {
     background: white;
     color: black;
   }
-  .month td a, .month td a:visited {
+  .month td a,
+  .month td a:visited {
     color: white;
   }
 
@@ -248,10 +266,12 @@ td.last-month, td.next-month {
     border: 1px solid #444;
   }
 
-  td.last-month, td.next-month {
+  td.last-month,
+  td.next-month {
     background: #222;
   }
-  .month td.now, .day tr.now {
+  .month td.now,
+  .day tr.now {
     border: 1px solid white;
     background: #444;
   }
