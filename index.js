@@ -455,6 +455,7 @@ class Calendar {
                 html += Calendar.renderCommonNav(view, year, month, day);
                 html += '</nav>';
                 html += Calendar.renderCategoryForm(categoryID, year, month, day);
+                html += `<h1 class="visually-hidden">${document.title}</h1>`;
                 html += Calendar.renderCategories();
                 break;
 
@@ -470,6 +471,7 @@ class Calendar {
                 html += Calendar.renderCommonNav(view, year, month, day);
                 html += '</nav>';
                 html += Calendar.renderEventForm(eventID, year, month, day);
+                html += `<h1 class="visually-hidden">${document.title}</h1>`;
                 html += Calendar.renderEvents();
                 break;
 
@@ -979,7 +981,7 @@ class Calendar {
             return `<p class="error">categoryID ${categoryID} not found.</p>`;
         }
 
-        let html = '';
+        let html = '<form id="category">';
 
         if (categoryID === null || categoryID === '') {
             html += '<h1>Add New Event Category</h1>';
@@ -988,7 +990,6 @@ class Calendar {
             html += '<h1>Edit Event Category</h1>';
         }
 
-        html += '<form id="category">';
         html += '<input type="hidden" name="view" value="category">';
         html += `<input type="hidden" name="year" value="${year}">`;
         html += `<input type="hidden" name="month" value="${month}">`;
@@ -1207,7 +1208,7 @@ class Calendar {
             return `<p class="error">eventID ${eventID} not found.</p>`;
         }
 
-        let html = '';
+        let html = '<form id="event">';
 
         if (eventID === null || eventID === '') {
             html += '<h1>Add New Event</h1>';
@@ -1216,7 +1217,6 @@ class Calendar {
             html += '<h1>Edit Event</h1>';
         }
 
-        html += '<form id="event">';
         html += '<input type="hidden" name="view" value="event">';
         html += `<input type="hidden" name="year" value="${year}">`;
         html += `<input type="hidden" name="month" value="${month}">`;
