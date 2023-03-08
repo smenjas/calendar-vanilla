@@ -221,9 +221,20 @@ https://stackoverflow.com/a/3494108/12841859
 }
 
 @media print {
+    a,
+    a:visited {
+        text-decoration: none;
+    }
+    form#category,
+    form#colors,
+    form#event,
     nav {
         display: none;
     }
+    a,
+    a:visited,
+    td.category-color,
+    td.event-category,
     .day .event li {
         background: white !important;
         color: black !important;
