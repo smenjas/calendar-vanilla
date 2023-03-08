@@ -1,8 +1,8 @@
 # calendar-vanilla
 
-This is a calendar app that uses only vanilla JavaScript. It's an exercise to
-learn web development fundamentals, using the simplest technology stack: plain
-HTML, CSS, & client-side JS.
+This is a calendar app built with vanilla JavaScript. It's an exercise to learn
+web development fundamentals, using the simplest technology stack: plain HTML,
+CSS, & client-side JS.
 
 ## Exercise Constraints
 - No libraries, frameworks, templates, or preprocessors
@@ -20,13 +20,6 @@ HTML, CSS, & client-side JS.
 - [x] Identify today
 - [x] Allow navigation, forward and backward
 - [x] Remember events
-  - [x] Create
-  - [x] Read
-  - [x] Update
-  - [x] Delete
 - [x] Categorize events
-  - [x] Create
-  - [x] Read
-  - [x] Update
-  - [x] Delete
+- [ ] Repeat events
 - [ ] Set goals (e.g. exercise twice a week)
