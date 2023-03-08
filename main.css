@@ -220,6 +220,24 @@ https://stackoverflow.com/a/3494108/12841859
     border: 1px solid black;
 }
 
+@media screen {
+    /*
+    https://benmyers.dev/blog/native-visually-hidden/
+    */
+    .visually-hidden:not(:focus):not(:active) {
+        border: 0;
+        clip: rect(0 0 0 0);
+        clip-path: inset(50%);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        white-space: nowrap;
+        width: 1px;
+    }
+}
+
 @media screen and (prefers-color-scheme: dark) {
     body {
         background: black;

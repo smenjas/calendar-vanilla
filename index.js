@@ -477,6 +477,7 @@ class Calendar {
                 document.title = year;
                 html += Calendar.renderYearNav(year, month, day);
                 html += '<div class="calendar">';
+                html += `<h1 class="visually-hidden">${document.title}</h1>`;
                 html += Calendar.renderYear(year, month, day);
                 html += '</div>';
                 break;
@@ -485,6 +486,7 @@ class Calendar {
                 document.title = Calendar.formatDateParts(year, month, day);
                 html += Calendar.renderDayNav(year, month, day);
                 html += '<div class="calendar">';
+                html += `<h1 class="visually-hidden">${document.title}</h1>`;
                 html += Calendar.renderDay(year, month, day);
                 html += '</div>';
                 break;
@@ -493,6 +495,7 @@ class Calendar {
                 document.title = `${Calendar.monthNames[month]} ${year}`;
                 html += Calendar.renderMonthNav(year, month, day);
                 html += '<div class="calendar">';
+                html += `<h1 class="visually-hidden">${document.title}</h1>`;
                 html += Calendar.renderMonth(year, month);
                 html += '</div>';
                 break;
