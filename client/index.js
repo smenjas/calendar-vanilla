@@ -450,6 +450,7 @@ class Calendar {
 
         switch (view) {
             case 'category':
+                document.title = "Categories";
                 html += '<nav>';
                 html += Calendar.renderCommonNav(view, year, month, day);
                 html += '</nav>';
@@ -458,11 +459,13 @@ class Calendar {
                 break;
 
             case 'colors':
+                document.title = "Colors";
                 html += Calendar.renderColorForm();
                 html += Calendar.renderColors();
                 break;
 
             case 'event':
+                document.title = "Events";
                 html += '<nav>';
                 html += Calendar.renderCommonNav(view, year, month, day);
                 html += '</nav>';
@@ -471,6 +474,7 @@ class Calendar {
                 break;
 
             case 'year':
+                document.title = year;
                 html += Calendar.renderYearNav(year, month, day);
                 html += '<div class="calendar">';
                 html += Calendar.renderYear(year, month, day);
@@ -478,6 +482,7 @@ class Calendar {
                 break;
 
             case 'day':
+                document.title = Calendar.formatDateParts(year, month, day);
                 html += Calendar.renderDayNav(year, month, day);
                 html += '<div class="calendar">';
                 html += Calendar.renderDay(year, month, day);
@@ -485,6 +490,7 @@ class Calendar {
                 break;
 
             default:
+                document.title = `${Calendar.monthNames[month]} ${year}`;
                 html += Calendar.renderMonthNav(year, month, day);
                 html += '<div class="calendar">';
                 html += Calendar.renderMonth(year, month);
