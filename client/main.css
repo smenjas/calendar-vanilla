@@ -182,7 +182,7 @@ td.next-month {
     padding: 0;
 }
 .day .event li {
-    list-style-type: none;
+    list-style: none;
     padding: 0.5rem 0.25rem;
 }
 .day .event li:first-child {
