@@ -45,6 +45,10 @@ fieldset label {
     margin: 0.188rem 1rem 0 0;
     text-align: right;
 }
+form#color input {
+    border-radius: 0.5rem;
+    outline-width: 0;
+}
 
 form#category {
     width: 32rem;
@@ -121,6 +125,17 @@ tr:last-child td:last-child {
     border-bottom-right-radius: 1rem;
 }
 
+table.color-codes,
+table.color-names {
+    border: 1px solid #808080;
+    margin: 1rem 0 0 0;
+    padding: 0;
+    width: calc(100vw - 1.5rem);
+}
+table.color-codes th,
+table.color-names th {
+    text-align: left;
+}
 table.color-codes th,
 table.color-codes td,
 table.color-names th,
