@@ -188,7 +188,7 @@ class Color {
         const fullHex = Color.expandHex(hex);
         const red = parseInt(fullHex.substring(1, 3), 16);
         const green = parseInt(fullHex.substring(3, 5), 16);
-        const blue = parseInt(fullHex.substring(5, 8), 16);
+        const blue = parseInt(fullHex.substring(5, 7), 16);
 
         // See: https://en.wikipedia.org/wiki/Rec._709#Luma_coefficients
         return (0.2126 * red) + (0.7152 * green) + (0.0722 * blue);
