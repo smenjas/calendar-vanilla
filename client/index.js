@@ -1,3 +1,5 @@
+'use strict';
+
 class Color {
     static #hexNames = {};
     static hexPattern = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
