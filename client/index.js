@@ -480,28 +480,28 @@ class Calendar {
             case 'year':
                 document.title = year;
                 html += Calendar.renderYearNav(year, month, day);
-                html += '<div class="calendar">';
+                html += '<main class="calendar">';
                 html += `<h1 class="visually-hidden">${document.title}</h1>`;
                 html += Calendar.renderYear(year, month, day);
-                html += '</div>';
+                html += '</main>';
                 break;
 
             case 'day':
                 document.title = Calendar.formatDateParts(year, month, day);
                 html += Calendar.renderDayNav(year, month, day);
-                html += '<div class="calendar">';
+                html += '<main class="calendar">';
                 html += `<h1 class="visually-hidden">${document.title}</h1>`;
                 html += Calendar.renderDay(year, month, day);
-                html += '</div>';
+                html += '</main>';
                 break;
 
             default:
                 document.title = `${Calendar.monthNames[month]} ${year}`;
                 html += Calendar.renderMonthNav(year, month, day);
-                html += '<div class="calendar">';
+                html += '<main class="calendar">';
                 html += `<h1 class="visually-hidden">${document.title}</h1>`;
                 html += Calendar.renderMonth(year, month);
-                html += '</div>';
+                html += '</main>';
                 break;
         }
 
@@ -530,7 +530,7 @@ class Calendar {
 
         const input = form.querySelector('input[name="color"]');
         input.addEventListener('input', event => {
-            const colorsDiv = document.querySelector('div#colors');
+            const colorsDiv = document.querySelector('main#colors');
             colorsDiv.innerHTML = Calendar.renderColors(input.value);
         });
     }
@@ -1083,10 +1083,10 @@ class Calendar {
     }
 
     static renderColors(color = null) {
-        let html = '<div id="colors">';
+        let html = '<main id="colors">';
         html += Calendar.renderColorNames(color);
         html += Calendar.renderColorCodes(color);
-        html += '</div>';
+        html += '</main>';
         return html;
     }
 
@@ -1644,10 +1644,10 @@ class Calendar {
             const monthURL = Calendar.getURL('month', year, m, d);
             const monthName = Calendar.monthNames[m];
 
-            html += `<div class="month" id="month-${m}">`;
+            html += `<section class="month" class="month-${m}">`;
             html += `<h2><a href="${monthURL}">${monthName}<span></span></a></h2>`;
             html += Calendar.renderMonth(year, m, true);
-            html += '</div>';
+            html += '</section>';
         }
 
         html += '</div>';
