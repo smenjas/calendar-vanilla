@@ -228,11 +228,11 @@ https://stackoverflow.com/a/3494108/12841859
     z-index: 1;
 }
 .year a span:hover {
-    border: 2px solid black;
+    outline: 5px outset black;
     border-radius: 1rem;
 }
 .calendar>.month td a span:hover {
-    border: 1px solid black;
+    outline: 3px outset black;
 }
 
 @media print {
@@ -330,9 +330,9 @@ https://stackoverflow.com/a/3494108/12841859
     }
 
     .year a span:hover {
-        border: 2px solid white;
+        outline: 5px outset white;
     }
     .calendar>.month td a span:hover {
-        border: 1px solid white;
+        outline: 3px outset white;
     }
 }
