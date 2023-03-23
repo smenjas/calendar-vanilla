@@ -287,7 +287,7 @@ https://stackoverflow.com/a/3494108/12841859
     }
 
     button, input, select, textarea {
-        border: 1px solid white;
+        border-color: white;
         background: #222;
         color: white;
     }
@@ -310,13 +310,13 @@ https://stackoverflow.com/a/3494108/12841859
     }
 
     table {
-        border: 1px solid white;
+        border-color: white;
     }
     th {
         background: #333;
     }
     th, td {
-        border: 1px solid #444;
+        border-color: #444;
     }
 
     td.last-month,
@@ -325,14 +325,12 @@ https://stackoverflow.com/a/3494108/12841859
     }
     .month td.now,
     .day tr.now {
-        border: 1px solid white;
+        border-color: white;
         background: #444;
     }
 
-    .year a span:hover {
-        outline: 5px outset white;
-    }
+    .year a span:hover,
     .calendar>.month td a span:hover {
-        outline: 3px outset white;
+        outline-color: white;
     }
 }
