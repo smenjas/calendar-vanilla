@@ -162,8 +162,13 @@ table.color-names td {
     text-align: center;
 }
 .calendar>.month td {
+    font-size: 2.0rem;
     height: 5rem;
     width: 5rem;
+}
+.calendar>.month td p {
+    font-size: 0.8rem;
+    margin: 0;
 }
 td.last-month,
 td.next-month {
