@@ -152,51 +152,51 @@ table.color-names td {
     text-align: right;
 }
 
-.year #month-0 .this-month {
+#month-0 th {
     background: #b00;
     color: white;
 }
-.year #month-1 .this-month {
+#month-1 th {
     background: orange;
     color: black;
 }
-.year #month-2 .this-month {
+#month-2 th {
     background: gold;
     color: black;
 }
-.year #month-3 .this-month {
+#month-3 th {
     background: greenyellow;
     color: black;
 }
-.year #month-4 .this-month {
+#month-4 th {
     background: limegreen;
     color: black;
 }
-.year #month-5 .this-month {
+#month-5 th {
     background: green;
     color: white;
 }
-.year #month-6 .this-month {
+#month-6 th {
     background: darkgreen;
     color: white;
 }
-.year #month-7 .this-month {
+#month-7 th {
     background: midnightblue;
     color: white;
 }
-.year #month-8 .this-month {
+#month-8 th {
     background: darkslateblue;
     color: white;
 }
-.year #month-9 .this-month {
+#month-9 th {
     background: indigo;
     color: white;
 }
-.year #month-10 .this-month {
+#month-10 th {
     background: rebeccapurple;
     color: white;
 }
-.year #month-11 .this-month {
+#month-11 th {
     background: darkviolet;
     color: white;
 }
