@@ -152,6 +152,55 @@ table.color-names td {
     text-align: right;
 }
 
+#month-0 th {
+    background: #b00;
+    color: white;
+}
+#month-1 th {
+    background: orange;
+    color: black;
+}
+#month-2 th {
+    background: gold;
+    color: black;
+}
+#month-3 th {
+    background: greenyellow;
+    color: black;
+}
+#month-4 th {
+    background: limegreen;
+    color: black;
+}
+#month-5 th {
+    background: green;
+    color: white;
+}
+#month-6 th {
+    background: darkgreen;
+    color: white;
+}
+#month-7 th {
+    background: midnightblue;
+    color: white;
+}
+#month-8 th {
+    background: darkslateblue;
+    color: white;
+}
+#month-9 th {
+    background: indigo;
+    color: white;
+}
+#month-10 th {
+    background: rebeccapurple;
+    color: white;
+}
+#month-11 th {
+    background: darkviolet;
+    color: white;
+}
+
 .year {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
@@ -162,8 +211,13 @@ table.color-names td {
     text-align: center;
 }
 .calendar>.month td {
+    font-size: 2.0rem;
     height: 5rem;
     width: 5rem;
+}
+.calendar>.month td p {
+    font-size: 0.8rem;
+    margin: 0;
 }
 td.last-month,
 td.next-month {
@@ -172,7 +226,7 @@ td.next-month {
 .month td.now,
 .day tr.now {
     border: 1px solid black;
-    background: #bbb;
+    background: #bbb !important;
 }
 .day {
     width: 43rem;
@@ -326,7 +380,8 @@ https://stackoverflow.com/a/3494108/12841859
     .month td.now,
     .day tr.now {
         border-color: white;
-        background: #444;
+        background: #444 !important;
+        color: white !important;
     }
 
     .year a span:hover,
