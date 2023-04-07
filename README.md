@@ -27,3 +27,6 @@ CSS, & client-side JS.
 ![Yearly calendar](screenshots/year.png)
 ![Monthly calendar](screenshots/month.png)
 ![Daily calendar](screenshots/day.png)
+
+favicon by [Twemoji](https://twemoji.twitter.com/), licensed as [CC-BY
+4.0](https://creativecommons.org/licenses/by/4.0/).
