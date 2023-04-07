@@ -23,3 +23,7 @@ CSS, & client-side JS.
 - [x] Categorize events
 - [ ] Repeat events
 - [ ] Set goals (e.g. exercise twice a week)
+
+![Yearly calendar](screenshots/year.png)
+![Monthly calendar](screenshots/month.png)
+![Daily calendar](screenshots/day.png)
